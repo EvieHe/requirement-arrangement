@@ -1,5 +1,5 @@
 {
-  "schema_version": "1.0",
+  "schema_version": "2.0",
   "requirement": {
     "id": "REQ-2048",
     "title": "活动报名功能",
@@ -7,6 +7,40 @@
     "priority": "medium",
     "source": "product"
   },
+  "status": {
+    "stage": "human_review",
+    "completion_percent": 80,
+    "pending_clarifications": 3,
+    "unresolved_risks": 1,
+    "conflicts": 0
+  },
+  "stages": [
+    {
+      "id": "understanding",
+      "name": "需求理解",
+      "status": "done"
+    },
+    {
+      "id": "breakdown",
+      "name": "任务拆解",
+      "status": "done"
+    },
+    {
+      "id": "estimation",
+      "name": "工作量评估",
+      "status": "done"
+    },
+    {
+      "id": "scheduling",
+      "name": "排期生成",
+      "status": "done"
+    },
+    {
+      "id": "human_review",
+      "name": "人类确认",
+      "status": "pending"
+    }
+  ],
   "summary": {
     "total_effort_days": 8,
     "frontend_effort_days": 3,
@@ -23,6 +57,58 @@
       "QA-01"
     ]
   },
+  "clarifications": [
+    {
+      "id": "Q1",
+      "type": "single_select",
+      "question": "活动是否限制总报名人数？",
+      "required": true,
+      "ai_assumption": "不限制",
+      "value": null,
+      "options": [
+        "不限制",
+        "有限制"
+      ],
+      "impact_text": "若有限制，BE-01 可能增加并发控制与一致性处理。",
+      "related_task_ids": [
+        "BE-01"
+      ]
+    },
+    {
+      "id": "Q2",
+      "type": "single_select",
+      "question": "是否允许同一用户重复报名？",
+      "required": true,
+      "ai_assumption": "不允许",
+      "value": null,
+      "options": [
+        "不允许",
+        "允许"
+      ],
+      "impact_text": "会影响报名接口校验逻辑与数据约束。",
+      "related_task_ids": [
+        "BE-01",
+        "BE-03"
+      ]
+    },
+    {
+      "id": "Q3",
+      "type": "assignee_select",
+      "question": "联调验收由谁主责？",
+      "required": true,
+      "ai_assumption": "后端 A",
+      "value": null,
+      "options": [
+        "后端 A",
+        "后端 C",
+        "前端 B"
+      ],
+      "impact_text": "会影响 QA-01 的负责人和资源占用。",
+      "related_task_ids": [
+        "QA-01"
+      ]
+    }
+  ],
   "tasks": [
     {
       "id": "FE-01",
@@ -174,22 +260,19 @@
       "description": "如果存在活动名额限制，需要额外处理并发扣减和数据一致性。",
       "related_task_ids": [
         "BE-01"
-      ]
-    }
-  ],
-  "open_questions": [
-    {
-      "id": "Q-01",
-      "question": "活动是否存在总名额或单用户报名次数限制？",
-      "impact": "可能影响报名接口、数据模型及整体后端工作量。",
-      "related_task_ids": [
-        "BE-01"
-      ]
+      ],
+      "resolved": false
     }
   ],
   "assumptions": [
     "已有用户体系可以直接复用",
     "不包含支付流程",
     "不包含复杂审批流程"
-  ]
+  ],
+  "revision": {
+    "version": 1,
+    "last_modified_by": "ai",
+    "last_modified_at": "2026-11-04T14:00:00+08:00",
+    "changes": []
+  }
 }
