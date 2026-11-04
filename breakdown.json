@@ -1,0 +1,68 @@
+{
+  "schema_version": "4.0",
+  "requirement_id": "REQ-2048",
+  "tasks": [
+    {
+      "id": "FE-01",
+      "module_id": "M1",
+      "title": "活动详情页面",
+      "category": "frontend",
+      "description": "完成活动详情、报名入口和状态展示。",
+      "dependencies": []
+    },
+    {
+      "id": "FE-02",
+      "module_id": "M1",
+      "title": "报名交互与接口接入",
+      "category": "frontend",
+      "description": "完成报名表单、校验、接口调用及异常反馈。",
+      "dependencies": [
+        "FE-01",
+        "BE-01"
+      ]
+    },
+    {
+      "id": "BE-01",
+      "module_id": "M3",
+      "title": "报名核心接口",
+      "category": "backend",
+      "description": "实现报名提交、参数校验、幂等和异常处理。",
+      "dependencies": []
+    },
+    {
+      "id": "BE-02",
+      "module_id": "M4",
+      "title": "活动状态管理",
+      "category": "backend",
+      "description": "补充活动报名状态与状态判断逻辑。",
+      "dependencies": []
+    },
+    {
+      "id": "BE-03",
+      "module_id": "M3",
+      "title": "报名数据模型与查询",
+      "category": "backend",
+      "description": "增加报名记录模型与基础查询。",
+      "dependencies": [
+        "BE-01"
+      ]
+    },
+    {
+      "id": "QA-01",
+      "module_id": null,
+      "title": "联调与验收",
+      "category": "other",
+      "description": "完成前后端联调、主流程与异常场景检查。",
+      "dependencies": [
+        "FE-02",
+        "BE-02",
+        "BE-03"
+      ]
+    }
+  ],
+  "revision": {
+    "version": 1,
+    "last_modified_by": "ai",
+    "changes": []
+  }
+}
