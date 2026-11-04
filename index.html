@@ -18,13 +18,12 @@ button,input,select{font:inherit}.app{min-height:100vh}
 .wrap{max-width:1680px;margin:0 auto;padding:18px 20px 90px}.card{background:var(--panel);border:1px solid var(--line);border-radius:var(--r);box-shadow:var(--shadow)}
 .hero{padding:20px 22px;display:grid;grid-template-columns:minmax(0,1fr) auto;gap:18px}.hero h1{margin:0;font-size:22px;letter-spacing:-.3px}.hero p{margin:7px 0 0;color:var(--muted);font-size:13px;line-height:1.65;max-width:900px}.tags{display:flex;gap:7px;flex-wrap:wrap;margin-top:11px}.tag{font-size:11px;padding:4px 8px;border-radius:999px;background:#f1f2f6;color:#5f6675}.tag.purple{background:var(--purpleSoft);color:var(--purple)}.tag.orange{background:#fff1e7;color:#d3714d}
 .btn{border:1px solid var(--line);background:#fff;color:#394050;padding:9px 14px;border-radius:10px;cursor:pointer;transition:.15s}.btn:hover{border-color:#c6c0fb;box-shadow:0 4px 12px rgba(101,87,230,.11)}.btn.primary{background:var(--purple);border-color:var(--purple);color:white}.btn.soft{background:var(--purpleSoft);border-color:transparent;color:var(--purple);font-weight:700}.btn:disabled{opacity:.45;cursor:not-allowed}
-.status-card{margin-top:12px;padding:18px 20px;display:grid;grid-template-columns:260px minmax(0,1fr) 280px;gap:22px;align-items:center}
-.progress-num{font-size:31px;font-weight:850;letter-spacing:-.7px}.progress-label{font-size:12px;color:var(--muted);margin-bottom:5px}.progress-track{height:8px;border-radius:99px;background:#eceef4;overflow:hidden;margin-top:10px}.progress-fill{height:100%;background:linear-gradient(90deg,var(--purple),var(--purple2));border-radius:99px;transition:.3s}
-.stage-row{display:flex;align-items:center;gap:7px;flex-wrap:wrap}.stage{display:flex;align-items:center;gap:6px;padding:7px 9px;border-radius:10px;background:#f7f8fb;font-size:11px;color:#5b6272}.stage.done{background:var(--greenSoft);color:var(--green)}.stage.pending{background:var(--amberSoft);color:#956820}.stage-dot{width:17px;height:17px;border-radius:50%;display:grid;place-items:center;font-size:10px;background:#fff;border:1px solid currentColor}
-.status-side{display:grid;grid-template-columns:1fr 1fr;gap:8px}.mini-stat{border:1px solid var(--line);border-radius:11px;padding:10px 11px}.mini-stat b{display:block;font-size:18px}.mini-stat span{font-size:11px;color:var(--muted)}
+.status-card{margin-top:12px;padding:13px 18px;display:grid;grid-template-columns:170px minmax(0,1fr);gap:18px;align-items:center}
+.progress-line{display:flex;align-items:center;gap:10px}.progress-num{font-size:22px;font-weight:850;letter-spacing:-.5px}.progress-label{font-size:11px;color:var(--muted)}.progress-track{height:6px;border-radius:99px;background:#eceef4;overflow:hidden;flex:1;min-width:70px}.progress-fill{height:100%;background:linear-gradient(90deg,var(--purple),var(--purple2));border-radius:99px;transition:.3s}
+.stage-row{display:flex;align-items:center;gap:4px;min-width:0}.stage{display:flex;align-items:center;gap:5px;padding:5px 7px;border-radius:8px;background:#f7f8fb;font-size:10px;color:#5b6272;white-space:nowrap}.stage.done{background:var(--greenSoft);color:var(--green)}.stage.pending{background:var(--amberSoft);color:#956820}.stage-dot{width:14px;height:14px;border-radius:50%;display:grid;place-items:center;font-size:8px;background:#fff;border:1px solid currentColor}.stage-sep{color:#c5c9d2;font-size:10px}
 .section-head{display:flex;justify-content:space-between;gap:16px;align-items:flex-start;margin-bottom:14px}.section-title{font-size:16px;font-weight:800}.section-sub{margin-top:4px;color:var(--muted);font-size:12px}.count-pill{font-size:11px;padding:5px 9px;border-radius:999px;background:var(--amberSoft);color:#956820}
-.clarify{margin-top:12px;padding:18px 20px}.clarify-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}.qcard{border:1px solid var(--line);border-radius:13px;padding:14px;background:#fff}.qcard.done{background:#fbfffd;border-color:#d9eee2}.qtop{display:flex;justify-content:space-between;gap:8px;align-items:flex-start}.qtitle{font-size:13px;font-weight:750;line-height:1.5}.qmeta{font-size:10px;padding:3px 7px;border-radius:999px;background:var(--purpleSoft);color:var(--purple);white-space:nowrap}.qdesc{font-size:11px;color:var(--muted);line-height:1.55;margin-top:7px}.control{margin-top:12px}.control select,.control input{width:100%;border:1px solid var(--line);border-radius:9px;background:#fff;padding:9px 10px;font-size:12px;color:#394050}.radio-group{display:flex;gap:7px;flex-wrap:wrap}.radio-chip{border:1px solid var(--line);border-radius:9px;padding:8px 10px;font-size:11px;cursor:pointer}.radio-chip.active{border-color:#b8b0ff;background:var(--purpleSoft);color:var(--purple);font-weight:700}
-.impact{margin-top:10px;padding-top:9px;border-top:1px dashed var(--line);font-size:10px;color:#8b92a2}.clarify-actions{display:flex;justify-content:flex-end;margin-top:12px}
+.clarify{margin-top:12px;padding:17px 20px}.clarify-grid{display:flex;flex-direction:column;gap:0;border-top:1px solid var(--line)}.qcard{display:grid;grid-template-columns:minmax(260px,1fr) minmax(320px,1.25fr);gap:22px;padding:15px 2px;border-bottom:1px solid var(--line)}.qcard.done{background:linear-gradient(90deg,transparent,#fbfffd 45%,#fbfffd)}.qtop{display:flex;gap:8px;align-items:flex-start}.qtitle{font-size:13px;font-weight:750;line-height:1.5}.qmeta{font-size:10px;padding:3px 7px;border-radius:999px;background:var(--purpleSoft);color:var(--purple);white-space:nowrap}.qdesc{font-size:10px;color:var(--muted);line-height:1.5;margin-top:5px}.control{margin-top:0}.control select,.control input,.control textarea{width:100%;border:1px solid var(--line);border-radius:9px;background:#fff;padding:9px 10px;font-size:12px;color:#394050}.control textarea{min-height:72px;resize:vertical}.radio-group{display:flex;gap:7px;flex-wrap:wrap}.radio-chip{border:1px solid var(--line);border-radius:9px;padding:8px 10px;font-size:11px;cursor:pointer}.radio-chip.active{border-color:#b8b0ff;background:var(--purpleSoft);color:var(--purple);font-weight:700}.custom-input{margin-top:8px}
+.impact{margin-top:8px;font-size:10px;color:#8b92a2}.clarify-actions{display:flex;justify-content:flex-end;margin-top:12px}
 .workspace{display:grid;grid-template-columns:minmax(0,1fr) 340px;gap:12px;margin-top:12px;align-items:start}
 .plan{overflow:hidden}.plan-head{padding:16px 18px;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;gap:12px;align-items:center}.plan-meta{display:flex;gap:8px;align-items:center;flex-wrap:wrap}.chip{font-size:11px;padding:5px 8px;border-radius:999px;background:#f3f4f8;color:#5f6675}.chip.front{background:var(--greenSoft);color:var(--green)}.chip.back{background:var(--blueSoft);color:var(--blue)}.chip.other{background:var(--amberSoft);color:var(--amber)}
 .plan-tools{display:flex;gap:8px;align-items:center}.plan-tools select{border:1px solid var(--line);background:#fff;border-radius:9px;padding:8px 10px;font-size:11px;color:#4d5463}
@@ -32,10 +31,10 @@ button,input,select{font:inherit}.app{min-height:100vh}
 .g-head{background:#fafbfe;border-bottom:1px solid var(--line);font-size:10px;color:#677080;font-weight:750}.g-head>div{padding:10px 8px;border-right:1px solid #eef0f5;text-align:center}.g-head>div:first-child{text-align:left}
 .group-row{background:#fcfcff;border-bottom:1px solid var(--line);font-size:11px;font-weight:750}.group-label{grid-column:1/6;padding:9px 11px}.group-fill{grid-column:6/11;border-left:1px solid #eef0f5}
 .task-row{min-height:56px;border-bottom:1px solid #eef0f5;font-size:11px;cursor:pointer}.task-row:hover{background:#fbfbff}.task-row.selected{background:#f8f7ff}.cell{display:flex;align-items:center;padding:8px;border-right:1px solid #f0f1f5}.task-cell{gap:7px;font-weight:650}.task-id{font-size:9px;padding:2px 5px;background:#f0f2f7;border-radius:5px;color:#848b9a}.editable{width:100%;border:1px solid transparent;background:transparent;border-radius:7px;padding:6px 7px;font-size:11px;color:#333a48}.editable:hover,.editable:focus{border-color:#cfcaf8;background:#fff;outline:none}.num{max-width:62px}.day{position:relative;border-right:1px solid #f0f1f5}.bar{position:absolute;left:7px;right:7px;top:15px;height:25px;border-radius:7px;color:#fff;display:flex;align-items:center;padding:0 8px;font-size:9px;font-weight:800;white-space:nowrap;box-shadow:0 3px 8px rgba(0,0,0,.08)}.bar.frontend{background:linear-gradient(90deg,#38a76e,#57bd86)}.bar.backend{background:linear-gradient(90deg,#4e7ee9,#6d95ef)}.bar.other{background:linear-gradient(90deg,#d09838,#e1aa4f)}.bar.critical{outline:2px solid rgba(101,87,230,.33);outline-offset:2px}
-.side{position:sticky;top:70px;overflow:hidden}.side-head{padding:15px 17px;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;align-items:center}.side-head b{font-size:13px}.side-body{padding:17px}.side-title{font-size:16px;font-weight:800;margin:9px 0 12px}.kv{display:grid;grid-template-columns:80px 1fr;gap:8px;font-size:11px;margin:8px 0}.kv .k{color:var(--muted)}.detail-sec{margin-top:16px}.detail-sec h3{font-size:12px;margin:0 0 7px}.detail-sec p,.detail-sec li{font-size:11px;color:#555d6c;line-height:1.65}.detail-sec ul{padding-left:17px;margin:6px 0}.riskbox{margin-top:14px;padding:10px 11px;border-radius:10px;background:var(--amberSoft);color:#8c651f;font-size:10px;line-height:1.55}
+.side{position:sticky;top:70px;overflow:hidden}.side-head{padding:15px 17px;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;align-items:center}.side-head b{font-size:13px}.side-body{padding:16px 17px;max-height:calc(100vh - 155px);overflow:auto}.evidence-overview{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:15px}.evidence-card{border:1px solid var(--line);border-radius:10px;padding:10px}.evidence-card b{display:block;font-size:11px;margin-bottom:4px}.evidence-card span{font-size:10px;color:var(--muted);line-height:1.45}.detail-divider{height:1px;background:var(--line);margin:15px 0}.side-title{font-size:15px;font-weight:800;margin:8px 0 11px}.kv{display:grid;grid-template-columns:80px 1fr;gap:8px;font-size:11px;margin:8px 0}.kv .k{color:var(--muted)}.detail-sec{margin-top:15px}.detail-sec h3{font-size:12px;margin:0 0 7px}.detail-sec p,.detail-sec li{font-size:11px;color:#555d6c;line-height:1.65}.detail-sec ul{padding-left:17px;margin:6px 0}.riskbox{margin-top:14px;padding:10px 11px;border-radius:10px;background:var(--amberSoft);color:#8c651f;font-size:10px;line-height:1.55}
 .footerbar{position:fixed;left:0;right:0;bottom:0;background:rgba(255,255,255,.94);backdrop-filter:blur(14px);border-top:1px solid var(--line);z-index:25}.footer-inner{max-width:1680px;margin:0 auto;padding:12px 20px;display:flex;justify-content:space-between;gap:16px;align-items:center}.footer-summary{display:flex;gap:18px;align-items:center;font-size:12px;color:#596071}.footer-summary b{color:var(--text)}.footer-actions{display:flex;gap:8px}.saved{font-size:11px;color:var(--green);display:none}.saved.show{display:inline}
-@media(max-width:1180px){.status-card{grid-template-columns:1fr}.clarify-grid{grid-template-columns:1fr 1fr}.workspace{grid-template-columns:1fr}.side{position:static}.status-side{max-width:420px}}
-@media(max-width:760px){.wrap{padding:12px 12px 100px}.hero{grid-template-columns:1fr}.clarify-grid{grid-template-columns:1fr}.footer-inner{align-items:flex-start;flex-direction:column}.footerbar{position:static}.wrap{padding-bottom:20px}.topbar{padding:0 14px}.brand-sub{font-size:13px}}
+@media(max-width:1180px){.workspace{grid-template-columns:1fr}.side{position:static}.status-card{grid-template-columns:150px 1fr}.qcard{grid-template-columns:1fr}}
+@media(max-width:760px){.wrap{padding:12px 12px 100px}.hero{grid-template-columns:1fr}.status-card{grid-template-columns:1fr}.stage-row{overflow:auto;padding-bottom:2px}.footer-inner{align-items:flex-start;flex-direction:column}.footerbar{position:static}.wrap{padding-bottom:20px}.topbar{padding:0 14px}.brand-sub{font-size:13px}.qcard{grid-template-columns:1fr}.evidence-overview{grid-template-columns:1fr}}
 </style>
 </head>
 <body>
@@ -49,13 +48,12 @@ button,input,select{font:inherit}.app{min-height:100vh}
 </section>
 
 <section class="card status-card">
-  <div><div class="progress-label">评估完成度</div><div class="progress-num" id="progressNum"></div><div class="progress-track"><div class="progress-fill" id="progressFill"></div></div></div>
-  <div><div class="progress-label">评估阶段</div><div class="stage-row" id="stageRow"></div></div>
-  <div class="status-side"><div class="mini-stat"><b id="taskCount"></b><span>已生成任务</span></div><div class="mini-stat"><b id="pendingCount"></b><span>待确认项</span></div><div class="mini-stat"><b id="riskCount"></b><span>未解决风险</span></div><div class="mini-stat"><b id="conflictCount">0</b><span>排期冲突</span></div></div>
+  <div><div class="progress-label">评估进度</div><div class="progress-line"><div class="progress-num" id="progressNum"></div><div class="progress-track"><div class="progress-fill" id="progressFill"></div></div></div></div>
+  <div><div class="stage-row" id="stageRow"></div></div>
 </section>
 
 <section class="card clarify">
-  <div class="section-head"><div><div class="section-title">需要你确认</div><div class="section-sub">这些信息会影响 AI 的任务拆解、工作量或排期。确认后直接写回当前规划元数据。</div></div><div class="count-pill" id="clarifyCount"></div></div>
+  <div class="section-head"><div><div class="section-title">待确认</div></div><div class="count-pill" id="clarifyCount"></div></div>
   <div class="clarify-grid" id="clarifyGrid"></div>
   <div class="clarify-actions"><button class="btn primary" id="applyClarifications">应用确认并更新评估</button></div>
 </section>
@@ -71,7 +69,7 @@ button,input,select{font:inherit}.app{min-height:100vh}
   </div>
 
   <aside class="card side">
-    <div class="side-head"><b>AI 评估依据</b><span class="chip" id="confidenceChip"></span></div>
+    <div class="side-head"><b>AI 评估依据</b><span class="chip">整体 + 当前任务</span></div>
     <div id="detail"></div>
   </aside>
 </section>
@@ -97,9 +95,9 @@ const initialData={
   ],
   summary:{total_effort_days:8,frontend_effort_days:3,backend_effort_days:4,other_effort_days:1,estimated_working_days:5,start_date:'2026-11-05',delivery_date:'2026-11-11',recommended_people:3,confidence:'medium',critical_path:['BE-01','FE-02','QA-01']},
   clarifications:[
-    {id:'Q1',type:'single_select',question:'活动是否限制总报名人数？',required:true,ai_assumption:'不限制',value:null,options:['不限制','有限制'],impact_text:'若有限制，BE-01 可能增加并发控制与一致性处理。',related_task_ids:['BE-01']},
-    {id:'Q2',type:'single_select',question:'是否允许同一用户重复报名？',required:true,ai_assumption:'不允许',value:null,options:['不允许','允许'],impact_text:'会影响报名接口校验逻辑与数据约束。',related_task_ids:['BE-01','BE-03']},
-    {id:'Q3',type:'assignee_select',question:'联调验收由谁主责？',required:true,ai_assumption:'后端 A',value:null,options:['后端 A','后端 C','前端 B'],impact_text:'会影响 QA-01 的负责人和资源占用。',related_task_ids:['QA-01']}
+    {id:'Q1',type:'choice',question:'活动是否限制总报名人数？',required:true,ai_assumption:'不限制',value:null,custom_value:'',options:['不限制','有限制'],impact_text:'影响 BE-01 的并发控制与一致性设计。',related_task_ids:['BE-01']},
+    {id:'Q2',type:'choice',question:'是否允许同一用户重复报名？',required:true,ai_assumption:'不允许',value:null,custom_value:'',options:['不允许','允许'],impact_text:'影响报名校验逻辑与数据约束。',related_task_ids:['BE-01','BE-03']},
+    {id:'Q3',type:'text',question:'联调验收还有哪些特殊安排？',required:false,ai_assumption:'由后端 A 主责，前端 B 配合',value:'',placeholder:'例如：需要测试同学参与、指定验收时间、灰度要求等',impact_text:'补充信息会用于调整 QA-01 与排期。',related_task_ids:['QA-01']}
   ],
   tasks:[
     {id:'FE-01',title:'活动详情页面',category:'frontend',description:'完成活动详情展示、报名入口和基础状态展示。',effort_days:1.5,confidence:'high',assignee:{id:'U-FE-01',name:'前端 B',role:'frontend'},start_date:'2026-11-05',end_date:'2026-11-06',dependencies:[],estimate_basis:['详情页结构约 0.5 人日','状态展示及交互约 0.5 人日','异常态与自测约 0.5 人日'],risks:[]},
@@ -135,8 +133,7 @@ function touch(change){data.revision.version++;data.revision.last_modified_by='h
 function renderTop(){
   q('#reqTitle').textContent='【需求】'+data.requirement.title;q('#reqDesc').textContent=data.requirement.description;q('#reqId').textContent=data.requirement.id;q('#priorityTag').textContent='中优先级';
   q('#progressNum').textContent=data.status.completion_percent+'%';q('#progressFill').style.width=data.status.completion_percent+'%';
-  q('#stageRow').innerHTML=data.stages.map(s=>'<div class="stage '+s.status+'"><span class="stage-dot">'+(s.status==='done'?'✓':'!')+'</span>'+s.name+'</div>').join('');
-  q('#taskCount').textContent=data.tasks.length;q('#pendingCount').textContent=data.status.pending_clarifications;q('#riskCount').textContent=data.status.unresolved_risks;q('#conflictCount').textContent=data.status.conflicts;
+  q('#stageRow').innerHTML=data.stages.map((s,i)=>'<div class="stage '+s.status+'"><span class="stage-dot">'+(s.status==='done'?'✓':'!')+'</span>'+s.name+'</div>'+(i<data.stages.length-1?'<span class="stage-sep">→</span>':'')).join('');
   q('#clarifyCount').textContent=data.status.pending_clarifications?'待确认 '+data.status.pending_clarifications:'已全部确认';
   q('#frontChip').textContent='前端 '+data.summary.frontend_effort_days+' 人日';q('#backChip').textContent='后端 '+data.summary.backend_effort_days+' 人日';q('#otherChip').textContent='其他 '+data.summary.other_effort_days+' 人日';
   q('#totalEffort').textContent=data.summary.total_effort_days;q('#duration').textContent=data.summary.estimated_working_days;q('#delivery').textContent=fmt(data.summary.delivery_date);
@@ -144,14 +141,20 @@ function renderTop(){
 }
 function renderClarifications(){
   q('#clarifyGrid').innerHTML=data.clarifications.map(c=>{
-    const done=c.value!==null&&c.value!=='';
-    const control=c.type==='assignee_select'
-      ? '<select data-q="'+c.id+'"><option value="">请选择</option>'+c.options.map(o=>'<option '+(c.value===o?'selected':'')+'>'+o+'</option>').join('')+'</select>'
-      : '<div class="radio-group">'+c.options.map(o=>'<div class="radio-chip '+(c.value===o?'active':'')+'" data-q="'+c.id+'" data-v="'+o+'">'+o+'</div>').join('')+'</div>';
-    return '<div class="qcard '+(done?'done':'')+'"><div class="qtop"><div class="qtitle">'+c.question+'</div><div class="qmeta">AI 假设：'+c.ai_assumption+'</div></div><div class="qdesc">'+c.impact_text+'</div><div class="control">'+control+'</div><div class="impact">影响任务：'+c.related_task_ids.join('、')+'</div></div>'
+    const done=(c.value!==null&&c.value!=='')||(c.type==='text'&&!c.required);
+    let control='';
+    if(c.type==='text'){
+      control='<textarea data-q="'+c.id+'" placeholder="'+(c.placeholder||'请输入补充说明')+'">'+(c.value||'')+'</textarea>';
+    }else{
+      const opts=[...c.options,'自定义'];
+      control='<div class="radio-group">'+opts.map(o=>'<div class="radio-chip '+(c.value===o?'active':'')+'" data-q="'+c.id+'" data-v="'+o+'">'+o+'</div>').join('')+'</div>'+
+        (c.value==='自定义'?'<input class="custom-input" data-custom="'+c.id+'" placeholder="请输入自定义答案" value="'+(c.custom_value||'')+'">':'');
+    }
+    return '<div class="qcard '+(done?'done':'')+'"><div><div class="qtop"><div class="qtitle">'+c.question+'</div><div class="qmeta">AI：'+c.ai_assumption+'</div></div><div class="qdesc">'+c.impact_text+'</div><div class="impact">影响：'+c.related_task_ids.join('、')+'</div></div><div class="control">'+control+'</div></div>'
   }).join('');
   document.querySelectorAll('.radio-chip').forEach(el=>el.onclick=()=>{const c=data.clarifications.find(x=>x.id===el.dataset.q);c.value=el.dataset.v;touch('clarification:'+c.id+'='+c.value);recalc();renderAll()});
-  document.querySelectorAll('.qcard select').forEach(el=>el.onchange=()=>{const c=data.clarifications.find(x=>x.id===el.dataset.q);c.value=el.value||null;touch('clarification:'+c.id+'='+c.value);recalc();renderAll()});
+  document.querySelectorAll('.qcard textarea').forEach(el=>el.onchange=()=>{const c=data.clarifications.find(x=>x.id===el.dataset.q);c.value=el.value;touch('clarification:'+c.id+'='+c.value);recalc();renderAll()});
+  document.querySelectorAll('.custom-input').forEach(el=>el.onchange=()=>{const c=data.clarifications.find(x=>x.id===el.dataset.custom);c.custom_value=el.value;touch('clarification_custom:'+c.id+'='+c.custom_value);recalc();renderAll()});
 }
 function groupData(){
   if(groupMode==='category')return ['frontend','backend','other'].map(k=>({label:cats[k],tasks:data.tasks.filter(t=>t.category===k)})).filter(g=>g.tasks.length);
@@ -173,12 +176,17 @@ function renderGantt(){
 }
 function renderDetail(){
   const t=data.tasks.find(x=>x.id===selectedTask);const conf={high:'高',medium:'中',low:'低'}[t.confidence]||t.confidence;
-  q('#confidenceChip').textContent='置信度 '+conf;
-  q('#detail').innerHTML='<div class="side-body"><span class="chip '+(t.category==='frontend'?'front':t.category==='backend'?'back':'other')+'">'+typeName[t.category]+'</span><div class="side-title">'+t.id+' · '+t.title+'</div><div class="kv"><div class="k">负责人</div><div>'+t.assignee.name+'</div></div><div class="kv"><div class="k">工作量</div><div><b>'+t.effort_days+' 人日</b></div></div><div class="kv"><div class="k">计划时间</div><div>'+fmt(t.start_date)+' → '+fmt(t.end_date)+'</div></div><div class="kv"><div class="k">前置依赖</div><div>'+(t.dependencies.join('、')||'无')+'</div></div><div class="detail-sec"><h3>任务说明</h3><p>'+t.description+'</p></div><div class="detail-sec"><h3>AI 估算依据</h3><ul>'+t.estimate_basis.map(x=>'<li>'+x+'</li>').join('')+'</ul></div><div class="riskbox">⚠ 风险提示<br>'+(t.risks.join('；')||'暂无明显风险')+'</div></div>'
+  const overall=[
+    ['需求范围','按“页面交互 / 核心接口 / 状态管理 / 数据模型 / 联调验收”覆盖实现闭环。'],
+    ['任务拆解','拆成 6 个可独立执行工作项，前后端可并行，联调作为收口节点。'],
+    ['工作量','基于复杂度与常规实现成本估算，共 '+data.summary.total_effort_days+' 人日；前端 '+data.summary.frontend_effort_days+'、后端 '+data.summary.backend_effort_days+'、其他 '+data.summary.other_effort_days+'。'],
+    ['排期逻辑','按依赖与人员并行关系安排 '+data.summary.estimated_working_days+' 个工作日，关键路径 '+data.summary.critical_path.join(' → ')+'。']
+  ];
+  q('#detail').innerHTML='<div class="side-body"><div class="evidence-overview">'+overall.map(x=>'<div class="evidence-card"><b>'+x[0]+'</b><span>'+x[1]+'</span></div>').join('')+'</div><div class="detail-divider"></div><span class="chip '+(t.category==='frontend'?'front':t.category==='backend'?'back':'other')+'">'+typeName[t.category]+'</span><div class="side-title">'+t.id+' · '+t.title+'</div><div class="kv"><div class="k">置信度</div><div>'+conf+'</div></div><div class="kv"><div class="k">负责人</div><div>'+t.assignee.name+'</div></div><div class="kv"><div class="k">工作量</div><div><b>'+t.effort_days+' 人日</b></div></div><div class="kv"><div class="k">计划时间</div><div>'+fmt(t.start_date)+' → '+fmt(t.end_date)+'</div></div><div class="kv"><div class="k">前置依赖</div><div>'+(t.dependencies.join('、')||'无')+'</div></div><div class="detail-sec"><h3>当前任务估算依据</h3><ul>'+t.estimate_basis.map(x=>'<li>'+x+'</li>').join('')+'</ul></div><div class="riskbox">⚠ '+(t.risks.join('；')||'当前任务暂无明显风险')+'</div></div>'
 }
 function renderAll(){recalc();renderTop();renderClarifications();renderGantt();renderDetail()}
 q('#groupSelect').onchange=e=>{groupMode=e.target.value;renderGantt()};q('#criticalToggle').onchange=e=>{showCritical=e.target.checked;renderGantt()};
-q('#applyClarifications').onclick=()=>{const q3=data.clarifications.find(x=>x.id==='Q3');if(q3.value){data.tasks.find(t=>t.id==='QA-01').assignee.name=q3.value}touch('apply_clarifications');renderAll()};
+q('#applyClarifications').onclick=()=>{touch('apply_clarifications');renderAll()};
 q('#saveBtn').onclick=()=>{q('#savedState').classList.add('show');setTimeout(()=>q('#savedState').classList.remove('show'),1800)};
 q('#confirmBtn').onclick=()=>{if(data.status.pending_clarifications)return;data.status.stage='confirmed';touch('confirm_plan');q('#confirmBtn').textContent='已确认';q('#confirmBtn').disabled=true;q('#savedState').textContent='✓ 已确认';q('#savedState').classList.add('show')};
 q('#rerunBtn').onclick=()=>{data=JSON.parse(JSON.stringify(initialData));selectedTask='FE-02';groupMode='category';showCritical=true;q('#groupSelect').value='category';q('#criticalToggle').checked=true;q('#confirmBtn').textContent='确认评估';renderAll()};
