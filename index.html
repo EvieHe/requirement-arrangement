@@ -1,0 +1,245 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>xdpai · 需求智能评估与排期</title>
+  <style>
+    :root{
+      --bg:#f6f7fb;--panel:#fff;--line:#e7e9f2;--text:#182033;--muted:#6d7485;
+      --purple:#6757e6;--purple-2:#8b7cf5;--purple-soft:#f0edff;
+      --front:#37a66a;--front-soft:#eaf7ef;--back:#4c78e6;--back-soft:#edf2ff;
+      --other:#d4942e;--other-soft:#fff5df;--danger:#d1684e;--danger-soft:#fff0eb;
+      --shadow:0 8px 24px rgba(34,44,72,.06);--radius:14px;
+    }
+    *{box-sizing:border-box} body{margin:0;font-family:Inter,"PingFang SC","Microsoft YaHei",system-ui,-apple-system,sans-serif;background:var(--bg);color:var(--text)}
+    button,select,input{font:inherit}
+    .app{min-height:100vh}
+    .topbar{height:58px;background:linear-gradient(90deg,#faf9ff,#f5f2ff 54%,#fafaff);border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;padding:0 28px;position:sticky;top:0;z-index:10}
+    .brand{display:flex;align-items:center;gap:12px;font-weight:800}.logo{width:30px;height:30px;border-radius:9px;background:linear-gradient(135deg,var(--purple),#9b8cff);display:grid;place-items:center;color:#fff}.title{font-size:16px}.team{display:flex;align-items:center;gap:10px;color:#3d4351;font-size:13px}
+    .avatar{width:30px;height:30px;border-radius:50%;display:grid;place-items:center;background:var(--purple);color:#fff;font-weight:700;font-size:12px}
+    .wrap{padding:18px 20px 26px;max-width:1680px;margin:0 auto}
+    .card{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow)}
+    .hero{padding:20px 22px;display:flex;gap:18px;justify-content:space-between;align-items:flex-start}
+    .hero-main{display:flex;gap:14px}.hero-icon{width:44px;height:44px;border-radius:12px;background:var(--purple-soft);color:var(--purple);display:grid;place-items:center;font-weight:800}
+    .hero h1{margin:0 0 7px;font-size:22px}.hero p{margin:0;color:var(--muted);font-size:13px;line-height:1.65}.tags{display:flex;gap:8px;margin-top:10px;flex-wrap:wrap}.tag{padding:4px 9px;border-radius:999px;background:#f1f2f6;color:#5d6473;font-size:12px}.tag.purple{background:var(--purple-soft);color:var(--purple)}.tag.orange{background:#fff1e9;color:#d3724c}
+    .btn{border:1px solid var(--line);background:#fff;color:#394050;padding:9px 14px;border-radius:10px;cursor:pointer;transition:.18s}.btn:hover{border-color:#c9c4fb;box-shadow:0 4px 12px rgba(103,87,230,.12)}.btn.primary{background:var(--purple);color:#fff;border-color:var(--purple)}.btn.ghost-purple{color:var(--purple);border-color:#b9b1ff;background:#fff}
+    .metrics{display:grid;grid-template-columns:1fr 1fr 1fr 1.25fr;gap:12px;margin-top:12px}.metric{padding:17px 18px}.metric-label{font-size:12px;color:var(--muted);margin-bottom:7px}.metric-value{font-size:24px;font-weight:800;letter-spacing:-.4px}.metric-sub{font-size:12px;color:var(--muted);margin-top:6px}.metric-inline{display:flex;gap:8px;margin-top:7px}.pill{font-size:11px;padding:3px 8px;border-radius:999px;background:#f3f4f8}.pill.front{background:var(--front-soft);color:var(--front)}.pill.back{background:var(--back-soft);color:var(--back)}.pill.other{background:var(--other-soft);color:var(--other)}
+    .workspace{display:grid;grid-template-columns:minmax(0,1fr) 340px;gap:12px;margin-top:12px;align-items:start}
+    .main-panel{overflow:hidden}.tabs{height:54px;padding:0 16px;border-bottom:1px solid var(--line);display:flex;align-items:end;gap:24px}.tab{padding:17px 2px 14px;color:var(--muted);font-size:13px}.tab.active{color:var(--purple);font-weight:700;border-bottom:2px solid var(--purple)}
+    .toolbar{display:flex;justify-content:space-between;gap:12px;align-items:center;padding:12px 14px;border-bottom:1px solid var(--line);flex-wrap:wrap}.toolbar-left,.toolbar-right{display:flex;gap:9px;align-items:center}.select{border:1px solid var(--line);background:#fff;border-radius:9px;padding:8px 10px;font-size:12px;color:#454c5b}.date-chip{font-size:12px;color:#4b5161;padding:8px 11px;border:1px solid var(--line);border-radius:9px;background:#fff}.switch{display:flex;align-items:center;gap:7px;font-size:12px;color:#596071}.switch input{accent-color:var(--purple)}
+    .gantt-wrap{overflow:auto}.gantt{min-width:1100px}.gantt-head,.task-row,.group-row{display:grid;grid-template-columns:330px 72px 98px 74px 80px 80px repeat(5,minmax(82px,1fr));align-items:stretch}
+    .gantt-head{background:#fafbfe;border-bottom:1px solid var(--line);font-size:11px;color:#5d6473;font-weight:700;position:sticky;top:0}.gantt-head>div{padding:10px 9px;border-right:1px solid #eef0f5;text-align:center}.gantt-head>div:first-child{text-align:left}
+    .group-row{background:#fbfcff;border-bottom:1px solid var(--line);font-size:12px;font-weight:700}.group-row .group-title{grid-column:1/7;padding:10px 12px}.group-row .group-days{grid-column:7/12;border-left:1px solid #eef0f5}
+    .task-row{min-height:52px;border-bottom:1px solid #eef0f5;font-size:12px;cursor:pointer;transition:.15s}.task-row:hover{background:#fbfbff}.task-row.selected{background:#f8f7ff}.cell{padding:10px 9px;border-right:1px solid #f0f1f5;display:flex;align-items:center}.task-name{gap:8px;font-weight:600}.task-id{font-size:10px;color:#8a91a0;background:#f0f2f7;border-radius:5px;padding:2px 5px}.type-badge{font-size:10px;padding:3px 7px;border-radius:999px}.type-badge.frontend{color:var(--front);background:var(--front-soft)}.type-badge.backend{color:var(--back);background:var(--back-soft)}.type-badge.other{color:var(--other);background:var(--other-soft)}
+    .person{display:flex;align-items:center;gap:6px}.dot{width:20px;height:20px;border-radius:50%;display:grid;place-items:center;color:#fff;font-size:10px;font-weight:700}.dot.frontend{background:var(--front)}.dot.backend{background:var(--back)}.dot.other{background:var(--other)}
+    .day{position:relative;min-height:52px;border-right:1px solid #f0f1f5;background:repeating-linear-gradient(90deg,transparent 0,transparent calc(100% - 1px),#f2f3f7 calc(100% - 1px),#f2f3f7 100%)}.bar{position:absolute;left:7px;right:7px;top:13px;height:26px;border-radius:7px;color:#fff;font-size:10px;font-weight:700;display:flex;align-items:center;padding:0 8px;box-shadow:0 3px 9px rgba(0,0,0,.08);white-space:nowrap}.bar.frontend{background:linear-gradient(90deg,#3fb177,#58bf89)}.bar.backend{background:linear-gradient(90deg,#4f7fea,#6992ee)}.bar.other{background:linear-gradient(90deg,#d79a33,#e6ae4e)}.bar.critical{outline:2px solid rgba(103,87,230,.35);outline-offset:2px}
+    .dep-note{font-size:10px;color:#8a91a0;margin-left:6px}
+    .side{position:sticky;top:70px;overflow:hidden}.side-tabs{display:flex;border-bottom:1px solid var(--line)}.side-tab{flex:1;text-align:center;padding:14px 10px;font-size:12px;color:var(--muted)}.side-tab.active{color:var(--purple);font-weight:700;border-bottom:2px solid var(--purple)}.side-body{padding:18px}.side-title{font-size:17px;font-weight:800;margin:10px 0 14px}.kv{display:grid;grid-template-columns:84px 1fr;gap:9px;font-size:12px;margin:9px 0}.kv .k{color:var(--muted)}.section{margin-top:18px}.section h3{font-size:13px;margin:0 0 9px}.section p,.section li{font-size:12px;color:#515867;line-height:1.7}.section ul{padding-left:18px;margin:6px 0}.riskbox{margin-top:16px;padding:11px 12px;border-radius:10px;background:var(--other-soft);color:#8e641e;font-size:11px;line-height:1.55}.side-actions{padding:0 18px 18px;display:flex;gap:8px}.side-actions .btn{flex:1}
+    .decision{margin-top:12px;padding:14px 16px;display:grid;grid-template-columns:1.2fr 1fr 1fr auto;gap:14px;align-items:center}.decision-block h4{margin:0 0 5px;font-size:12px}.decision-block p{margin:0;color:var(--muted);font-size:11px;line-height:1.55}.decision-risk{background:var(--danger-soft);border-radius:10px;padding:10px 12px}.decision-tip{background:#f7f8fb;border-radius:10px;padding:10px 12px}.footer-actions{display:flex;gap:8px;justify-content:flex-end}.status-ok{display:none;margin-top:12px;padding:12px 14px;background:#eefaf2;border:1px solid #cdebd7;color:#297648;border-radius:12px;font-size:12px}.status-ok.show{display:block}
+    .empty{padding:40px;text-align:center;color:var(--muted)}
+    @media(max-width:1100px){.metrics{grid-template-columns:1fr 1fr}.workspace{grid-template-columns:1fr}.side{position:static}.decision{grid-template-columns:1fr 1fr}.footer-actions{grid-column:1/-1}.hero{flex-direction:column}}
+    @media(max-width:680px){.wrap{padding:12px}.metrics{grid-template-columns:1fr}.decision{grid-template-columns:1fr}.topbar{padding:0 14px}.title{font-size:14px}.hero h1{font-size:19px}}
+  </style>
+</head>
+<body>
+<div class="app">
+  <header class="topbar">
+    <div class="brand"><div class="logo">✦</div><div>xdpai</div><div class="title">需求智能评估与排期</div></div>
+    <div class="team"><span>研发小组</span><div class="avatar">研</div></div>
+  </header>
+
+  <main class="wrap">
+    <section class="card hero">
+      <div class="hero-main">
+        <div class="hero-icon">▤</div>
+        <div>
+          <h1 id="reqTitle"></h1>
+          <p id="reqDesc"></p>
+          <div class="tags">
+            <span class="tag purple">功能需求</span>
+            <span class="tag orange" id="priorityTag"></span>
+            <span class="tag" id="reqId"></span>
+            <span class="tag">AI 评估草案</span>
+          </div>
+        </div>
+      </div>
+      <button class="btn ghost-purple" id="resetBtn">✦ 重新评估</button>
+    </section>
+
+    <section class="metrics">
+      <div class="card metric"><div class="metric-label">预计周期（建议）</div><div class="metric-value"><span id="duration"></span> 个工作日</div><div class="metric-sub" id="dateRange"></div></div>
+      <div class="card metric"><div class="metric-label">预计工作量（合计）</div><div class="metric-value"><span id="totalEffort"></span> 人日</div><div class="metric-inline"><span class="pill front" id="frontEffort"></span><span class="pill back" id="backEffort"></span><span class="pill other" id="otherEffort"></span></div></div>
+      <div class="card metric"><div class="metric-label">建议投入</div><div class="metric-value"><span id="people"></span> 人</div><div class="metric-sub">前端 ×1 · 后端 ×2</div></div>
+      <div class="card metric"><div class="metric-label">关键路径</div><div class="metric-value" style="font-size:15px;line-height:1.55" id="criticalPath"></div><div class="metric-sub" id="delivery"></div></div>
+    </section>
+
+    <section class="workspace">
+      <div class="card main-panel">
+        <div class="tabs"><div class="tab active">甘特图（排期建议）</div><div class="tab">任务拆解</div><div class="tab">工作量明细</div><div class="tab">风险与建议</div></div>
+        <div class="toolbar">
+          <div class="toolbar-left">
+            <select class="select" id="groupSelect"><option value="category">按开发类型分组</option><option value="assignee">按负责人分组</option></select>
+            <span class="date-chip" id="toolbarDate"></span>
+          </div>
+          <div class="toolbar-right">
+            <label class="switch"><input id="criticalToggle" type="checkbox" checked /> 关键路径</label>
+          </div>
+        </div>
+        <div class="gantt-wrap"><div class="gantt" id="gantt"></div></div>
+      </div>
+
+      <aside class="card side">
+        <div class="side-tabs"><div class="side-tab active">任务详情</div><div class="side-tab">排期设置</div></div>
+        <div id="taskDetail"></div>
+      </aside>
+    </section>
+
+    <section class="card decision">
+      <div class="decision-block"><h4>✦ AI 评估结论</h4><p id="conclusion"></p></div>
+      <div class="decision-block decision-risk"><h4>⚠ 主要风险</h4><p id="majorRisk"></p></div>
+      <div class="decision-block decision-tip"><h4>💡 建议</h4><p id="suggestion"></p></div>
+      <div class="footer-actions"><button class="btn" id="cancelBtn">取消</button><button class="btn primary" id="confirmBtn">确认排期并生成任务</button></div>
+    </section>
+    <div class="status-ok" id="statusOk">✓ 排期已确认。Demo 中不会真正创建 TAPD / SOP 任务。</div>
+  </main>
+</div>
+
+<script>
+const initialData = {
+  schema_version:'1.0',
+  requirement:{id:'REQ-2048',title:'活动报名功能',description:'支持用户查看活动详情、填写报名信息并提交；支持报名状态管理与数据查询。',priority:'medium',source:'product'},
+  summary:{total_effort_days:8,frontend_effort_days:3,backend_effort_days:4,other_effort_days:1,estimated_working_days:5,start_date:'2026-11-05',delivery_date:'2026-11-11',recommended_people:3,confidence:'medium',critical_path:['BE-01','FE-02','QA-01']},
+  tasks:[
+    {id:'FE-01',title:'活动详情页面',category:'frontend',description:'完成活动详情展示、报名入口和基础状态展示。',effort_days:1.5,confidence:'high',assignee:{id:'U-FE-01',name:'前端 B',role:'frontend'},start_date:'2026-11-05',end_date:'2026-11-06',dependencies:[],estimate_basis:['详情页结构约 0.5 人日','状态展示及交互约 0.5 人日','异常态与自测约 0.5 人日'],risks:[]},
+    {id:'FE-02',title:'报名交互与接口接入',category:'frontend',description:'完成报名表单、校验、接口调用、加载态及异常反馈。',effort_days:1.5,confidence:'medium',assignee:{id:'U-FE-01',name:'前端 B',role:'frontend'},start_date:'2026-11-09',end_date:'2026-11-10',dependencies:['FE-01','BE-01'],estimate_basis:['表单与校验约 0.5 人日','接口接入约 0.5 人日','异常处理与自测约 0.5 人日'],risks:['接口字段若发生变化可能增加联调成本']},
+    {id:'BE-01',title:'报名核心接口',category:'backend',description:'实现报名提交接口、参数校验、幂等及基础异常处理。',effort_days:2,confidence:'medium',assignee:{id:'U-BE-01',name:'后端 A',role:'backend'},start_date:'2026-11-05',end_date:'2026-11-06',dependencies:[],estimate_basis:['接口及领域逻辑约 1 人日','幂等与异常处理约 0.5 人日','单测与自测约 0.5 人日'],risks:['是否存在报名名额并发控制尚未明确']},
+    {id:'BE-02',title:'活动状态管理',category:'backend',description:'补充活动报名状态及状态判断逻辑。',effort_days:1,confidence:'high',assignee:{id:'U-BE-02',name:'后端 C',role:'backend'},start_date:'2026-11-05',end_date:'2026-11-05',dependencies:[],estimate_basis:['状态模型及逻辑调整约 1 人日'],risks:[]},
+    {id:'BE-03',title:'报名数据模型与查询',category:'backend',description:'增加报名记录模型及基础查询能力。',effort_days:1,confidence:'high',assignee:{id:'U-BE-02',name:'后端 C',role:'backend'},start_date:'2026-11-09',end_date:'2026-11-09',dependencies:['BE-01'],estimate_basis:['数据模型与 DAO 约 0.5 人日','查询能力约 0.5 人日'],risks:[]},
+    {id:'QA-01',title:'联调与验收',category:'other',description:'完成前后端联调、主流程验证及异常场景检查。',effort_days:1,confidence:'medium',assignee:{id:'U-BE-01',name:'后端 A',role:'backend'},start_date:'2026-11-11',end_date:'2026-11-11',dependencies:['FE-02','BE-02','BE-03'],estimate_basis:['主流程联调约 0.5 人日','异常场景及验收约 0.5 人日'],risks:[]}
+  ],
+  risks:[{id:'R-01',level:'medium',title:'报名并发规则未明确',description:'如果存在活动名额限制，需要额外处理并发扣减和数据一致性。',related_task_ids:['BE-01']}],
+  open_questions:[{id:'Q-01',question:'活动是否存在总名额或单用户报名次数限制？',impact:'可能影响报名接口、数据模型及整体后端工作量。',related_task_ids:['BE-01']}],
+  assumptions:['已有用户体系可以直接复用','不包含支付流程','不包含复杂审批流程']
+};
+
+let data = JSON.parse(JSON.stringify(initialData));
+let selectedTaskId = 'FE-02';
+let showCritical = true;
+let groupMode = 'category';
+const workDays = ['2026-11-05','2026-11-06','2026-11-09','2026-11-10','2026-11-11'];
+const catName = {frontend:'前端开发',backend:'后端开发',other:'联调与验收'};
+const typeName = {frontend:'前端',backend:'后端',other:'其他'};
+const fmt = d => d.slice(5).replace('-','/');
+const sum = (arr,fn) => arr.reduce((a,x)=>a+fn(x),0);
+
+function recalcSummary(){
+  data.summary.frontend_effort_days = sum(data.tasks.filter(t=>t.category==='frontend'),t=>Number(t.effort_days));
+  data.summary.backend_effort_days = sum(data.tasks.filter(t=>t.category==='backend'),t=>Number(t.effort_days));
+  data.summary.other_effort_days = sum(data.tasks.filter(t=>t.category==='other'),t=>Number(t.effort_days));
+  data.summary.total_effort_days = data.summary.frontend_effort_days + data.summary.backend_effort_days + data.summary.other_effort_days;
+}
+
+function renderSummary(){
+  document.getElementById('reqTitle').textContent = '【需求】' + data.requirement.title;
+  document.getElementById('reqDesc').textContent = data.requirement.description;
+  document.getElementById('priorityTag').textContent = data.requirement.priority==='medium'?'中优先级':data.requirement.priority;
+  document.getElementById('reqId').textContent = data.requirement.id;
+  document.getElementById('duration').textContent = data.summary.estimated_working_days;
+  document.getElementById('dateRange').textContent = fmt(data.summary.start_date)+' → '+fmt(data.summary.delivery_date);
+  document.getElementById('totalEffort').textContent = data.summary.total_effort_days;
+  document.getElementById('frontEffort').textContent = '前端 '+data.summary.frontend_effort_days+' 人日';
+  document.getElementById('backEffort').textContent = '后端 '+data.summary.backend_effort_days+' 人日';
+  document.getElementById('otherEffort').textContent = '其他 '+data.summary.other_effort_days+' 人日';
+  document.getElementById('people').textContent = data.summary.recommended_people;
+  document.getElementById('criticalPath').textContent = data.summary.critical_path.join(' → ');
+  document.getElementById('delivery').textContent = '预计 '+fmt(data.summary.delivery_date)+' 交付';
+  document.getElementById('toolbarDate').textContent = fmt(data.summary.start_date)+' — '+fmt(data.summary.delivery_date);
+  document.getElementById('conclusion').textContent = '需求拆解为 '+data.tasks.length+' 个工作项，预计工作量 '+data.summary.total_effort_days+' 人日，建议周期 '+data.summary.estimated_working_days+' 个工作日。';
+  document.getElementById('majorRisk').textContent = data.risks[0] ? data.risks[0].title+'：'+data.risks[0].description : '暂无明显风险';
+  document.getElementById('suggestion').textContent = data.open_questions[0] ? '先确认「'+data.open_questions[0].question+'」再进入开发。' : '当前信息足够，可进入排期确认。';
+}
+
+function groups(){
+  if(groupMode==='category'){
+    return ['frontend','backend','other'].map(k=>({key:k,label:catName[k],tasks:data.tasks.filter(t=>t.category===k)})).filter(g=>g.tasks.length);
+  }
+  const map = {};
+  data.tasks.forEach(t=>{const k=t.assignee.name; if(!map[k]) map[k]=[]; map[k].push(t)});
+  return Object.keys(map).map(k=>({key:k,label:k,tasks:map[k]}));
+}
+
+function renderGantt(){
+  let html = '<div class="gantt-head"><div>任务 / 工作项</div><div>类型</div><div>负责人</div><div>人日</div><div>开始</div><div>结束</div>';
+  workDays.forEach(d=>{html += '<div>'+fmt(d)+'</div>'});
+  html += '</div>';
+  groups().forEach(g=>{
+    const effort = sum(g.tasks,t=>Number(t.effort_days));
+    html += '<div class="group-row"><div class="group-title">⌄ '+g.label+'（'+g.tasks.length+' 项 · '+effort+' 人日）</div><div class="group-days"></div></div>';
+    g.tasks.forEach(t=>{
+      const critical = data.summary.critical_path.includes(t.id);
+      html += '<div class="task-row '+(selectedTaskId===t.id?'selected':'')+'" data-task="'+t.id+'">';
+      html += '<div class="cell task-name"><span class="task-id">'+t.id+'</span><span>'+t.title+'</span></div>';
+      html += '<div class="cell"><span class="type-badge '+t.category+'">'+typeName[t.category]+'</span></div>';
+      html += '<div class="cell person"><span class="dot '+t.category+'">'+t.assignee.name.slice(-1)+'</span>'+t.assignee.name+'</div>';
+      html += '<div class="cell">'+t.effort_days+'</div><div class="cell">'+fmt(t.start_date)+'</div><div class="cell">'+fmt(t.end_date)+'</div>';
+      workDays.forEach(d=>{
+        html += '<div class="day">';
+        if(d===t.start_date){
+          const s = workDays.indexOf(t.start_date), e = workDays.indexOf(t.end_date);
+          const span = Math.max(1,e-s+1);
+          html += '<div class="bar '+t.category+' '+(showCritical&&critical?'critical':'')+'" style="width:calc('+span+'00% - 14px)">'+t.id+' · '+t.effort_days+'d</div>';
+        }
+        html += '</div>';
+      });
+      html += '</div>';
+      if(t.dependencies.length){
+        html += '<div style="padding:2px 12px 6px 340px;font-size:10px;color:#9298a6;border-bottom:1px solid #f0f1f5">↳ 前置依赖：'+t.dependencies.join('、')+'</div>';
+      }
+    });
+  });
+  document.getElementById('gantt').innerHTML = html;
+  document.querySelectorAll('.task-row').forEach(row=>row.addEventListener('click',()=>{selectedTaskId=row.dataset.task;renderGantt();renderDetail()}));
+}
+
+function renderDetail(){
+  const t = data.tasks.find(x=>x.id===selectedTaskId);
+  if(!t){document.getElementById('taskDetail').innerHTML='<div class="empty">请选择任务</div>';return}
+  const dep = t.dependencies.length?t.dependencies.join('、'):'无';
+  const risks = t.risks.length?t.risks.join('；'):'暂无';
+  const basis = t.estimate_basis.map(x=>'<li>'+x+'</li>').join('');
+  document.getElementById('taskDetail').innerHTML =
+    '<div class="side-body">'+
+      '<span class="type-badge '+t.category+'">'+typeName[t.category]+'</span>'+
+      '<div class="side-title">'+t.id+' · '+t.title+'</div>'+
+      '<div class="kv"><div class="k">负责人</div><div>'+t.assignee.name+'</div></div>'+
+      '<div class="kv"><div class="k">工作量</div><div><b>'+t.effort_days+' 人日</b></div></div>'+
+      '<div class="kv"><div class="k">计划时间</div><div>'+fmt(t.start_date)+' → '+fmt(t.end_date)+'</div></div>'+
+      '<div class="kv"><div class="k">前置依赖</div><div>'+dep+'</div></div>'+
+      '<div class="section"><h3>任务说明</h3><p>'+t.description+'</p></div>'+
+      '<div class="section"><h3>AI 估算依据</h3><ul>'+basis+'</ul></div>'+
+      '<div class="riskbox">⚠ 风险提示<br>'+risks+'</div>'+
+    '</div>'+
+    '<div class="side-actions"><button class="btn" id="editEffortBtn">调整工作量</button></div>';
+  document.getElementById('editEffortBtn').onclick = ()=>{
+    const v = prompt('请输入 '+t.id+' 的新工作量（人日）', String(t.effort_days));
+    if(v===null) return;
+    const n = Number(v);
+    if(!Number.isFinite(n) || n<=0){alert('请输入大于 0 的数字');return}
+    t.effort_days = Math.round(n*10)/10;
+    recalcSummary();renderAll();
+  };
+}
+
+function renderAll(){renderSummary();renderGantt();renderDetail()}
+
+document.getElementById('criticalToggle').addEventListener('change',e=>{showCritical=e.target.checked;renderGantt()});
+document.getElementById('groupSelect').addEventListener('change',e=>{groupMode=e.target.value;renderGantt()});
+document.getElementById('confirmBtn').addEventListener('click',()=>{document.getElementById('statusOk').classList.add('show');document.getElementById('confirmBtn').textContent='已确认'});
+document.getElementById('cancelBtn').addEventListener('click',()=>{document.getElementById('statusOk').classList.remove('show');document.getElementById('confirmBtn').textContent='确认排期并生成任务'});
+document.getElementById('resetBtn').addEventListener('click',()=>{data=JSON.parse(JSON.stringify(initialData));selectedTaskId='FE-02';showCritical=true;groupMode='category';document.getElementById('criticalToggle').checked=true;document.getElementById('groupSelect').value='category';document.getElementById('statusOk').classList.remove('show');document.getElementById('confirmBtn').textContent='确认排期并生成任务';renderAll()});
+
+renderAll();
+</script>
+</body>
+</html>
