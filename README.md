@@ -4,25 +4,29 @@ xdpai「需求智能评估与排期」前端 Demo。
 
 ## 运行
 
-这是一个零依赖静态页面。
+页面现在从 5 份 JSON 读取数据，因此请通过 HTTP Server 运行：
 
-- 直接双击 `index.html`
-- 或在目录下运行 `python3 -m http.server 5173`，访问 `http://localhost:5173`
+```bash
+python3 -m http.server 5173
+```
 
-## 当前能力
+访问 `http://localhost:5173`。
 
-- 需求概览与核心指标
-- 任务拆解 + 甘特图一体化展示
-- 按开发类型 / 负责人切换分组
-- 关键路径高亮开关
-- 点击任务查看详情、依赖、AI 估算依据和风险
-- 调整任务人日并联动刷新总人日
-- 确认排期 Demo 交互
+## 数据输入
 
-## 数据协议
+- `init.json`：需求基础信息 + 四阶段状态
+- `understanding.json`：需求理解 Tab
+- `breakdown.json`：任务拆解 Tab
+- `estimation.json`：工作量评估 Tab
+- `scheduling.json`：排期生成 Tab
 
-`planning-result.json` 是 Skill → 页面之间的 V1 数据协议示例。
+四个阶段文件互相独立，通过 `requirement_id / module_id / task_id` 关联。页面不再依赖单体 `planning-result.json`。
 
-当前 `index.html` 内嵌同结构 Mock 数据，以保证双击即可运行。下一步接入真实 Skill 时，只需将这份数据替换为 Skill 输出即可。
+## 页面映射
 
-> 当前只是前端 Demo，不会真正创建 TAPD / SOP 任务。
+- 需求理解 → understanding.json
+- 任务拆解 → breakdown.json
+- 工作量评估 → estimation.json
+- 排期生成 → scheduling.json
+
+当前页面支持对四个阶段数据进行内存态编辑；真实 XDPai 小应用接入时，将对应编辑写回各自流程变量即可。
