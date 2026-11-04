@@ -1,127 +1,349 @@
 {
-  "schema_version": "4.0",
-  "requirement_id": "REQ-2048",
-  "summary": {
-    "total_effort_days": 8,
-    "confidence_counts": {
-      "high": 3,
-      "medium": 3,
-      "low": 0
-    }
-  },
   "estimations": [
     {
-      "task_id": "FE-01",
-      "effort_days": 1.5,
-      "confidence": "high",
-      "estimate_basis": [
-        {
-          "item": "详情结构",
-          "effort_days": 0.5
-        },
-        {
-          "item": "状态交互",
-          "effort_days": 0.5
-        },
-        {
-          "item": "异常态与自测",
-          "effort_days": 0.5
-        }
-      ],
-      "uncertainties": []
-    },
-    {
-      "task_id": "FE-02",
-      "effort_days": 1.5,
       "confidence": "medium",
+      "effort_days": 3,
       "estimate_basis": [
         {
-          "item": "表单与校验",
-          "effort_days": 0.5
+          "effort_days": 1.5,
+          "item": "任务类型与档位配置模型"
         },
         {
-          "item": "接口接入",
-          "effort_days": 0.5
+          "effort_days": 1,
+          "item": "进度接收与完成判定"
         },
         {
-          "item": "异常处理与自测",
-          "effort_days": 0.5
+          "effort_days": 0.5,
+          "item": "单测与自测"
         }
       ],
-      "uncertainties": [
-        "接口字段变化可能增加联调成本"
-      ]
-    },
-    {
       "task_id": "BE-01",
-      "effort_days": 2,
-      "confidence": "medium",
-      "estimate_basis": [
-        {
-          "item": "领域逻辑",
-          "effort_days": 1
-        },
-        {
-          "item": "幂等与异常",
-          "effort_days": 0.5
-        },
-        {
-          "item": "单测与自测",
-          "effort_days": 0.5
-        }
-      ],
       "uncertainties": [
-        "名额限制尚未确认"
+        "星斗任务引擎的配置模型与判条件需按现有实现适配（Q3 承接方未确认）"
       ]
     },
     {
-      "task_id": "BE-02",
-      "effort_days": 1,
-      "confidence": "high",
-      "estimate_basis": [
-        {
-          "item": "状态模型与逻辑",
-          "effort_days": 1
-        }
-      ],
-      "uncertainties": []
-    },
-    {
-      "task_id": "BE-03",
-      "effort_days": 1,
-      "confidence": "high",
-      "estimate_basis": [
-        {
-          "item": "数据模型 DAO",
-          "effort_days": 0.5
-        },
-        {
-          "item": "查询能力",
-          "effort_days": 0.5
-        }
-      ],
-      "uncertainties": []
-    },
-    {
-      "task_id": "QA-01",
-      "effort_days": 1,
       "confidence": "medium",
+      "effort_days": 3,
       "estimate_basis": [
         {
-          "item": "主流程联调",
-          "effort_days": 0.5
+          "effort_days": 1.5,
+          "item": "奖励配置模型扩展"
         },
         {
-          "item": "异常场景验收",
-          "effort_days": 0.5
+          "effort_days": 1,
+          "item": "奖池/库存与配置同步"
+        },
+        {
+          "effort_days": 0.5,
+          "item": "单测与自测"
         }
       ],
-      "uncertainties": []
+      "task_id": "BE-02",
+      "uncertainties": [
+        "抽奖活动奖励设置链路复用范围待确认（Q3）",
+        "积分奖励与现有兑换专区的对接方式未确认"
+      ]
+    },
+    {
+      "confidence": "medium",
+      "effort_days": 2,
+      "estimate_basis": [
+        {
+          "effort_days": 0.5,
+          "item": "「创建活动」接口改造"
+        },
+        {
+          "effort_days": 1,
+          "item": "按活动 ID 拉取对局任务并适配"
+        },
+        {
+          "effort_days": 0.5,
+          "item": "联调与自测"
+        }
+      ],
+      "task_id": "BE-03",
+      "uncertainties": [
+        "星斗活动接口返回结构依赖 BE-02 定稿"
+      ]
+    },
+    {
+      "confidence": "medium",
+      "effort_days": 1.5,
+      "estimate_basis": [
+        {
+          "effort_days": 1,
+          "item": "批量创建解析与写入对局任务"
+        },
+        {
+          "effort_days": 0.5,
+          "item": "校验与自测"
+        }
+      ],
+      "task_id": "BE-04",
+      "uncertainties": [
+        "批量模板是否新增「对局任务」列未确认（Q6）"
+      ]
+    },
+    {
+      "confidence": "medium",
+      "effort_days": 2,
+      "estimate_basis": [
+        {
+          "effort_days": 1.5,
+          "item": "活动变更监听与同步逻辑"
+        },
+        {
+          "effort_days": 0.5,
+          "item": "配置合法性校验与自测"
+        }
+      ],
+      "task_id": "BE-05",
+      "uncertainties": [
+        "对局任务配置的同步时机与消息字段待与星斗对齐"
+      ]
+    },
+    {
+      "confidence": "low",
+      "effort_days": 3,
+      "estimate_basis": [
+        {
+          "effort_days": 1,
+          "item": "计数口径梳理与取数路径验证"
+        },
+        {
+          "effort_days": 1.5,
+          "item": "有效局数统计/查询实现"
+        },
+        {
+          "effort_days": 0.5,
+          "item": "8 局构造用例回归"
+        }
+      ],
+      "task_id": "BE-06",
+      "uncertainties": [
+        "计数实现层未确认，可能落在任务引擎、数据中心或对局服务（Q1）"
+      ]
+    },
+    {
+      "confidence": "medium",
+      "effort_days": 3,
+      "estimate_basis": [
+        {
+          "effort_days": 1,
+          "item": "对局任务条目生成"
+        },
+        {
+          "effort_days": 1.5,
+          "item": "进度累计与抽奖任务并存逻辑"
+        },
+        {
+          "effort_days": 0.5,
+          "item": "单测"
+        }
+      ],
+      "task_id": "BE-07",
+      "uncertainties": [
+        "依赖有效局数查询能力（BE-06）的接口形态"
+      ]
+    },
+    {
+      "confidence": "medium",
+      "effort_days": 2.5,
+      "estimate_basis": [
+        {
+          "effort_days": 1.5,
+          "item": "档位可领校验与幂等"
+        },
+        {
+          "effort_days": 0.5,
+          "item": "pmd/积分奖励分流"
+        },
+        {
+          "effort_days": 0.5,
+          "item": "单测"
+        }
+      ],
+      "task_id": "BE-08",
+      "uncertainties": [
+        "积分奖励的发放链路与到账口径待确认"
+      ]
+    },
+    {
+      "confidence": "medium",
+      "effort_days": 2,
+      "estimate_basis": [
+        {
+          "effort_days": 1.5,
+          "item": "查询接口扩展与字段组装"
+        },
+        {
+          "effort_days": 0.5,
+          "item": "联调与自测"
+        }
+      ],
+      "task_id": "BE-09",
+      "uncertainties": [
+        "显示开关字段来源未确认（Q5）"
+      ]
+    },
+    {
+      "confidence": "medium",
+      "effort_days": 1.5,
+      "estimate_basis": [
+        {
+          "effort_days": 1,
+          "item": "领取接口包装与异常处理"
+        },
+        {
+          "effort_days": 0.5,
+          "item": "自测"
+        }
+      ],
+      "task_id": "BE-10",
+      "uncertainties": [
+        "重复领取/并发场景需与任务引擎幂等策略对齐"
+      ]
+    },
+    {
+      "confidence": "medium",
+      "effort_days": 2,
+      "estimate_basis": [
+        {
+          "effort_days": 1.5,
+          "item": "详情页激励信息展示与样式"
+        },
+        {
+          "effort_days": 0.5,
+          "item": "对局优先于抽奖的优先级与联调"
+        }
+      ],
+      "task_id": "FE-01",
+      "uncertainties": [
+        "前端覆盖范围未确认（Q4），若需覆盖 next/PixUi 需追加"
+      ]
+    },
+    {
+      "confidence": "medium",
+      "effort_days": 5,
+      "estimate_basis": [
+        {
+          "effort_days": 2,
+          "item": "任务列表与 5/15/25/30 进度条"
+        },
+        {
+          "effort_days": 1.5,
+          "item": "领取三态与结果弹窗"
+        },
+        {
+          "effort_days": 0.5,
+          "item": "积分引导/规则弹窗"
+        },
+        {
+          "effort_days": 1,
+          "item": "联调与自测"
+        }
+      ],
+      "task_id": "FE-02",
+      "uncertainties": [
+        "交互稿细节（多礼包弹窗、次数池展示）需与设计确认",
+        "前端覆盖范围未确认（Q4）"
+      ]
+    },
+    {
+      "confidence": "medium",
+      "effort_days": 1.5,
+      "estimate_basis": [
+        {
+          "effort_days": 1,
+          "item": "两种形态渲染"
+        },
+        {
+          "effort_days": 0.5,
+          "item": "状态流转与自测"
+        }
+      ],
+      "task_id": "FE-03",
+      "uncertainties": [
+        "显示开关配置来源未确认（Q5）"
+      ]
+    },
+    {
+      "confidence": "low",
+      "effort_days": 3,
+      "estimate_basis": [
+        {
+          "effort_days": 1,
+          "item": "奖励设置表单改造"
+        },
+        {
+          "effort_days": 1,
+          "item": "对局任务与奖励展示"
+        },
+        {
+          "effort_days": 1,
+          "item": "校验与联调"
+        }
+      ],
+      "task_id": "FE-04",
+      "uncertainties": [
+        "TGS 管理端前端仓库与负责人未确认（Q2）"
+      ]
+    },
+    {
+      "confidence": "low",
+      "effort_days": 1.5,
+      "estimate_basis": [
+        {
+          "effort_days": 1,
+          "item": "批量创建页面对局任务展示"
+        },
+        {
+          "effort_days": 0.5,
+          "item": "模板校验与失败提示"
+        }
+      ],
+      "task_id": "FE-05",
+      "uncertainties": [
+        "模板是否含对局任务列未确认（Q6）；管理端仓库未确认（Q2）"
+      ]
+    },
+    {
+      "confidence": "medium",
+      "effort_days": 4,
+      "estimate_basis": [
+        {
+          "effort_days": 1.5,
+          "item": "计数口径 8 局构造回归"
+        },
+        {
+          "effort_days": 1.5,
+          "item": "详情页/任务奖励页展示与领取联调"
+        },
+        {
+          "effort_days": 1,
+          "item": "pmd 与积分到账验证"
+        }
+      ],
+      "task_id": "QA-01",
+      "uncertainties": [
+        "依赖计数实现层结论（Q1），用例构造方式可能调整"
+      ]
     }
   ],
+  "requirement_id": "8b4dd104-eec2-40b4-9160-85ae0a7d788b",
   "revision": {
-    "version": 1,
+    "changes": [],
     "last_modified_by": "ai",
-    "changes": []
+    "version": 1
+  },
+  "schema_version": "4.0",
+  "summary": {
+    "confidence_counts": {
+      "high": 0,
+      "low": 3,
+      "medium": 13
+    },
+    "total_effort_days": 40.5
   }
 }
