@@ -1,0 +1,127 @@
+{
+  "schema_version": "4.0",
+  "requirement_id": "REQ-2048",
+  "summary": {
+    "total_effort_days": 8,
+    "confidence_counts": {
+      "high": 3,
+      "medium": 3,
+      "low": 0
+    }
+  },
+  "estimations": [
+    {
+      "task_id": "FE-01",
+      "effort_days": 1.5,
+      "confidence": "high",
+      "estimate_basis": [
+        {
+          "item": "详情结构",
+          "effort_days": 0.5
+        },
+        {
+          "item": "状态交互",
+          "effort_days": 0.5
+        },
+        {
+          "item": "异常态与自测",
+          "effort_days": 0.5
+        }
+      ],
+      "uncertainties": []
+    },
+    {
+      "task_id": "FE-02",
+      "effort_days": 1.5,
+      "confidence": "medium",
+      "estimate_basis": [
+        {
+          "item": "表单与校验",
+          "effort_days": 0.5
+        },
+        {
+          "item": "接口接入",
+          "effort_days": 0.5
+        },
+        {
+          "item": "异常处理与自测",
+          "effort_days": 0.5
+        }
+      ],
+      "uncertainties": [
+        "接口字段变化可能增加联调成本"
+      ]
+    },
+    {
+      "task_id": "BE-01",
+      "effort_days": 2,
+      "confidence": "medium",
+      "estimate_basis": [
+        {
+          "item": "领域逻辑",
+          "effort_days": 1
+        },
+        {
+          "item": "幂等与异常",
+          "effort_days": 0.5
+        },
+        {
+          "item": "单测与自测",
+          "effort_days": 0.5
+        }
+      ],
+      "uncertainties": [
+        "名额限制尚未确认"
+      ]
+    },
+    {
+      "task_id": "BE-02",
+      "effort_days": 1,
+      "confidence": "high",
+      "estimate_basis": [
+        {
+          "item": "状态模型与逻辑",
+          "effort_days": 1
+        }
+      ],
+      "uncertainties": []
+    },
+    {
+      "task_id": "BE-03",
+      "effort_days": 1,
+      "confidence": "high",
+      "estimate_basis": [
+        {
+          "item": "数据模型 DAO",
+          "effort_days": 0.5
+        },
+        {
+          "item": "查询能力",
+          "effort_days": 0.5
+        }
+      ],
+      "uncertainties": []
+    },
+    {
+      "task_id": "QA-01",
+      "effort_days": 1,
+      "confidence": "medium",
+      "estimate_basis": [
+        {
+          "item": "主流程联调",
+          "effort_days": 0.5
+        },
+        {
+          "item": "异常场景验收",
+          "effort_days": 0.5
+        }
+      ],
+      "uncertainties": []
+    }
+  ],
+  "revision": {
+    "version": 1,
+    "last_modified_by": "ai",
+    "changes": []
+  }
+}
