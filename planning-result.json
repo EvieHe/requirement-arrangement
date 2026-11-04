@@ -1,0 +1,195 @@
+{
+  "schema_version": "1.0",
+  "requirement": {
+    "id": "REQ-2048",
+    "title": "活动报名功能",
+    "description": "支持用户查看活动详情、填写报名信息并提交；支持报名状态管理与数据查询。",
+    "priority": "medium",
+    "source": "product"
+  },
+  "summary": {
+    "total_effort_days": 8,
+    "frontend_effort_days": 3,
+    "backend_effort_days": 4,
+    "other_effort_days": 1,
+    "estimated_working_days": 5,
+    "start_date": "2026-11-05",
+    "delivery_date": "2026-11-11",
+    "recommended_people": 3,
+    "confidence": "medium",
+    "critical_path": [
+      "BE-01",
+      "FE-02",
+      "QA-01"
+    ]
+  },
+  "tasks": [
+    {
+      "id": "FE-01",
+      "title": "活动详情页面",
+      "category": "frontend",
+      "description": "完成活动详情展示、报名入口和基础状态展示。",
+      "effort_days": 1.5,
+      "confidence": "high",
+      "assignee": {
+        "id": "U-FE-01",
+        "name": "前端 B",
+        "role": "frontend"
+      },
+      "start_date": "2026-11-05",
+      "end_date": "2026-11-06",
+      "dependencies": [],
+      "estimate_basis": [
+        "详情页结构约 0.5 人日",
+        "状态展示及交互约 0.5 人日",
+        "异常态与自测约 0.5 人日"
+      ],
+      "risks": []
+    },
+    {
+      "id": "FE-02",
+      "title": "报名交互与接口接入",
+      "category": "frontend",
+      "description": "完成报名表单、校验、接口调用、加载态及异常反馈。",
+      "effort_days": 1.5,
+      "confidence": "medium",
+      "assignee": {
+        "id": "U-FE-01",
+        "name": "前端 B",
+        "role": "frontend"
+      },
+      "start_date": "2026-11-09",
+      "end_date": "2026-11-10",
+      "dependencies": [
+        "FE-01",
+        "BE-01"
+      ],
+      "estimate_basis": [
+        "表单与校验约 0.5 人日",
+        "接口接入约 0.5 人日",
+        "异常处理与自测约 0.5 人日"
+      ],
+      "risks": [
+        "接口字段若发生变化可能增加联调成本"
+      ]
+    },
+    {
+      "id": "BE-01",
+      "title": "报名核心接口",
+      "category": "backend",
+      "description": "实现报名提交接口、参数校验、幂等及基础异常处理。",
+      "effort_days": 2,
+      "confidence": "medium",
+      "assignee": {
+        "id": "U-BE-01",
+        "name": "后端 A",
+        "role": "backend"
+      },
+      "start_date": "2026-11-05",
+      "end_date": "2026-11-06",
+      "dependencies": [],
+      "estimate_basis": [
+        "接口及领域逻辑约 1 人日",
+        "幂等与异常处理约 0.5 人日",
+        "单测与自测约 0.5 人日"
+      ],
+      "risks": [
+        "是否存在报名名额并发控制尚未明确"
+      ]
+    },
+    {
+      "id": "BE-02",
+      "title": "活动状态管理",
+      "category": "backend",
+      "description": "补充活动报名状态及状态判断逻辑。",
+      "effort_days": 1,
+      "confidence": "high",
+      "assignee": {
+        "id": "U-BE-02",
+        "name": "后端 C",
+        "role": "backend"
+      },
+      "start_date": "2026-11-05",
+      "end_date": "2026-11-05",
+      "dependencies": [],
+      "estimate_basis": [
+        "状态模型及逻辑调整约 1 人日"
+      ],
+      "risks": []
+    },
+    {
+      "id": "BE-03",
+      "title": "报名数据模型与查询",
+      "category": "backend",
+      "description": "增加报名记录模型及基础查询能力。",
+      "effort_days": 1,
+      "confidence": "high",
+      "assignee": {
+        "id": "U-BE-02",
+        "name": "后端 C",
+        "role": "backend"
+      },
+      "start_date": "2026-11-09",
+      "end_date": "2026-11-09",
+      "dependencies": [
+        "BE-01"
+      ],
+      "estimate_basis": [
+        "数据模型与 DAO 约 0.5 人日",
+        "查询能力约 0.5 人日"
+      ],
+      "risks": []
+    },
+    {
+      "id": "QA-01",
+      "title": "联调与验收",
+      "category": "other",
+      "description": "完成前后端联调、主流程验证及异常场景检查。",
+      "effort_days": 1,
+      "confidence": "medium",
+      "assignee": {
+        "id": "U-BE-01",
+        "name": "后端 A",
+        "role": "backend"
+      },
+      "start_date": "2026-11-11",
+      "end_date": "2026-11-11",
+      "dependencies": [
+        "FE-02",
+        "BE-02",
+        "BE-03"
+      ],
+      "estimate_basis": [
+        "主流程联调约 0.5 人日",
+        "异常场景及验收约 0.5 人日"
+      ],
+      "risks": []
+    }
+  ],
+  "risks": [
+    {
+      "id": "R-01",
+      "level": "medium",
+      "title": "报名并发规则未明确",
+      "description": "如果存在活动名额限制，需要额外处理并发扣减和数据一致性。",
+      "related_task_ids": [
+        "BE-01"
+      ]
+    }
+  ],
+  "open_questions": [
+    {
+      "id": "Q-01",
+      "question": "活动是否存在总名额或单用户报名次数限制？",
+      "impact": "可能影响报名接口、数据模型及整体后端工作量。",
+      "related_task_ids": [
+        "BE-01"
+      ]
+    }
+  ],
+  "assumptions": [
+    "已有用户体系可以直接复用",
+    "不包含支付流程",
+    "不包含复杂审批流程"
+  ]
+}
