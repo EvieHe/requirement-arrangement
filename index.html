@@ -2,194 +2,59 @@
 <html lang="zh-CN">
 <head>
 <meta charset="utf-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/>
-<title>xdpai · 需求智能评估与排期</title>
+<title>xdpai · 需求智能评估</title>
 <style>
-:root{
-  --bg:#f5f6fa;--panel:#fff;--line:#e7e9f0;--text:#182033;--muted:#6e7585;
-  --purple:#6557e6;--purple2:#8d80f5;--purpleSoft:#f1efff;
-  --green:#2f9d68;--greenSoft:#eaf7f0;--blue:#4a78e6;--blueSoft:#edf2ff;
-  --amber:#c98a2f;--amberSoft:#fff5df;--red:#c96557;--redSoft:#fff0ec;
-  --shadow:0 8px 26px rgba(28,37,64,.055);--r:16px;
-}
-*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font-family:Inter,"PingFang SC","Microsoft YaHei",system-ui,-apple-system,sans-serif}
-button,input,select{font:inherit}.app{min-height:100vh}
-.topbar{height:58px;padding:0 28px;background:rgba(255,255,255,.9);backdrop-filter:blur(12px);border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:30}
-.brand{display:flex;align-items:center;gap:11px;font-weight:800}.logo{width:30px;height:30px;border-radius:9px;background:linear-gradient(135deg,var(--purple),#9b8cff);color:white;display:grid;place-items:center}.brand-sub{font-size:15px}.team{font-size:12px;color:var(--muted);display:flex;align-items:center;gap:9px}.avatar{width:28px;height:28px;border-radius:50%;background:var(--purpleSoft);color:var(--purple);display:grid;place-items:center;font-weight:800}
-.wrap{max-width:1680px;margin:0 auto;padding:18px 20px 90px}.card{background:var(--panel);border:1px solid var(--line);border-radius:var(--r);box-shadow:var(--shadow)}
-.hero{padding:20px 22px;display:grid;grid-template-columns:minmax(0,1fr) auto;gap:18px}.hero h1{margin:0;font-size:22px;letter-spacing:-.3px}.hero p{margin:7px 0 0;color:var(--muted);font-size:13px;line-height:1.65;max-width:900px}.tags{display:flex;gap:7px;flex-wrap:wrap;margin-top:11px}.tag{font-size:11px;padding:4px 8px;border-radius:999px;background:#f1f2f6;color:#5f6675}.tag.purple{background:var(--purpleSoft);color:var(--purple)}.tag.orange{background:#fff1e7;color:#d3714d}
-.btn{border:1px solid var(--line);background:#fff;color:#394050;padding:9px 14px;border-radius:10px;cursor:pointer;transition:.15s}.btn:hover{border-color:#c6c0fb;box-shadow:0 4px 12px rgba(101,87,230,.11)}.btn.primary{background:var(--purple);border-color:var(--purple);color:white}.btn.soft{background:var(--purpleSoft);border-color:transparent;color:var(--purple);font-weight:700}.btn:disabled{opacity:.45;cursor:not-allowed}
-.status-card{margin-top:12px;padding:13px 18px;display:grid;grid-template-columns:170px minmax(0,1fr);gap:18px;align-items:center}
-.progress-line{display:flex;align-items:center;gap:10px}.progress-num{font-size:22px;font-weight:850;letter-spacing:-.5px}.progress-label{font-size:11px;color:var(--muted)}.progress-track{height:6px;border-radius:99px;background:#eceef4;overflow:hidden;flex:1;min-width:70px}.progress-fill{height:100%;background:linear-gradient(90deg,var(--purple),var(--purple2));border-radius:99px;transition:.3s}
-.stage-row{display:flex;align-items:center;gap:4px;min-width:0}.stage{display:flex;align-items:center;gap:5px;padding:5px 7px;border-radius:8px;background:#f7f8fb;font-size:10px;color:#5b6272;white-space:nowrap}.stage.done{background:var(--greenSoft);color:var(--green)}.stage.pending{background:var(--amberSoft);color:#956820}.stage-dot{width:14px;height:14px;border-radius:50%;display:grid;place-items:center;font-size:8px;background:#fff;border:1px solid currentColor}.stage-sep{color:#c5c9d2;font-size:10px}
-.section-head{display:flex;justify-content:space-between;gap:16px;align-items:flex-start;margin-bottom:14px}.section-title{font-size:16px;font-weight:800}.section-sub{margin-top:4px;color:var(--muted);font-size:12px}.count-pill{font-size:11px;padding:5px 9px;border-radius:999px;background:var(--amberSoft);color:#956820}
-.clarify{margin-top:12px;padding:17px 20px}.clarify-grid{display:flex;flex-direction:column;gap:0;border-top:1px solid var(--line)}.qcard{display:grid;grid-template-columns:minmax(260px,1fr) minmax(320px,1.25fr);gap:22px;padding:15px 2px;border-bottom:1px solid var(--line)}.qcard.done{background:linear-gradient(90deg,transparent,#fbfffd 45%,#fbfffd)}.qtop{display:flex;gap:8px;align-items:flex-start}.qtitle{font-size:13px;font-weight:750;line-height:1.5}.qmeta{font-size:10px;padding:3px 7px;border-radius:999px;background:var(--purpleSoft);color:var(--purple);white-space:nowrap}.qdesc{font-size:10px;color:var(--muted);line-height:1.5;margin-top:5px}.control{margin-top:0}.control select,.control input,.control textarea{width:100%;border:1px solid var(--line);border-radius:9px;background:#fff;padding:9px 10px;font-size:12px;color:#394050}.control textarea{min-height:72px;resize:vertical}.radio-group{display:flex;gap:7px;flex-wrap:wrap}.radio-chip{border:1px solid var(--line);border-radius:9px;padding:8px 10px;font-size:11px;cursor:pointer}.radio-chip.active{border-color:#b8b0ff;background:var(--purpleSoft);color:var(--purple);font-weight:700}.custom-input{margin-top:8px}
-.impact{margin-top:8px;font-size:10px;color:#8b92a2}.clarify-actions{display:flex;justify-content:flex-end;margin-top:12px}
-.workspace{display:grid;grid-template-columns:minmax(0,1fr) 340px;gap:12px;margin-top:12px;align-items:start}
-.plan{overflow:hidden}.plan-head{padding:16px 18px;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;gap:12px;align-items:center}.plan-meta{display:flex;gap:8px;align-items:center;flex-wrap:wrap}.chip{font-size:11px;padding:5px 8px;border-radius:999px;background:#f3f4f8;color:#5f6675}.chip.front{background:var(--greenSoft);color:var(--green)}.chip.back{background:var(--blueSoft);color:var(--blue)}.chip.other{background:var(--amberSoft);color:var(--amber)}
-.plan-tools{display:flex;gap:8px;align-items:center}.plan-tools select{border:1px solid var(--line);background:#fff;border-radius:9px;padding:8px 10px;font-size:11px;color:#4d5463}
-.gantt-wrap{overflow:auto}.gantt{min-width:1180px}.g-head,.group-row,.task-row{display:grid;grid-template-columns:290px 98px 76px 88px 88px repeat(5,minmax(86px,1fr));align-items:stretch}
-.g-head{background:#fafbfe;border-bottom:1px solid var(--line);font-size:10px;color:#677080;font-weight:750}.g-head>div{padding:10px 8px;border-right:1px solid #eef0f5;text-align:center}.g-head>div:first-child{text-align:left}
-.group-row{background:#fcfcff;border-bottom:1px solid var(--line);font-size:11px;font-weight:750}.group-label{grid-column:1/6;padding:9px 11px}.group-fill{grid-column:6/11;border-left:1px solid #eef0f5}
-.task-row{min-height:56px;border-bottom:1px solid #eef0f5;font-size:11px;cursor:pointer}.task-row:hover{background:#fbfbff}.task-row.selected{background:#f8f7ff}.cell{display:flex;align-items:center;padding:8px;border-right:1px solid #f0f1f5}.task-cell{gap:7px;font-weight:650}.task-id{font-size:9px;padding:2px 5px;background:#f0f2f7;border-radius:5px;color:#848b9a}.editable{width:100%;border:1px solid transparent;background:transparent;border-radius:7px;padding:6px 7px;font-size:11px;color:#333a48}.editable:hover,.editable:focus{border-color:#cfcaf8;background:#fff;outline:none}.num{max-width:62px}.day{position:relative;border-right:1px solid #f0f1f5}.bar{position:absolute;left:7px;right:7px;top:15px;height:25px;border-radius:7px;color:#fff;display:flex;align-items:center;padding:0 8px;font-size:9px;font-weight:800;white-space:nowrap;box-shadow:0 3px 8px rgba(0,0,0,.08)}.bar.frontend{background:linear-gradient(90deg,#38a76e,#57bd86)}.bar.backend{background:linear-gradient(90deg,#4e7ee9,#6d95ef)}.bar.other{background:linear-gradient(90deg,#d09838,#e1aa4f)}.bar.critical{outline:2px solid rgba(101,87,230,.33);outline-offset:2px}
-.side{position:sticky;top:70px;overflow:hidden}.side-head{padding:15px 17px;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;align-items:center}.side-head b{font-size:13px}.side-body{padding:16px 17px;max-height:calc(100vh - 155px);overflow:auto}.evidence-overview{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:15px}.evidence-card{border:1px solid var(--line);border-radius:10px;padding:10px}.evidence-card b{display:block;font-size:11px;margin-bottom:4px}.evidence-card span{font-size:10px;color:var(--muted);line-height:1.45}.detail-divider{height:1px;background:var(--line);margin:15px 0}.side-title{font-size:15px;font-weight:800;margin:8px 0 11px}.kv{display:grid;grid-template-columns:80px 1fr;gap:8px;font-size:11px;margin:8px 0}.kv .k{color:var(--muted)}.detail-sec{margin-top:15px}.detail-sec h3{font-size:12px;margin:0 0 7px}.detail-sec p,.detail-sec li{font-size:11px;color:#555d6c;line-height:1.65}.detail-sec ul{padding-left:17px;margin:6px 0}.riskbox{margin-top:14px;padding:10px 11px;border-radius:10px;background:var(--amberSoft);color:#8c651f;font-size:10px;line-height:1.55}
-.footerbar{position:fixed;left:0;right:0;bottom:0;background:rgba(255,255,255,.94);backdrop-filter:blur(14px);border-top:1px solid var(--line);z-index:25}.footer-inner{max-width:1680px;margin:0 auto;padding:12px 20px;display:flex;justify-content:space-between;gap:16px;align-items:center}.footer-summary{display:flex;gap:18px;align-items:center;font-size:12px;color:#596071}.footer-summary b{color:var(--text)}.footer-actions{display:flex;gap:8px}.saved{font-size:11px;color:var(--green);display:none}.saved.show{display:inline}
-@media(max-width:1180px){.workspace{grid-template-columns:1fr}.side{position:static}.status-card{grid-template-columns:150px 1fr}.qcard{grid-template-columns:1fr}}
-@media(max-width:760px){.wrap{padding:12px 12px 100px}.hero{grid-template-columns:1fr}.status-card{grid-template-columns:1fr}.stage-row{overflow:auto;padding-bottom:2px}.footer-inner{align-items:flex-start;flex-direction:column}.footerbar{position:static}.wrap{padding-bottom:20px}.topbar{padding:0 14px}.brand-sub{font-size:13px}.qcard{grid-template-columns:1fr}.evidence-overview{grid-template-columns:1fr}}
-</style>
-</head>
+:root{--bg:#f6f7fb;--panel:#fff;--line:#e7e9f1;--text:#182033;--muted:#707787;--purple:#6557e6;--purpleSoft:#f1efff;--green:#2f9d68;--greenSoft:#eaf7f0;--blue:#4b78e6;--blueSoft:#edf2ff;--amber:#c88c34;--amberSoft:#fff5df;--shadow:0 8px 24px rgba(28,37,64,.055);--r:16px}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font-family:Inter,"PingFang SC","Microsoft YaHei",system-ui,-apple-system,sans-serif}button,input,select,textarea{font:inherit}.topbar{height:58px;padding:0 28px;background:rgba(255,255,255,.94);border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:30}.brand{display:flex;align-items:center;gap:10px;font-weight:800}.logo{width:30px;height:30px;border-radius:9px;background:linear-gradient(135deg,var(--purple),#988aff);color:#fff;display:grid;place-items:center}.muted{color:var(--muted)}.wrap{max-width:1640px;margin:auto;padding:18px 20px 90px}.card{background:#fff;border:1px solid var(--line);border-radius:var(--r);box-shadow:var(--shadow)}
+.hero{padding:19px 22px;display:flex;justify-content:space-between;gap:16px}.hero h1{font-size:22px;margin:0}.hero p{margin:7px 0 0;font-size:13px;line-height:1.6;color:var(--muted)}.tags{display:flex;gap:7px;margin-top:10px}.tag,.chip{font-size:11px;padding:4px 8px;border-radius:999px;background:#f1f2f6;color:#5f6675}.tag.purple,.chip.purple{background:var(--purpleSoft);color:var(--purple)}.btn{border:1px solid var(--line);background:#fff;border-radius:10px;padding:9px 13px;cursor:pointer;color:#394050}.btn.primary{background:var(--purple);border-color:var(--purple);color:#fff}.btn.soft{background:var(--purpleSoft);border-color:transparent;color:var(--purple);font-weight:700}.btn:disabled{opacity:.45;cursor:not-allowed}
+.flow{margin-top:12px;padding:12px 16px;display:flex;align-items:center;gap:14px}.progress{width:150px}.progress-line{display:flex;align-items:center;gap:8px}.progress-num{font-weight:850;font-size:20px}.track{height:6px;background:#eceef4;border-radius:99px;overflow:hidden;flex:1}.fill{height:100%;background:linear-gradient(90deg,var(--purple),#9487f7);border-radius:99px}.stages{display:flex;align-items:center;gap:4px;flex-wrap:wrap}.stage{display:flex;align-items:center;gap:5px;padding:6px 9px;border-radius:9px;font-size:11px;color:#606776;background:#f5f6f9;cursor:pointer;border:1px solid transparent}.stage.done{background:var(--greenSoft);color:var(--green)}.stage.pending{background:var(--amberSoft);color:#94691f}.stage.active{border-color:#bdb5ff;background:var(--purpleSoft);color:var(--purple);font-weight:800}.dot{width:15px;height:15px;border-radius:50%;display:grid;place-items:center;border:1px solid currentColor;font-size:9px}.arrow{color:#c4c8d1}
+.content{display:grid;grid-template-columns:minmax(0,1fr) 340px;gap:12px;margin-top:12px;align-items:start}.main{overflow:hidden}.main-head{padding:16px 18px;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;align-items:flex-start;gap:12px}.main-title{font-weight:800;font-size:16px}.main-sub{font-size:11px;color:var(--muted);margin-top:4px}.main-body{padding:16px 18px}.side{position:sticky;top:70px;overflow:hidden}.side-head{padding:15px 17px;border-bottom:1px solid var(--line);font-size:13px;font-weight:800}.side-body{padding:15px 17px;max-height:calc(100vh - 140px);overflow:auto}
+.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}.info{border:1px solid var(--line);border-radius:12px;padding:13px}.info h3{margin:0 0 6px;font-size:12px}.info p,.info li{font-size:11px;color:#596071;line-height:1.6}.info ul{margin:0;padding-left:17px}.section{margin-top:14px}.section:first-child{margin-top:0}.section h3{font-size:12px;margin:0 0 8px}.list{border-top:1px solid var(--line)}.row{padding:12px 0;border-bottom:1px solid var(--line);display:grid;grid-template-columns:160px 1fr;gap:18px;align-items:start}.label{font-size:12px;font-weight:700}.value{font-size:12px;color:#596071;line-height:1.6}
+.qrow{display:grid;grid-template-columns:minmax(240px,1fr) minmax(320px,1.15fr);gap:20px;padding:14px 0;border-bottom:1px solid var(--line)}.qtitle{font-size:12px;font-weight:750}.qhint{font-size:10px;color:var(--muted);margin-top:4px}.choice{display:flex;gap:7px;flex-wrap:wrap}.choice button{border:1px solid var(--line);background:#fff;border-radius:9px;padding:7px 10px;font-size:11px;cursor:pointer}.choice button.active{background:var(--purpleSoft);color:var(--purple);border-color:#beb7ff}.input,.textarea{width:100%;border:1px solid var(--line);border-radius:9px;padding:9px 10px;background:#fff;color:#394050;font-size:11px}.textarea{min-height:68px;resize:vertical}
+.task-table{width:100%;border-collapse:collapse;font-size:11px}.task-table th,.task-table td{padding:10px 9px;border-bottom:1px solid var(--line);text-align:left}.task-table th{background:#fafbfe;color:#687080}.task-table tr:hover td{background:#fbfbff}.task-id{font-size:9px;background:#f1f2f6;padding:2px 5px;border-radius:5px;color:#858b98}.type{font-size:10px;padding:3px 7px;border-radius:999px}.type.frontend{background:var(--greenSoft);color:var(--green)}.type.backend{background:var(--blueSoft);color:var(--blue)}.type.other{background:var(--amberSoft);color:var(--amber)}.inline-edit{width:100%;border:1px solid transparent;background:transparent;border-radius:7px;padding:5px}.inline-edit:hover,.inline-edit:focus{border-color:#c8c2fa;background:#fff;outline:none}
+.gantt-wrap{overflow:auto}.gantt{min-width:1080px}.ghead,.grow,.ggroup{display:grid;grid-template-columns:270px 100px 70px 88px 88px repeat(5,minmax(80px,1fr))}.ghead{background:#fafbfe;font-size:10px;color:#687080;font-weight:700}.ghead>div,.gcell,.gday{padding:9px 8px;border-right:1px solid #eef0f5;border-bottom:1px solid #eef0f5}.ggroup{background:#fcfcff;font-size:11px;font-weight:750}.ggroup>div:first-child{grid-column:1/6;padding:9px 10px;border-bottom:1px solid var(--line)}.ggroup>div:last-child{grid-column:6/11;border-bottom:1px solid var(--line)}.grow{min-height:54px;font-size:11px;cursor:pointer}.grow.selected{background:#f8f7ff}.gday{position:relative;padding:0}.bar{position:absolute;left:6px;top:14px;height:24px;border-radius:7px;color:#fff;padding:0 8px;display:flex;align-items:center;font-size:9px;font-weight:800;white-space:nowrap}.bar.frontend{background:#42ad76}.bar.backend{background:#577fdf}.bar.other{background:#d39a43}.bar.critical{outline:2px solid rgba(101,87,230,.35);outline-offset:2px}
+.metric-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:14px}.metric{border:1px solid var(--line);border-radius:12px;padding:13px}.metric b{display:block;font-size:20px}.metric span{font-size:10px;color:var(--muted)}.basis{border:1px solid var(--line);border-radius:11px;padding:11px;margin-bottom:9px}.basis b{font-size:11px;display:block;margin-bottom:5px}.basis p{font-size:10px;color:#5e6574;line-height:1.55;margin:0}.risk{background:var(--amberSoft);color:#8b651f;border-radius:10px;padding:10px;font-size:10px;line-height:1.55}.side h3{font-size:12px;margin:15px 0 7px}.side p,.side li{font-size:10px;color:#5b6271;line-height:1.6}.side ul{padding-left:17px;margin:6px 0}
+.footerbar{position:fixed;left:0;right:0;bottom:0;background:rgba(255,255,255,.95);border-top:1px solid var(--line);z-index:25}.footer-inner{max-width:1640px;margin:auto;padding:12px 20px;display:flex;justify-content:space-between;align-items:center;gap:16px}.footer-meta{display:flex;gap:18px;font-size:11px;color:#5e6574}.footer-meta b{color:var(--text)}.actions{display:flex;gap:8px}
+@media(max-width:1050px){.content{grid-template-columns:1fr}.side{position:static}.grid3,.metric-grid{grid-template-columns:1fr 1fr}.qrow{grid-template-columns:1fr}}
+@media(max-width:700px){.wrap{padding:12px 12px 20px}.flow{align-items:flex-start;flex-direction:column}.grid3,.metric-grid{grid-template-columns:1fr}.footerbar{position:static}.footer-inner{flex-direction:column;align-items:flex-start}.hero{flex-direction:column}.topbar{padding:0 14px}.stages{overflow:auto;flex-wrap:nowrap;width:100%}}
+</style></head>
 <body>
-<div class="app">
-<header class="topbar"><div class="brand"><div class="logo">✦</div><div>xdpai</div><div class="brand-sub">需求智能评估</div></div><div class="team"><span>研发小组</span><div class="avatar">研</div></div></header>
-
+<header class="topbar"><div class="brand"><div class="logo">✦</div><div>xdpai</div><div>需求智能评估</div></div><div class="muted" style="font-size:12px">研发小组</div></header>
 <main class="wrap">
-<section class="card hero">
-  <div><h1 id="reqTitle"></h1><p id="reqDesc"></p><div class="tags"><span class="tag purple">AI 评估草案</span><span class="tag orange" id="priorityTag"></span><span class="tag" id="reqId"></span></div></div>
-  <button class="btn soft" id="rerunBtn">✦ 重新评估</button>
-</section>
-
-<section class="card status-card">
-  <div><div class="progress-label">评估进度</div><div class="progress-line"><div class="progress-num" id="progressNum"></div><div class="progress-track"><div class="progress-fill" id="progressFill"></div></div></div></div>
-  <div><div class="stage-row" id="stageRow"></div></div>
-</section>
-
-<section class="card clarify">
-  <div class="section-head"><div><div class="section-title">待确认</div></div><div class="count-pill" id="clarifyCount"></div></div>
-  <div class="clarify-grid" id="clarifyGrid"></div>
-  <div class="clarify-actions"><button class="btn primary" id="applyClarifications">应用确认并更新评估</button></div>
-</section>
-
-<section class="workspace">
-  <div class="card plan">
-    <div class="plan-head">
-      <div><div class="section-title">任务与排期</div><div class="section-sub">AI 生成的可执行方案，可直接人工修改负责人、人日与日期。</div></div>
-      <div class="plan-meta"><span class="chip front" id="frontChip"></span><span class="chip back" id="backChip"></span><span class="chip other" id="otherChip"></span></div>
-      <div class="plan-tools"><select id="groupSelect"><option value="category">按开发类型</option><option value="assignee">按负责人</option></select><label class="chip"><input type="checkbox" id="criticalToggle" checked/> 关键路径</label></div>
-    </div>
-    <div class="gantt-wrap"><div class="gantt" id="gantt"></div></div>
-  </div>
-
-  <aside class="card side">
-    <div class="side-head"><b>AI 评估依据</b><span class="chip">整体 + 当前任务</span></div>
-    <div id="detail"></div>
-  </aside>
-</section>
+<section class="card hero"><div><h1>【需求】活动报名功能</h1><p>支持用户查看活动详情、填写报名信息并提交；支持报名状态管理与数据查询。</p><div class="tags"><span class="tag purple">AI 评估草案</span><span class="tag">REQ-2048</span><span class="tag">中优先级</span></div></div><button class="btn soft" id="rerun">✦ 重新评估</button></section>
+<section class="card flow"><div class="progress"><div class="muted" style="font-size:10px">评估进度</div><div class="progress-line"><div class="progress-num" id="progressNum">80%</div><div class="track"><div class="fill" id="progressFill" style="width:80%"></div></div></div></div><div class="stages" id="stages"></div></section>
+<section class="content"><div class="card main"><div class="main-head"><div><div class="main-title" id="stageTitle"></div><div class="main-sub" id="stageSub"></div></div><div id="stageBadge"></div></div><div class="main-body" id="stageBody"></div></div><aside class="card side"><div class="side-head" id="sideTitle">阶段说明</div><div class="side-body" id="sideBody"></div></aside></section>
 </main>
-
-<footer class="footerbar"><div class="footer-inner">
-  <div class="footer-summary"><span>预计 <b id="totalEffort"></b> 人日</span><span>周期 <b id="duration"></b> 工作日</span><span>预计交付 <b id="delivery"></b></span><span class="saved" id="savedState">✓ 已保存</span></div>
-  <div class="footer-actions"><button class="btn" id="saveBtn">保存草稿</button><button class="btn primary" id="confirmBtn">确认评估</button></div>
-</div></footer>
-</div>
-
+<footer class="footerbar"><div class="footer-inner"><div class="footer-meta"><span>总工作量 <b id="totalEffort">8</b> 人日</span><span>周期 <b>5</b> 工作日</span><span>预计交付 <b>11/11</b></span><span id="saveState"></span></div><div class="actions"><button class="btn" id="save">保存草稿</button><button class="btn primary" id="confirm">确认评估</button></div></div></footer>
 <script>
-const initialData={
-  schema_version:'2.0',
-  requirement:{id:'REQ-2048',title:'活动报名功能',description:'支持用户查看活动详情、填写报名信息并提交；支持报名状态管理与数据查询。',priority:'medium',source:'product'},
-  status:{stage:'human_review',completion_percent:80,pending_clarifications:3,unresolved_risks:1,conflicts:0},
-  stages:[
-    {id:'understanding',name:'需求理解',status:'done'},
-    {id:'breakdown',name:'任务拆解',status:'done'},
-    {id:'estimation',name:'工作量评估',status:'done'},
-    {id:'scheduling',name:'排期生成',status:'done'},
-    {id:'human_review',name:'人类确认',status:'pending'}
-  ],
-  summary:{total_effort_days:8,frontend_effort_days:3,backend_effort_days:4,other_effort_days:1,estimated_working_days:5,start_date:'2026-11-05',delivery_date:'2026-11-11',recommended_people:3,confidence:'medium',critical_path:['BE-01','FE-02','QA-01']},
-  clarifications:[
-    {id:'Q1',type:'choice',question:'活动是否限制总报名人数？',required:true,ai_assumption:'不限制',value:null,custom_value:'',options:['不限制','有限制'],impact_text:'影响 BE-01 的并发控制与一致性设计。',related_task_ids:['BE-01']},
-    {id:'Q2',type:'choice',question:'是否允许同一用户重复报名？',required:true,ai_assumption:'不允许',value:null,custom_value:'',options:['不允许','允许'],impact_text:'影响报名校验逻辑与数据约束。',related_task_ids:['BE-01','BE-03']},
-    {id:'Q3',type:'text',question:'联调验收还有哪些特殊安排？',required:false,ai_assumption:'由后端 A 主责，前端 B 配合',value:'',placeholder:'例如：需要测试同学参与、指定验收时间、灰度要求等',impact_text:'补充信息会用于调整 QA-01 与排期。',related_task_ids:['QA-01']}
-  ],
-  tasks:[
-    {id:'FE-01',title:'活动详情页面',category:'frontend',description:'完成活动详情展示、报名入口和基础状态展示。',effort_days:1.5,confidence:'high',assignee:{id:'U-FE-01',name:'前端 B',role:'frontend'},start_date:'2026-11-05',end_date:'2026-11-06',dependencies:[],estimate_basis:['详情页结构约 0.5 人日','状态展示及交互约 0.5 人日','异常态与自测约 0.5 人日'],risks:[]},
-    {id:'FE-02',title:'报名交互与接口接入',category:'frontend',description:'完成报名表单、校验、接口调用、加载态及异常反馈。',effort_days:1.5,confidence:'medium',assignee:{id:'U-FE-01',name:'前端 B',role:'frontend'},start_date:'2026-11-09',end_date:'2026-11-10',dependencies:['FE-01','BE-01'],estimate_basis:['表单与校验约 0.5 人日','接口接入约 0.5 人日','异常处理与自测约 0.5 人日'],risks:['接口字段若发生变化可能增加联调成本']},
-    {id:'BE-01',title:'报名核心接口',category:'backend',description:'实现报名提交接口、参数校验、幂等及基础异常处理。',effort_days:2,confidence:'medium',assignee:{id:'U-BE-01',name:'后端 A',role:'backend'},start_date:'2026-11-05',end_date:'2026-11-06',dependencies:[],estimate_basis:['接口及领域逻辑约 1 人日','幂等与异常处理约 0.5 人日','单测与自测约 0.5 人日'],risks:['是否存在报名名额并发控制尚未明确']},
-    {id:'BE-02',title:'活动状态管理',category:'backend',description:'补充活动报名状态及状态判断逻辑。',effort_days:1,confidence:'high',assignee:{id:'U-BE-02',name:'后端 C',role:'backend'},start_date:'2026-11-05',end_date:'2026-11-05',dependencies:[],estimate_basis:['状态模型及逻辑调整约 1 人日'],risks:[]},
-    {id:'BE-03',title:'报名数据模型与查询',category:'backend',description:'增加报名记录模型及基础查询能力。',effort_days:1,confidence:'high',assignee:{id:'U-BE-02',name:'后端 C',role:'backend'},start_date:'2026-11-09',end_date:'2026-11-09',dependencies:['BE-01'],estimate_basis:['数据模型与 DAO 约 0.5 人日','查询能力约 0.5 人日'],risks:[]},
-    {id:'QA-01',title:'联调与验收',category:'other',description:'完成前后端联调、主流程验证及异常场景检查。',effort_days:1,confidence:'medium',assignee:{id:'U-BE-01',name:'后端 A',role:'backend'},start_date:'2026-11-11',end_date:'2026-11-11',dependencies:['FE-02','BE-02','BE-03'],estimate_basis:['主流程联调约 0.5 人日','异常场景及验收约 0.5 人日'],risks:[]}
-  ],
-  risks:[{id:'R-01',level:'medium',title:'报名并发规则未明确',description:'如果存在活动名额限制，需要额外处理并发扣减和数据一致性。',related_task_ids:['BE-01'],resolved:false}],
-  assumptions:['已有用户体系可以直接复用','不包含支付流程','不包含复杂审批流程'],
-  revision:{version:1,last_modified_by:'ai',last_modified_at:'2026-11-04T14:00:00+08:00',changes:[]}
+const data={
+ stages:[{id:'understanding',name:'需求理解',status:'done'},{id:'breakdown',name:'任务拆解',status:'done'},{id:'estimation',name:'工作量评估',status:'done'},{id:'scheduling',name:'排期生成',status:'done'},{id:'review',name:'人工确认',status:'pending'}],
+ understanding:{goal:'用户可以查看活动信息、提交报名，并查询报名状态。',scope:['活动详情展示','报名表单与提交','报名状态查询','基础异常处理'],out_of_scope:['支付','审批流','消息通知'],modules:['活动详情前端','报名服务','活动服务','报名数据表'],assumptions:['复用现有用户体系','默认不限制总报名人数','默认不允许重复报名']},
+ clarifications:[{id:'Q1',type:'choice',q:'活动是否限制总报名人数？',ai:'不限制',value:null,custom:'',options:['不限制','有限制'],impact:'影响 BE-01 并发控制与一致性设计'},{id:'Q2',type:'choice',q:'是否允许同一用户重复报名？',ai:'不允许',value:null,custom:'',options:['不允许','允许'],impact:'影响 BE-01 / BE-03 校验和数据约束'},{id:'Q3',type:'text',q:'还有哪些关键业务规则需要补充？',ai:'暂无',value:'',impact:'补充内容会参与后续任务拆解和估算'}],
+ tasks:[
+  {id:'FE-01',title:'活动详情页面',category:'frontend',desc:'活动详情、报名入口和状态展示',effort:1.5,confidence:'高',owner:'前端 B',start:'2026-11-05',end:'2026-11-06',deps:[],basis:['详情结构 0.5d','状态交互 0.5d','异常态与自测 0.5d']},
+  {id:'FE-02',title:'报名交互与接口接入',category:'frontend',desc:'报名表单、校验、接口调用及异常反馈',effort:1.5,confidence:'中',owner:'前端 B',start:'2026-11-09',end:'2026-11-10',deps:['FE-01','BE-01'],basis:['表单与校验 0.5d','接口接入 0.5d','异常处理与自测 0.5d']},
+  {id:'BE-01',title:'报名核心接口',category:'backend',desc:'报名提交、参数校验、幂等和异常处理',effort:2,confidence:'中',owner:'后端 A',start:'2026-11-05',end:'2026-11-06',deps:[],basis:['领域逻辑 1d','幂等与异常 0.5d','单测与自测 0.5d']},
+  {id:'BE-02',title:'活动状态管理',category:'backend',desc:'活动报名状态与状态判断逻辑',effort:1,confidence:'高',owner:'后端 C',start:'2026-11-05',end:'2026-11-05',deps:[],basis:['状态模型与逻辑 1d']},
+  {id:'BE-03',title:'报名数据模型与查询',category:'backend',desc:'报名记录模型与基础查询',effort:1,confidence:'高',owner:'后端 C',start:'2026-11-09',end:'2026-11-09',deps:['BE-01'],basis:['数据模型 DAO 0.5d','查询能力 0.5d']},
+  {id:'QA-01',title:'联调与验收',category:'other',desc:'前后端联调、主流程与异常场景检查',effort:1,confidence:'中',owner:'后端 A',start:'2026-11-11',end:'2026-11-11',deps:['FE-02','BE-02','BE-03'],basis:['主流程联调 0.5d','异常场景验收 0.5d']}
+ ], summary:{critical:['BE-01','FE-02','QA-01'],days:['2026-11-05','2026-11-06','2026-11-09','2026-11-10','2026-11-11']}
 };
-let data=JSON.parse(JSON.stringify(initialData));
-let selectedTask='FE-02',groupMode='category',showCritical=true;
-const days=['2026-11-05','2026-11-06','2026-11-09','2026-11-10','2026-11-11'];
-const cats={frontend:'前端开发',backend:'后端开发',other:'联调验收'},typeName={frontend:'前端',backend:'后端',other:'其他'};
-const fmt=d=>d.slice(5).replace('-','/'),sum=(a,f)=>a.reduce((s,x)=>s+f(x),0),q=s=>document.querySelector(s);
-
-function recalc(){
-  data.summary.frontend_effort_days=sum(data.tasks.filter(t=>t.category==='frontend'),t=>+t.effort_days);
-  data.summary.backend_effort_days=sum(data.tasks.filter(t=>t.category==='backend'),t=>+t.effort_days);
-  data.summary.other_effort_days=sum(data.tasks.filter(t=>t.category==='other'),t=>+t.effort_days);
-  data.summary.total_effort_days=data.summary.frontend_effort_days+data.summary.backend_effort_days+data.summary.other_effort_days;
-  const answered=data.clarifications.filter(x=>x.value!==null&&x.value!=='').length,total=data.clarifications.length;
-  data.status.pending_clarifications=total-answered;
-  data.status.completion_percent=Math.round(80+(answered/Math.max(1,total))*20);
-  data.status.stage=answered===total?'ready':'human_review';
-  data.stages.find(x=>x.id==='human_review').status=answered===total?'done':'pending';
-  data.status.unresolved_risks=data.risks.filter(r=>!r.resolved).length;
-}
-function touch(change){data.revision.version++;data.revision.last_modified_by='human';data.revision.last_modified_at=new Date().toISOString();data.revision.changes.push(change);q('#savedState').classList.remove('show')}
-function renderTop(){
-  q('#reqTitle').textContent='【需求】'+data.requirement.title;q('#reqDesc').textContent=data.requirement.description;q('#reqId').textContent=data.requirement.id;q('#priorityTag').textContent='中优先级';
-  q('#progressNum').textContent=data.status.completion_percent+'%';q('#progressFill').style.width=data.status.completion_percent+'%';
-  q('#stageRow').innerHTML=data.stages.map((s,i)=>'<div class="stage '+s.status+'"><span class="stage-dot">'+(s.status==='done'?'✓':'!')+'</span>'+s.name+'</div>'+(i<data.stages.length-1?'<span class="stage-sep">→</span>':'')).join('');
-  q('#clarifyCount').textContent=data.status.pending_clarifications?'待确认 '+data.status.pending_clarifications:'已全部确认';
-  q('#frontChip').textContent='前端 '+data.summary.frontend_effort_days+' 人日';q('#backChip').textContent='后端 '+data.summary.backend_effort_days+' 人日';q('#otherChip').textContent='其他 '+data.summary.other_effort_days+' 人日';
-  q('#totalEffort').textContent=data.summary.total_effort_days;q('#duration').textContent=data.summary.estimated_working_days;q('#delivery').textContent=fmt(data.summary.delivery_date);
-  q('#confirmBtn').disabled=data.status.pending_clarifications>0;
-}
-function renderClarifications(){
-  q('#clarifyGrid').innerHTML=data.clarifications.map(c=>{
-    const done=(c.value!==null&&c.value!=='')||(c.type==='text'&&!c.required);
-    let control='';
-    if(c.type==='text'){
-      control='<textarea data-q="'+c.id+'" placeholder="'+(c.placeholder||'请输入补充说明')+'">'+(c.value||'')+'</textarea>';
-    }else{
-      const opts=[...c.options,'自定义'];
-      control='<div class="radio-group">'+opts.map(o=>'<div class="radio-chip '+(c.value===o?'active':'')+'" data-q="'+c.id+'" data-v="'+o+'">'+o+'</div>').join('')+'</div>'+
-        (c.value==='自定义'?'<input class="custom-input" data-custom="'+c.id+'" placeholder="请输入自定义答案" value="'+(c.custom_value||'')+'">':'');
-    }
-    return '<div class="qcard '+(done?'done':'')+'"><div><div class="qtop"><div class="qtitle">'+c.question+'</div><div class="qmeta">AI：'+c.ai_assumption+'</div></div><div class="qdesc">'+c.impact_text+'</div><div class="impact">影响：'+c.related_task_ids.join('、')+'</div></div><div class="control">'+control+'</div></div>'
-  }).join('');
-  document.querySelectorAll('.radio-chip').forEach(el=>el.onclick=()=>{const c=data.clarifications.find(x=>x.id===el.dataset.q);c.value=el.dataset.v;touch('clarification:'+c.id+'='+c.value);recalc();renderAll()});
-  document.querySelectorAll('.qcard textarea').forEach(el=>el.onchange=()=>{const c=data.clarifications.find(x=>x.id===el.dataset.q);c.value=el.value;touch('clarification:'+c.id+'='+c.value);recalc();renderAll()});
-  document.querySelectorAll('.custom-input').forEach(el=>el.onchange=()=>{const c=data.clarifications.find(x=>x.id===el.dataset.custom);c.custom_value=el.value;touch('clarification_custom:'+c.id+'='+c.custom_value);recalc();renderAll()});
-}
-function groupData(){
-  if(groupMode==='category')return ['frontend','backend','other'].map(k=>({label:cats[k],tasks:data.tasks.filter(t=>t.category===k)})).filter(g=>g.tasks.length);
-  const m={};data.tasks.forEach(t=>{m[t.assignee.name]??=[];m[t.assignee.name].push(t)});return Object.entries(m).map(([label,tasks])=>({label,tasks}));
-}
-function assigneeOptions(t){return ['前端 B','后端 A','后端 C'].map(n=>'<option '+(n===t.assignee.name?'selected':'')+'>'+n+'</option>').join('')}
-function renderGantt(){
-  let h='<div class="g-head"><div>任务 / 工作项</div><div>负责人</div><div>人日</div><div>开始</div><div>结束</div>'+days.map(d=>'<div>'+fmt(d)+'</div>').join('')+'</div>';
-  groupData().forEach(g=>{h+='<div class="group-row"><div class="group-label">⌄ '+g.label+' · '+g.tasks.length+' 项 / '+sum(g.tasks,t=>+t.effort_days)+' 人日</div><div class="group-fill"></div></div>';
-    g.tasks.forEach(t=>{const critical=data.summary.critical_path.includes(t.id);h+='<div class="task-row '+(selectedTask===t.id?'selected':'')+'" data-task="'+t.id+'"><div class="cell task-cell"><span class="task-id">'+t.id+'</span><span>'+t.title+'</span></div><div class="cell"><select class="editable assignee" data-task="'+t.id+'">'+assigneeOptions(t)+'</select></div><div class="cell"><input class="editable num effort" data-task="'+t.id+'" type="number" min=".5" step=".5" value="'+t.effort_days+'"></div><div class="cell"><input class="editable start" data-task="'+t.id+'" type="date" value="'+t.start_date+'"></div><div class="cell"><input class="editable end" data-task="'+t.id+'" type="date" value="'+t.end_date+'"></div>';
-      days.forEach(d=>{h+='<div class="day">';if(d===t.start_date){const s=days.indexOf(t.start_date),e=days.indexOf(t.end_date),span=Math.max(1,e-s+1);h+='<div class="bar '+t.category+' '+(showCritical&&critical?'critical':'')+'" style="width:calc('+span+'00% - 14px)">'+t.id+' · '+t.effort_days+'d</div>'}h+='</div>'});h+='</div>'});
-  });
-  q('#gantt').innerHTML=h;
-  document.querySelectorAll('.task-row').forEach(r=>r.onclick=e=>{if(['INPUT','SELECT','OPTION'].includes(e.target.tagName))return;selectedTask=r.dataset.task;renderGantt();renderDetail()});
-  document.querySelectorAll('.assignee').forEach(el=>el.onchange=()=>{const t=data.tasks.find(x=>x.id===el.dataset.task);t.assignee.name=el.value;touch('assignee:'+t.id+'='+el.value);renderAll()});
-  document.querySelectorAll('.effort').forEach(el=>el.onchange=()=>{const t=data.tasks.find(x=>x.id===el.dataset.task);const v=Math.max(.5,+el.value||.5);t.effort_days=v;touch('effort:'+t.id+'='+v);recalc();renderAll()});
-  document.querySelectorAll('.start').forEach(el=>el.onchange=()=>{const t=data.tasks.find(x=>x.id===el.dataset.task);t.start_date=el.value;touch('start:'+t.id+'='+el.value);renderAll()});
-  document.querySelectorAll('.end').forEach(el=>el.onchange=()=>{const t=data.tasks.find(x=>x.id===el.dataset.task);t.end_date=el.value;touch('end:'+t.id+'='+el.value);renderAll()});
-}
-function renderDetail(){
-  const t=data.tasks.find(x=>x.id===selectedTask);const conf={high:'高',medium:'中',low:'低'}[t.confidence]||t.confidence;
-  const overall=[
-    ['需求范围','按“页面交互 / 核心接口 / 状态管理 / 数据模型 / 联调验收”覆盖实现闭环。'],
-    ['任务拆解','拆成 6 个可独立执行工作项，前后端可并行，联调作为收口节点。'],
-    ['工作量','基于复杂度与常规实现成本估算，共 '+data.summary.total_effort_days+' 人日；前端 '+data.summary.frontend_effort_days+'、后端 '+data.summary.backend_effort_days+'、其他 '+data.summary.other_effort_days+'。'],
-    ['排期逻辑','按依赖与人员并行关系安排 '+data.summary.estimated_working_days+' 个工作日，关键路径 '+data.summary.critical_path.join(' → ')+'。']
-  ];
-  q('#detail').innerHTML='<div class="side-body"><div class="evidence-overview">'+overall.map(x=>'<div class="evidence-card"><b>'+x[0]+'</b><span>'+x[1]+'</span></div>').join('')+'</div><div class="detail-divider"></div><span class="chip '+(t.category==='frontend'?'front':t.category==='backend'?'back':'other')+'">'+typeName[t.category]+'</span><div class="side-title">'+t.id+' · '+t.title+'</div><div class="kv"><div class="k">置信度</div><div>'+conf+'</div></div><div class="kv"><div class="k">负责人</div><div>'+t.assignee.name+'</div></div><div class="kv"><div class="k">工作量</div><div><b>'+t.effort_days+' 人日</b></div></div><div class="kv"><div class="k">计划时间</div><div>'+fmt(t.start_date)+' → '+fmt(t.end_date)+'</div></div><div class="kv"><div class="k">前置依赖</div><div>'+(t.dependencies.join('、')||'无')+'</div></div><div class="detail-sec"><h3>当前任务估算依据</h3><ul>'+t.estimate_basis.map(x=>'<li>'+x+'</li>').join('')+'</ul></div><div class="riskbox">⚠ '+(t.risks.join('；')||'当前任务暂无明显风险')+'</div></div>'
-}
-function renderAll(){recalc();renderTop();renderClarifications();renderGantt();renderDetail()}
-q('#groupSelect').onchange=e=>{groupMode=e.target.value;renderGantt()};q('#criticalToggle').onchange=e=>{showCritical=e.target.checked;renderGantt()};
-q('#applyClarifications').onclick=()=>{touch('apply_clarifications');renderAll()};
-q('#saveBtn').onclick=()=>{q('#savedState').classList.add('show');setTimeout(()=>q('#savedState').classList.remove('show'),1800)};
-q('#confirmBtn').onclick=()=>{if(data.status.pending_clarifications)return;data.status.stage='confirmed';touch('confirm_plan');q('#confirmBtn').textContent='已确认';q('#confirmBtn').disabled=true;q('#savedState').textContent='✓ 已确认';q('#savedState').classList.add('show')};
-q('#rerunBtn').onclick=()=>{data=JSON.parse(JSON.stringify(initialData));selectedTask='FE-02';groupMode='category';showCritical=true;q('#groupSelect').value='category';q('#criticalToggle').checked=true;q('#confirmBtn').textContent='确认评估';renderAll()};
-renderAll();
-</script>
-</body></html>
+let active='understanding',selected='BE-01',showCritical=true;const $=s=>document.querySelector(s),typeName={frontend:'前端',backend:'后端',other:'其他'},fmt=d=>d.slice(5).replace('-','/');
+function progress(){const answered=data.clarifications.filter(x=>x.value).length;return 80+Math.round(answered/data.clarifications.length*20)}
+function renderStages(){const p=progress();$('#progressNum').textContent=p+'%';$('#progressFill').style.width=p+'%';$('#stages').innerHTML=data.stages.map((s,i)=>'<div class="stage '+s.status+' '+(active===s.id?'active':'')+'" data-stage="'+s.id+'"><span class="dot">'+(s.status==='done'?'✓':'!')+'</span>'+s.name+'</div>'+(i<data.stages.length-1?'<span class="arrow">→</span>':'')).join('');document.querySelectorAll('.stage').forEach(el=>el.onclick=()=>{active=el.dataset.stage;render()})}
+function clarificationForm(){return '<div class="section"><h3>待确认</h3>'+data.clarifications.map(c=>{let control='';if(c.type==='choice'){control='<div class="choice">'+[...c.options,'自定义'].map(o=>'<button data-q="'+c.id+'" data-v="'+o+'" class="'+(c.value===o?'active':'')+'">'+o+'</button>').join('')+'</div>'+(c.value==='自定义'?'<input class="input" data-custom="'+c.id+'" style="margin-top:7px" placeholder="请输入自定义答案" value="'+c.custom+'">':'')}else control='<textarea class="textarea" data-text="'+c.id+'" placeholder="请输入补充信息">'+c.value+'</textarea>';return '<div class="qrow"><div><div class="qtitle">'+c.q+'</div><div class="qhint">AI 当前判断：'+c.ai+' · '+c.impact+'</div></div><div>'+control+'</div></div>'}).join('')+'</div>'}
+function bindClarifications(){document.querySelectorAll('[data-q]').forEach(b=>b.onclick=()=>{const c=data.clarifications.find(x=>x.id===b.dataset.q);c.value=b.dataset.v;render()});document.querySelectorAll('[data-custom]').forEach(i=>i.onchange=()=>{data.clarifications.find(x=>x.id===i.dataset.custom).custom=i.value});document.querySelectorAll('[data-text]').forEach(i=>i.onchange=()=>{data.clarifications.find(x=>x.id===i.dataset.text).value=i.value;renderStages()})}
+function renderUnderstanding(){$('#stageTitle').textContent='需求理解';$('#stageSub').textContent='确认 AI 对目标、范围、模块和假设的理解是否正确。';$('#stageBadge').innerHTML='<span class="chip purple">Scope / Assumption / Unknown</span>';$('#stageBody').innerHTML='<div class="grid3"><div class="info"><h3>目标</h3><p>'+data.understanding.goal+'</p></div><div class="info"><h3>涉及范围</h3><ul>'+data.understanding.scope.map(x=>'<li>'+x+'</li>').join('')+'</ul></div><div class="info"><h3>不在范围</h3><ul>'+data.understanding.out_of_scope.map(x=>'<li>'+x+'</li>').join('')+'</ul></div></div><div class="section"><h3>涉及模块</h3><div class="tags">'+data.understanding.modules.map(x=>'<span class="tag">'+x+'</span>').join('')+'</div></div><div class="section"><h3>AI 假设</h3><div class="list">'+data.understanding.assumptions.map(x=>'<div class="row"><div class="label">假设</div><div class="value">'+x+'</div></div>').join('')+'</div></div>'+clarificationForm();bindClarifications();$('#sideTitle').textContent='本阶段产物';$('#sideBody').innerHTML='<div class="basis"><b>AI 产物</b><p>目标、范围、非范围、涉及模块、关键假设、待澄清项。</p></div><div class="basis"><b>人工检查</b><p>是否理解错需求、漏掉范围、错误假设业务规则。</p></div>'}
+function taskTable(){return '<table class="task-table"><thead><tr><th>任务</th><th>类型</th><th>说明</th><th>依赖</th></tr></thead><tbody>'+data.tasks.map(t=>'<tr data-task="'+t.id+'"><td><span class="task-id">'+t.id+'</span> '+t.title+'</td><td><span class="type '+t.category+'">'+typeName[t.category]+'</span></td><td>'+t.desc+'</td><td>'+(t.deps.join('、')||'—')+'</td></tr>').join('')+'</tbody></table>'}
+function renderBreakdown(){$('#stageTitle').textContent='任务拆解';$('#stageSub').textContent='检查 AI 是否把需求拆成完整、可执行、依赖清晰的研发工作项。';$('#stageBadge').innerHTML='<span class="chip purple">'+data.tasks.length+' 个工作项</span>';$('#stageBody').innerHTML=taskTable()+'<div style="margin-top:12px"><button class="btn">+ 新增任务</button></div>';document.querySelectorAll('[data-task]').forEach(r=>r.onclick=()=>{selected=r.dataset.task;renderBreakdownSide()});renderBreakdownSide()}
+function renderBreakdownSide(){const t=data.tasks.find(x=>x.id===selected);$('#sideTitle').textContent='任务拆解依据';$('#sideBody').innerHTML='<div class="basis"><b>'+t.id+' · '+t.title+'</b><p>'+t.desc+'</p></div><h3>为什么需要</h3><p>'+(t.category==='frontend'?'承接用户侧页面与交互闭环。':t.category==='backend'?'承接服务端业务规则、数据和接口能力。':'作为开发完成后的联调与验收收口。')+'</p><h3>前置依赖</h3><p>'+(t.deps.join('、')||'无')+'</p><div style="margin-top:12px"><button class="btn">修改任务</button> <button class="btn">删除</button></div>'}
+function renderEstimation(){$('#stageTitle').textContent='工作量评估';$('#stageSub').textContent='查看每项任务的人日、置信度、拆分依据和不确定因素，并允许人工调整。';$('#stageBadge').innerHTML='<span class="chip purple">'+data.tasks.reduce((a,t)=>a+t.effort,0)+' 人日</span>';$('#stageBody').innerHTML='<div class="metric-grid"><div class="metric"><b>'+data.tasks.reduce((a,t)=>a+t.effort,0)+'</b><span>总人日</span></div><div class="metric"><b>'+data.tasks.filter(t=>t.confidence==='中').length+'</b><span>中置信度任务</span></div><div class="metric"><b>'+data.tasks.filter(t=>t.confidence==='高').length+'</b><span>高置信度任务</span></div></div><table class="task-table"><thead><tr><th>任务</th><th>类型</th><th>AI 估算</th><th>置信度</th><th>人工调整</th></tr></thead><tbody>'+data.tasks.map(t=>'<tr data-task="'+t.id+'"><td><span class="task-id">'+t.id+'</span> '+t.title+'</td><td><span class="type '+t.category+'">'+typeName[t.category]+'</span></td><td>'+t.effort+'d</td><td>'+t.confidence+'</td><td><input class="inline-edit effort" data-effort="'+t.id+'" type="number" step=".5" min=".5" value="'+t.effort+'"></td></tr>').join('')+'</tbody></table>';document.querySelectorAll('[data-task]').forEach(r=>r.onclick=e=>{if(e.target.tagName==='INPUT')return;selected=r.dataset.task;renderEstimationSide()});document.querySelectorAll('[data-effort]').forEach(i=>i.onchange=()=>{data.tasks.find(t=>t.id===i.dataset.effort).effort=+i.value;$('#totalEffort').textContent=data.tasks.reduce((a,t)=>a+t.effort,0);renderEstimation()});renderEstimationSide()}
+function renderEstimationSide(){const t=data.tasks.find(x=>x.id===selected);$('#sideTitle').textContent='估算依据';$('#sideBody').innerHTML='<div class="basis"><b>'+t.id+' · '+t.title+'</b><p>AI 估算 '+t.effort+' 人日 · '+t.confidence+'置信度</p></div><h3>估算拆分</h3><ul>'+t.basis.map(x=>'<li>'+x+'</li>').join('')+'</ul><h3>不确定因素</h3><div class="risk">'+(t.id==='BE-01'?'若存在报名名额限制，可能额外增加 0.5–1 人日用于并发控制和一致性处理。':'当前没有显著额外不确定因素。')+'</div>'}
+function gantt(){const days=data.summary.days;let h='<div class="ghead"><div>任务</div><div>负责人</div><div>人日</div><div>开始</div><div>结束</div>'+days.map(d=>'<div>'+fmt(d)+'</div>').join('')+'</div>';['frontend','backend','other'].forEach(c=>{const ts=data.tasks.filter(t=>t.category===c);h+='<div class="ggroup"><div>'+typeName[c]+' · '+ts.length+' 项</div><div></div></div>';ts.forEach(t=>{h+='<div class="grow '+(selected===t.id?'selected':'')+'" data-task="'+t.id+'"><div class="gcell"><span class="task-id">'+t.id+'</span> '+t.title+'</div><div class="gcell"><select class="inline-edit owner" data-owner="'+t.id+'">'+['前端 B','后端 A','后端 C'].map(o=>'<option '+(o===t.owner?'selected':'')+'>'+o+'</option>').join('')+'</select></div><div class="gcell"><input class="inline-edit" data-effort="'+t.id+'" type="number" step=".5" min=".5" value="'+t.effort+'"></div><div class="gcell"><input class="inline-edit" data-start="'+t.id+'" type="date" value="'+t.start+'"></div><div class="gcell"><input class="inline-edit" data-end="'+t.id+'" type="date" value="'+t.end+'"></div>';days.forEach(d=>{h+='<div class="gday">';if(d===t.start){const span=Math.max(1,days.indexOf(t.end)-days.indexOf(t.start)+1);h+='<div class="bar '+t.category+' '+(showCritical&&data.summary.critical.includes(t.id)?'critical':'')+'" style="width:calc('+span+'00% - 12px)">'+t.id+'</div>'}h+='</div>'});h+='</div>'})});return h}
+function renderScheduling(){$('#stageTitle').textContent='排期生成';$('#stageSub').textContent='查看负责人、日期、依赖和关键路径，并直接修改 AI 给出的排期建议。';$('#stageBadge').innerHTML='<label class="chip"><input id="critical" type="checkbox" '+(showCritical?'checked':'')+'> 关键路径</label>';$('#stageBody').innerHTML='<div class="gantt-wrap"><div class="gantt">'+gantt()+'</div></div>';$('#critical').onchange=e=>{showCritical=e.target.checked;renderScheduling()};document.querySelectorAll('[data-task]').forEach(r=>r.onclick=e=>{if(['INPUT','SELECT','OPTION'].includes(e.target.tagName))return;selected=r.dataset.task;renderScheduling()});document.querySelectorAll('[data-owner]').forEach(i=>i.onchange=()=>{data.tasks.find(t=>t.id===i.dataset.owner).owner=i.value});document.querySelectorAll('[data-effort]').forEach(i=>i.onchange=()=>{data.tasks.find(t=>t.id===i.dataset.effort).effort=+i.value;$('#totalEffort').textContent=data.tasks.reduce((a,t)=>a+t.effort,0)});document.querySelectorAll('[data-start]').forEach(i=>i.onchange=()=>{data.tasks.find(t=>t.id===i.dataset.start).start=i.value;renderScheduling()});document.querySelectorAll('[data-end]').forEach(i=>i.onchange=()=>{data.tasks.find(t=>t.id===i.dataset.end).end=i.value;renderScheduling()});renderSchedulingSide()}
+function renderSchedulingSide(){const t=data.tasks.find(x=>x.id===selected);$('#sideTitle').textContent='排期解释';$('#sideBody').innerHTML='<div class="basis"><b>'+t.id+' · '+t.title+'</b><p>'+t.owner+' · '+t.effort+' 人日 · '+fmt(t.start)+' → '+fmt(t.end)+'</p></div><h3>为什么这样排</h3><p>'+(t.deps.length?'该任务需要等待 '+t.deps.join('、')+' 完成后开始。':'没有前置依赖，可以尽早启动。')+'</p><h3>关键路径</h3><p>'+(data.summary.critical.includes(t.id)?'该任务位于关键路径，延迟会直接影响预计交付日期。':'当前不在关键路径上。')+'</p>'}
+function renderReview(){$('#stageTitle').textContent='人工确认';$('#stageSub').textContent='集中检查仍未确认的输入和人工修改，完成后确认整份评估。';$('#stageBadge').innerHTML='<span class="chip purple">最终确认</span>';$('#stageBody').innerHTML=clarificationForm();bindClarifications();$('#sideTitle').textContent='确认状态';const pending=data.clarifications.filter(c=>c.id!=='Q3'&&!c.value).length;$('#sideBody').innerHTML='<div class="basis"><b>待确认 '+pending+' 项</b><p>所有必填确认完成后，可以提交最终评估。</p></div>'}
+function render(){renderStages();if(active==='understanding')renderUnderstanding();else if(active==='breakdown')renderBreakdown();else if(active==='estimation')renderEstimation();else if(active==='scheduling')renderScheduling();else renderReview();$('#confirm').disabled=data.clarifications.filter(c=>c.id!=='Q3'&&!c.value).length>0}
+$('#save').onclick=()=>{$('#saveState').textContent='✓ 已保存';setTimeout(()=>$('#saveState').textContent='',1500)};$('#confirm').onclick=()=>{if($('#confirm').disabled)return;$('#confirm').textContent='已确认';$('#confirm').disabled=true};$('#rerun').onclick=()=>location.reload();render();
+</script></body></html>
