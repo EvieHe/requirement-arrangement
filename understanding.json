@@ -1,95 +1,178 @@
 {
-  "schema_version": "4.0",
-  "requirement_id": "REQ-2048",
-  "goal": "用户可以查看活动信息、提交报名，并查询报名状态。",
-  "scope": [
-    "活动详情展示",
-    "报名表单与提交",
-    "报名状态查询",
-    "基础异常处理"
+  "assumptions": [
+    "有效对局指对局结束且分出胜负的局：投降、赛后改判、判双败计入；超时未进游戏、未打完判负不计",
+    "5/15/25/30 各档独立累计、独立领取、可叠加，互不占用",
+    "详情页仅展示最近可获得的两个节点，对局领奖与抽奖同时配置时优先展示对局领奖",
+    "复用星斗现有抽奖活动配置与发奖链路，pmd 奖励沿用「我的奖品」及有效期兑换逻辑",
+    "积分奖励到账后，玩家在福利中心「积分兑好礼」可见余额与明细流水",
+    "TGS 批量创建复用原抽奖活动 ID，不新增独立活动类型"
   ],
-  "out_of_scope": [
-    "支付",
-    "审批流",
-    "消息通知"
-  ],
+  "goal": "在常规商户赛中支持按有效对局局数（5/15/25/30 档）发放奖励：赛事详情页与任务奖励页展示对局进度与可领节点，玩家按节点独立领取 pmd 奖励或活动中心积分，并与原有抽奖模块整合、按配置开关切换展示形态。",
   "modules": [
     {
+      "change_summary": "详情页展示最近两个对局奖励节点并优先于抽奖，任务奖励页整合对局任务与抽奖，支持进度、领取/已领取态与结果弹窗，按配置开关渲染两种形态。",
       "id": "M1",
-      "side": "frontend",
-      "name": "activity-web",
-      "repository": "git/ieg/activity-web",
-      "change_summary": "新增活动详情页、报名入口和报名状态展示。"
+      "name": "赛宝商户赛 C 端 H5（详情页/任务奖励页）",
+      "repository": "git.woa.com/pvpesport/web",
+      "side": "frontend"
     },
     {
+      "change_summary": "奖励设置页由「创建抽奖活动」改为「创建活动」，展示星斗活动拉取的对局任务与奖励，并在批量创建中带出对局领奖任务。",
       "id": "M2",
-      "side": "frontend",
-      "name": "user-center-web",
-      "repository": "git/ieg/user-center-web",
-      "change_summary": "复用用户态并补充报名结果入口。"
+      "name": "赛宝 TGS 管理端前端（奖励设置/批量创建）",
+      "repository": "",
+      "side": "frontend"
     },
     {
+      "change_summary": "扩展商户赛任务查询与领奖接口，返回对局进度、最近可领节点与领取结果。",
       "id": "M3",
-      "side": "backend",
-      "name": "registration-service",
-      "repository": "git/ieg/registration-service",
-      "change_summary": "新增报名提交、校验、幂等和查询接口。"
+      "name": "pvpesport.sgamenes.nesact（商户赛活动聚合 CGI）",
+      "repository": "git.woa.com/pvpesport/sgamenes",
+      "side": "backend"
     },
     {
+      "change_summary": "生成对局任务条目、累计有效对局进度、按档位独立领取并保证幂等，与抽奖任务并存。",
       "id": "M4",
-      "side": "backend",
-      "name": "activity-service",
-      "repository": "git/ieg/activity-service",
-      "change_summary": "补充活动报名状态及名额规则。"
+      "name": "pvpesport.acts.activity（任务与活动引擎）",
+      "repository": "git.woa.com/pvpesport/acts",
+      "side": "backend"
+    },
+    {
+      "change_summary": "按「对局结束且分出胜负」统计有效局数，排除超时未进游戏、未打完判负等未真实进行的对局。",
+      "id": "M5",
+      "name": "有效对局局数统计（计数口径落地服务待确认）",
+      "repository": "",
+      "side": "backend"
+    },
+    {
+      "change_summary": "抽奖活动奖励设置链路支持对局任务条目与积分奖励，维护奖池、库存与活动信息同步。",
+      "id": "M6",
+      "name": "pvpesport.award.actmgr（抽奖活动配置同步）",
+      "repository": "git.woa.com/pvpesport/award",
+      "side": "backend"
+    },
+    {
+      "change_summary": "奖励设置页按星斗活动 ID 拉取对局任务与奖励，批量创建复用抽奖活动 ID 带出对局任务。",
+      "id": "M7",
+      "name": "pvpesport.cgi.tgs（赛宝 TGS 管理端）",
+      "repository": "git.woa.com/pvpesport/cgi",
+      "side": "backend"
+    },
+    {
+      "change_summary": "支持按对局局数配置任务条目与判定条件，承载活动中心积分奖励的发放与过期。",
+      "id": "M8",
+      "name": "星斗 PromoPlatform/Task（任务与积分引擎）",
+      "repository": "git.woa.com/PromoPlatform/Task",
+      "side": "backend"
+    },
+    {
+      "change_summary": "抽奖活动奖励设置链路增加对局任务条目与积分奖励，支撑积分兑好礼的余额与明细展示。",
+      "id": "M9",
+      "name": "星斗 PromoPlatform/Award（抽奖与积分兑换）",
+      "repository": "git.woa.com/gamelife-esport/PromoPlatform/Award",
+      "side": "backend"
     }
   ],
-  "assumptions": [
-    "复用现有用户体系",
-    "默认不限制总报名人数",
-    "默认不允许重复报名"
+  "out_of_scope": [
+    "抽奖玩法规则、概率与奖池本身的调整",
+    "非商户赛赛事类型的对局激励",
+    "裁判改判流程本身（仅按改判结果计入有效局数）",
+    "前端框架升级与页面整体重构"
   ],
+  "requirement_id": "8b4dd104-eec2-40b4-9160-85ae0a7d788b",
   "review_items": [
     {
+      "ai_assumption": "在任务引擎（acts）侧基于对局结算结果实时统计",
+      "custom_value": "",
       "id": "Q1",
-      "type": "choice",
-      "question": "活动是否限制总报名人数？",
-      "required": true,
-      "ai_assumption": "不限制",
-      "value": null,
-      "custom_value": "",
+      "impact": "决定后端模块划分、接口契约与联调工作量",
       "options": [
-        "不限制",
-        "有限制"
+        "任务引擎（acts）实时统计对局记录",
+        "数据中心（data）聚合后提供",
+        "对局服务（battle）提供计数接口"
       ],
-      "impact": "影响报名接口并发控制与一致性设计"
+      "question": "有效对局局数的统计实现落在哪一层？",
+      "required": true,
+      "type": "choice",
+      "value": null
     },
     {
+      "ai_assumption": "沿用现有赛宝运营后台前端仓库，具体地址待确认",
       "id": "Q2",
-      "type": "choice",
-      "question": "是否允许同一用户重复报名？",
+      "impact": "影响管理端前端任务拆解与排期",
+      "question": "TGS 管理端前端的仓库地址与负责人是谁？",
       "required": true,
-      "ai_assumption": "不允许",
-      "value": null,
-      "custom_value": "",
-      "options": [
-        "不允许",
-        "允许"
-      ],
-      "impact": "影响报名校验和数据约束"
+      "type": "text",
+      "value": ""
     },
     {
+      "ai_assumption": "由本组承接 Task 与 Award 的配置链路改造",
+      "custom_value": "",
       "id": "Q3",
-      "type": "text",
-      "question": "还有哪些关键业务规则需要补充？",
+      "impact": "影响工作量、跨团队依赖与排期",
+      "options": [
+        "本组承接 Task/Award 改造",
+        "营销平台团队支持、本组只提需求",
+        "复用现有能力无需改造"
+      ],
+      "question": "星斗（PromoPlatform）侧改造由谁承接？",
+      "required": true,
+      "type": "choice",
+      "value": null
+    },
+    {
+      "ai_assumption": "仅覆盖 pvpesport/web 的商户赛横版页面",
+      "custom_value": "",
+      "id": "Q4",
+      "impact": "影响前端工作量与测试范围",
+      "options": [
+        "仅 pvpesport/web 横版商户赛",
+        "pvpesport/web + pvpesport/next 双端",
+        "含端内 PixUi 页面"
+      ],
+      "question": "C 端前端覆盖范围包含哪些端？",
+      "required": true,
+      "type": "choice",
+      "value": null
+    },
+    {
+      "ai_assumption": "由星斗活动配置下发",
+      "custom_value": "",
+      "id": "Q5",
+      "impact": "影响接口字段设计与前端两种形态的渲染判断",
+      "options": [
+        "星斗活动配置下发",
+        "tgs 赛事配置",
+        "两者兼容并以星斗优先"
+      ],
+      "question": "模块显示开关（只展示领奖/只展示抽奖）的配置来源是？",
+      "required": true,
+      "type": "choice",
+      "value": null
+    },
+    {
+      "ai_assumption": "不新增列，通过抽奖活动 ID 自动带出对局任务",
+      "id": "Q6",
+      "impact": "影响批量创建的解析与校验逻辑",
+      "question": "批量创建上传模板是否需要新增「对局任务」列？",
       "required": false,
-      "ai_assumption": "暂无",
-      "value": "",
-      "impact": "补充内容会参与后续任务拆解和估算"
+      "type": "text",
+      "value": ""
     }
   ],
   "revision": {
-    "version": 1,
+    "changes": [],
     "last_modified_by": "ai",
-    "changes": []
-  }
+    "version": 1
+  },
+  "schema_version": "4.0",
+  "scope": [
+    "星斗抽奖活动奖励设置链路增加对局任务条目与活动中心积分奖励",
+    "tgs 奖励设置页「创建抽奖活动」改为「创建活动」，按星斗活动 ID 拉取对局数及对应奖励，批量创建复用抽奖活动 ID 带出对局任务",
+    "有效对局局数统计与对局任务进度累计、按档位独立领取",
+    "赛事详情页展示最近可获得的两个对局奖励节点，对局领奖优先于抽奖",
+    "任务奖励页整合对局任务与抽奖：进度条、可领取/已领取态、领取结果弹窗",
+    "pmd 奖励发放至「我的奖品」，积分奖励到账并引导跳转福利中心「积分兑好礼」",
+    "仅展示领奖活动、仅展示抽奖活动两种显示形态"
+  ]
 }
