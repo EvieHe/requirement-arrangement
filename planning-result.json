@@ -1,5 +1,5 @@
 {
-  "schema_version": "3.0",
+  "schema_version": "3.1",
   "requirement": {
     "id": "REQ-2048",
     "title": "活动报名功能",
@@ -34,6 +34,36 @@
             "复用现有用户体系",
             "默认不限制总报名人数",
             "默认不允许重复报名"
+          ],
+          "modules": [
+            {
+              "id": "M1",
+              "side": "frontend",
+              "name": "activity-web",
+              "repository": "git/ieg/activity-web",
+              "change_summary": "新增活动详情页、报名入口和报名状态展示。"
+            },
+            {
+              "id": "M2",
+              "side": "frontend",
+              "name": "user-center-web",
+              "repository": "git/ieg/user-center-web",
+              "change_summary": "复用用户态并补充报名结果入口。"
+            },
+            {
+              "id": "M3",
+              "side": "backend",
+              "name": "registration-service",
+              "repository": "git/ieg/registration-service",
+              "change_summary": "新增报名提交、校验、幂等和查询接口。"
+            },
+            {
+              "id": "M4",
+              "side": "backend",
+              "name": "activity-service",
+              "repository": "git/ieg/activity-service",
+              "change_summary": "补充活动报名状态及名额规则。"
+            }
           ]
         },
         "review_items": [
@@ -119,11 +149,6 @@
             "QA-01"
           ]
         },
-        "review_items": []
-      },
-      "review": {
-        "status": "pending",
-        "output": {},
         "review_items": []
       }
     }
@@ -238,8 +263,13 @@
     }
   ],
   "revision": {
-    "version": 1,
-    "last_modified_by": "ai",
-    "changes": []
+    "version": 2,
+    "last_modified_by": "human",
+    "changes": [
+      "remove_review_stage",
+      "modules_are_editable",
+      "task_add_delete_edit",
+      "effort_editable"
+    ]
   }
 }
