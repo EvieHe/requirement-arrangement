@@ -1,68 +1,172 @@
 {
+  "requirement_id": "8b4dd104-eec2-40b4-9160-85ae0a7d788b",
+  "revision": {
+    "changes": [],
+    "last_modified_by": "ai",
+    "version": 1
+  },
   "schema_version": "4.0",
-  "requirement_id": "REQ-2048",
   "tasks": [
     {
+      "category": "backend",
+      "dependencies": [],
+      "description": "在星斗（PromoPlatform/Task）任务配置与判定中支持「对局局数」任务类型：按赛事与 5/15/25/30 档位配置任务条目，接收对局进度并判定完成，保留原有抽奖任务并存能力。",
+      "id": "BE-01",
+      "module_id": "M8",
+      "title": "星斗任务引擎支持对局局数任务条目"
+    },
+    {
+      "category": "backend",
+      "dependencies": [],
+      "description": "在星斗（PromoPlatform/Award）抽奖活动奖励设置链路中增加对局任务条目及对应奖励，支持 pmd 奖励与活动中心积分奖励的奖池、库存与配置同步。",
+      "id": "BE-02",
+      "module_id": "M9",
+      "title": "抽奖活动奖励设置支持对局任务与积分奖励"
+    },
+    {
+      "category": "backend",
+      "dependencies": [
+        "BE-02"
+      ],
+      "description": "改造赛宝 TGS 奖励设置接口：原「创建抽奖活动」改为「创建活动」，按填写的星斗活动 ID 拉取抽奖任务外的对局数与对应奖励、数量，并返回给管理端展示。",
+      "id": "BE-03",
+      "module_id": "M7",
+      "title": "TGS 奖励设置按星斗活动 ID 拉取对局任务"
+    },
+    {
+      "category": "backend",
+      "dependencies": [
+        "BE-03"
+      ],
+      "description": "批量创建流程复用原抽奖活动 ID，按活动拉取对局领奖任务并随赛事批量落配置；兼容现有模板解析与校验。",
+      "id": "BE-04",
+      "module_id": "M7",
+      "title": "TGS 批量创建复用抽奖活动 ID 带出对局任务"
+    },
+    {
+      "category": "backend",
+      "dependencies": [
+        "BE-02"
+      ],
+      "description": "扩展 pvpesport.award.actmgr 的活动同步逻辑：赛事奖励变更时同步对局任务配置、礼包库存与兑换区信息，保证活动配置合法性校验覆盖对局任务。",
+      "id": "BE-05",
+      "module_id": "M6",
+      "title": "抽奖活动配置同步对局任务与奖励库存"
+    },
+    {
+      "category": "backend",
+      "dependencies": [],
+      "description": "提供按赛事与玩家维度的有效对局局数统计/查询：仅统计对局结束且分出胜负的局，投降、赛后改判、判双败计入，超时未进游戏与未打完判负不计；数据源按计数实现层结论落地。",
+      "id": "BE-06",
+      "module_id": "M5",
+      "title": "有效对局局数统计与查询能力"
+    },
+    {
+      "category": "backend",
+      "dependencies": [
+        "BE-01",
+        "BE-06"
+      ],
+      "description": "在 pvpesport.acts.activity 中生成对局任务条目（按档位独立累计），基于有效局数更新进度，与抽奖任务记录并存且互不影响。",
+      "id": "BE-07",
+      "module_id": "M4",
+      "title": "对局任务生成与进度累计"
+    },
+    {
+      "category": "backend",
+      "dependencies": [
+        "BE-07",
+        "BE-02"
+      ],
+      "description": "实现各档位独立领取逻辑：校验可领状态、防重复领取、按奖励类型分流 pmd 奖励与积分奖励，并返回领取结果供前端弹窗展示。",
+      "id": "BE-08",
+      "module_id": "M4",
+      "title": "对局任务按档位领取与幂等"
+    },
+    {
+      "category": "backend",
+      "dependencies": [
+        "BE-07"
+      ],
+      "description": "扩展 pvpesport.sgamenes.nesact 商户赛任务查询接口：返回对局任务进度、最近可获得的两个奖励节点、领取状态及显示开关所需字段。",
+      "id": "BE-09",
+      "module_id": "M3",
+      "title": "商户赛任务查询返回对局进度与可领节点"
+    },
+    {
+      "category": "backend",
+      "dependencies": [
+        "BE-08"
+      ],
+      "description": "在 nesact 提供对局奖励领取入口，包装任务引擎领取能力，返回奖励明细与积分到账信息，处理重复领取与并发异常。",
+      "id": "BE-10",
+      "module_id": "M3",
+      "title": "商户赛对局奖励领取接口"
+    },
+    {
+      "category": "frontend",
+      "dependencies": [
+        "BE-09"
+      ],
+      "description": "在 pvpesport/web 商户赛详情页展示「比赛 x 局领 xx 奖励」最近两个可领节点；对局领奖与抽奖同时配置时优先展示对局领奖，覆盖原抽奖奖励区位。",
       "id": "FE-01",
       "module_id": "M1",
-      "title": "活动详情页面",
-      "category": "frontend",
-      "description": "完成活动详情、报名入口和状态展示。",
-      "dependencies": []
+      "title": "赛事详情页对局激励展示"
     },
     {
+      "category": "frontend",
+      "dependencies": [
+        "BE-09",
+        "BE-10"
+      ],
+      "description": "在 pvpesport/web 任务奖励页整合对局任务与福袋抽奖：任务节点与 5/15/25/30 进度条、对局节点/奖励/积分引导/规则弹窗四元素、领取三态与领取成功弹窗（pmd 多礼包与积分去使用跳转）。",
       "id": "FE-02",
       "module_id": "M1",
-      "title": "报名交互与接口接入",
+      "title": "任务奖励页整合对局任务与抽奖"
+    },
+    {
       "category": "frontend",
-      "description": "完成报名表单、校验、接口调用及异常反馈。",
+      "dependencies": [
+        "FE-02"
+      ],
+      "description": "按配置开关渲染「只展示领奖活动」与「只展示抽奖活动」两种形态，保证可领取/已领取流转与空态正确。",
+      "id": "FE-03",
+      "module_id": "M1",
+      "title": "任务奖励页显示开关两形态"
+    },
+    {
+      "category": "frontend",
+      "dependencies": [
+        "BE-03"
+      ],
+      "description": "管理端奖励设置页将「创建抽奖活动」改为「创建活动」，支持填写星斗活动 ID，展示拉取到的抽奖任务与对局数/奖励/数量并支持校验提示。",
+      "id": "FE-04",
+      "module_id": "M2",
+      "title": "TGS 奖励设置页「创建活动」改造"
+    },
+    {
+      "category": "frontend",
+      "dependencies": [
+        "BE-04"
+      ],
+      "description": "管理端批量创建流程展示按抽奖活动 ID 带出的对局领奖任务，补充模板校验与失败提示。",
+      "id": "FE-05",
+      "module_id": "M2",
+      "title": "TGS 批量创建展示对局领奖任务"
+    },
+    {
+      "category": "other",
       "dependencies": [
         "FE-01",
-        "BE-01"
-      ]
-    },
-    {
-      "id": "BE-01",
-      "module_id": "M3",
-      "title": "报名核心接口",
-      "category": "backend",
-      "description": "实现报名提交、参数校验、幂等和异常处理。",
-      "dependencies": []
-    },
-    {
-      "id": "BE-02",
-      "module_id": "M4",
-      "title": "活动状态管理",
-      "category": "backend",
-      "description": "补充活动报名状态与状态判断逻辑。",
-      "dependencies": []
-    },
-    {
-      "id": "BE-03",
-      "module_id": "M3",
-      "title": "报名数据模型与查询",
-      "category": "backend",
-      "description": "增加报名记录模型与基础查询。",
-      "dependencies": [
-        "BE-01"
-      ]
-    },
-    {
+        "FE-02",
+        "FE-03",
+        "FE-04",
+        "FE-05"
+      ],
+      "description": "按验收口径联调：8 局构造的计数口径回归、详情页最近两节点与优先级、任务奖励页进度与领取、pmd 奖励在我的奖品可见、积分余额与明细到账、两种显示形态。",
       "id": "QA-01",
       "module_id": null,
-      "title": "联调与验收",
-      "category": "other",
-      "description": "完成前后端联调、主流程与异常场景检查。",
-      "dependencies": [
-        "FE-02",
-        "BE-02",
-        "BE-03"
-      ]
+      "title": "跨端联调与业务验收"
     }
-  ],
-  "revision": {
-    "version": 1,
-    "last_modified_by": "ai",
-    "changes": []
-  }
+  ]
 }
