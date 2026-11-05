@@ -445,6 +445,15 @@ stale 必须明确提示：
 
 不要一次保存覆盖全部变量。
 
+### ⚠️ 写回能力限制（已查证，2026-11-05）
+
+浏览器侧**当前没有开放的「写 workflow var」接口**，详见 `api.md §3`：
+
+- `sop` 后端有 `SetWorkflowVar(instance_id, name, value)`，但 `workflowcgi` 网关**未透传**该接口；
+- agent 侧 `xdpai.aihelper.mcp.mcp/SetWorkflowVar` 需 Bearer token，浏览器拿不到。
+
+因此页面**不造假「保存写回」按钮**：编辑为内存态，并提供「导出本 Tab JSON」兜底（用户/ AI 助手经 xdpai 平台写回）。平台开放浏览器写接口后，本节的写回语义可直接接入。
+
 ---
 
 ## 14. 上游修改与 stale
@@ -673,3 +682,36 @@ Task ID
 ```
 
 只完成 UI 不算完成。
+
+---
+
+## 22. 实现结果（2026-11-05）
+
+### 已查证的真实 API（详见 `api.md`）
+
+| 能力 | 网关 / 方法 | 入参 | 浏览器直连 |
+|---|---|---|---|
+| 读任务（需求） | `xdclaw.woa.com/xdpai.gateway.taskcgi.taskcgi/GetTask` | `{task_id}` | ✅ |
+| 读流程实例（vars + 节点） | `xdclaw.woa.com/xdpai.gateway.workflowcgi.workflowcgi/GetInstance` | `{task_id}` | ✅ |
+| 写流程变量 | `sop` 后端 `SetWorkflowVar` | `{instance_id,name,value}` | ❌（workflowcgi 未透传） |
+
+关键结论：**读链路完整直连，写链路浏览器无开放接口**（详见 §13 与 `api.md §3`）。
+
+### 已实现
+
+- Task ID 入口（输入框 + `?task_id=` URL 参数 + 自动加载）
+- `GetTask` → 「需求」Tab（标题 / ID / 优先级 / 状态 / 正文 Markdown 渲染）
+- `GetInstance` → 解析 `variables_json` → 4 个 AI Tab（需求理解 / 任务拆解 / 工作量评估 / 排期生成，含甘特图、关键路径）
+- 编辑（内存态）+ 上游修改 → 下游 stale 联动
+- 错误状态：Task 不存在 / SOP 未运行 / 变量缺失 / JSON 非法 / API 失败，均不白屏
+- 写回：诚实标记「浏览器侧暂不支持」，提供「导出本 Tab JSON」兜底
+
+### 尚无法实现
+
+- **写回 workflow var**：平台网关未向浏览器开放 `SetWorkflowVar`（原因见 `api.md §3`）
+- **重跑 AI 节点**：浏览器侧无「按阶段重跑」入口
+
+### 待验证
+
+- 真实 task_id 端到端：`8b4dd104-eec2-40b4-9160-85ae0a7d788b`（发布后在 xdclaw 域下验证取数）
+

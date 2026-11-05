@@ -1,40 +1,596 @@
 <!doctype html>
-<html lang="zh-CN"><head><meta charset="utf-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/>
-<title>xdpai · 需求智能评估</title>
+<html lang="zh-CN">
+<head>
+  <meta name="app-version" content="v10">
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>xdpai · 需求智能评估与排期</title>
 <style>
-:root{--bg:#f6f7fb;--line:#e7e9f1;--text:#182033;--muted:#707787;--purple:#6557e6;--purpleSoft:#f1efff;--green:#2f9d68;--greenSoft:#eaf7f0;--blue:#4b78e6;--blueSoft:#edf2ff;--amber:#c88c34;--amberSoft:#fff5df;--shadow:0 8px 24px rgba(28,37,64,.055);--r:16px}
-*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font-family:Inter,"PingFang SC","Microsoft YaHei",system-ui,-apple-system,sans-serif}button,input,select,textarea{font:inherit}.topbar{height:58px;padding:0 28px;background:#fff;border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:20}.brand{display:flex;gap:10px;align-items:center;font-weight:800}.logo{width:30px;height:30px;border-radius:9px;background:linear-gradient(135deg,var(--purple),#988aff);color:#fff;display:grid;place-items:center}.wrap{max-width:1640px;margin:auto;padding:18px 20px 90px}.card{background:#fff;border:1px solid var(--line);border-radius:var(--r);box-shadow:var(--shadow)}.hero{padding:19px 22px;display:flex;justify-content:space-between;gap:16px}.hero h1{font-size:22px;margin:0}.hero p{margin:7px 0 0;color:var(--muted);font-size:13px}.tags{display:flex;gap:7px;margin-top:10px}.tag,.chip{font-size:11px;padding:4px 8px;border-radius:999px;background:#f1f2f6;color:#5f6675}.purple{background:var(--purpleSoft);color:var(--purple)}.btn{border:1px solid var(--line);background:#fff;border-radius:10px;padding:9px 13px;cursor:pointer}.btn.primary{background:var(--purple);border-color:var(--purple);color:#fff}.flow{margin-top:12px;padding:12px 16px;display:flex;align-items:center;gap:14px}.progress{width:150px}.progress-line{display:flex;align-items:center;gap:8px}.progress-num{font-size:20px;font-weight:850}.track{height:6px;background:#eceef4;border-radius:99px;overflow:hidden;flex:1}.fill{height:100%;background:linear-gradient(90deg,var(--purple),#9487f7)}.stages{display:flex;align-items:center;gap:4px;flex-wrap:wrap}.stage{display:flex;align-items:center;gap:5px;padding:6px 9px;border-radius:9px;font-size:11px;background:#f5f6f9;cursor:pointer;border:1px solid transparent}.stage.completed{background:var(--greenSoft);color:var(--green)}.stage.stale{background:var(--amberSoft);color:#94691f}.stage.active{border-color:#bdb5ff;background:var(--purpleSoft);color:var(--purple);font-weight:800}.dot{width:15px;height:15px;border-radius:50%;border:1px solid currentColor;display:grid;place-items:center;font-size:9px}.arrow{color:#c4c8d1}.main{margin-top:12px;overflow:hidden}.main-head{padding:16px 18px;border-bottom:1px solid var(--line);display:flex;justify-content:space-between}.main-title{font-size:16px;font-weight:800}.main-sub{font-size:11px;color:var(--muted);margin-top:4px}.main-body{padding:16px 18px}.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}.info{border:1px solid var(--line);border-radius:12px;padding:13px}.info h3,.section h3,.module-head h3{font-size:12px;margin:0 0 7px}.info p,.info li{font-size:11px;color:#596071;line-height:1.6}.info ul{margin:0;padding-left:17px}.section{margin-top:16px}.module-block{margin-top:14px}.module-table,.task-table{width:100%;border-collapse:collapse;font-size:11px}.module-table th,.module-table td,.task-table th,.task-table td{padding:9px 8px;border-bottom:1px solid var(--line);text-align:left}.module-table th,.task-table th{background:#fafbfe;color:#687080}.module-table input,.task-table input,.task-table select,.inline-edit{width:100%;border:1px solid transparent;background:transparent;border-radius:7px;padding:6px}.module-table input:hover,.module-table input:focus,.task-table input:hover,.task-table input:focus,.task-table select:hover,.task-table select:focus,.inline-edit:hover,.inline-edit:focus{border-color:#c8c2fa;background:#fff;outline:none}.icon-btn{border:0;background:transparent;color:#8a91a0;cursor:pointer}.qrow{display:grid;grid-template-columns:minmax(240px,1fr) minmax(320px,1.15fr);gap:20px;padding:14px 0;border-bottom:1px solid var(--line)}.qtitle{font-size:12px;font-weight:750}.qhint{font-size:10px;color:var(--muted);margin-top:4px}.choice{display:flex;gap:7px;flex-wrap:wrap}.choice button{border:1px solid var(--line);background:#fff;border-radius:9px;padding:7px 10px;font-size:11px;cursor:pointer}.choice button.active{background:var(--purpleSoft);color:var(--purple);border-color:#beb7ff}.input,.textarea{width:100%;border:1px solid var(--line);border-radius:9px;padding:9px 10px}.textarea{min-height:68px}.task-id{font-size:9px;background:#f1f2f6;padding:2px 5px;border-radius:5px}.type{font-size:10px;padding:3px 7px;border-radius:999px}.frontend{background:var(--greenSoft);color:var(--green)}.backend{background:var(--blueSoft);color:var(--blue)}.other{background:var(--amberSoft);color:var(--amber)}.metric-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:14px}.metric{border:1px solid var(--line);border-radius:12px;padding:13px}.metric b{display:block;font-size:20px}.metric span{font-size:10px;color:var(--muted)}.gantt-wrap{overflow:auto}.gantt{min-width:1080px}.ghead,.grow,.ggroup{display:grid;grid-template-columns:270px 110px 72px 92px 92px repeat(var(--days),minmax(78px,1fr))}.ghead{background:#fafbfe;font-size:10px;color:#687080;font-weight:700}.ghead>div,.gcell,.gday{padding:9px 8px;border-right:1px solid #eef0f5;border-bottom:1px solid #eef0f5}.ggroup{background:#fcfcff;font-size:11px;font-weight:750}.ggroup>div:first-child{grid-column:1/6;padding:9px 10px;border-bottom:1px solid var(--line)}.ggroup>div:last-child{grid-column:6/-1;border-bottom:1px solid var(--line)}.grow{min-height:54px;font-size:11px}.gday{position:relative;padding:0}.bar{position:absolute;left:6px;top:14px;height:24px;border-radius:7px;color:#fff;padding:0 8px;display:flex;align-items:center;font-size:9px;font-weight:800;white-space:nowrap}.bar.frontend{background:#42ad76}.bar.backend{background:#577fdf}.bar.other{background:#d39a43}.bar.critical{outline:2px solid rgba(101,87,230,.35);outline-offset:2px}.footerbar{position:fixed;left:0;right:0;bottom:0;background:#fff;border-top:1px solid var(--line)}.footer-inner{max-width:1640px;margin:auto;padding:12px 20px;display:flex;justify-content:space-between;align-items:center}.footer-meta{display:flex;gap:18px;font-size:11px;color:#5e6574}.error{margin-top:12px;padding:14px;color:#a5483d;background:#fff0ec;border:1px solid #f0c9c1;border-radius:12px;display:none}
-@media(max-width:800px){.grid3,.metric-grid{grid-template-columns:1fr}.qrow{grid-template-columns:1fr}.hero{flex-direction:column}.flow{align-items:flex-start;flex-direction:column}.footerbar{position:static}}
-</style></head><body>
-<header class="topbar"><div class="brand"><div class="logo">✦</div><div>xdpai</div><div>需求智能评估</div></div><div style="font-size:12px;color:var(--muted)">研发小组</div></header>
+:root{--bg:#f6f7fb;--line:#e7e9f1;--text:#182033;--muted:#707787;--purple:#6557e6;--purpleSoft:#f1efff;--green:#2f9d68;--greenSoft:#eaf7f0;--blue:#4b78e6;--blueSoft:#edf2ff;--amber:#c88c34;--amberSoft:#fff5df;--red:#c14b3a;--redSoft:#fff0ec;--shadow:0 8px 24px rgba(28,37,64,.055);--r:16px}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font-family:Inter,"PingFang SC","Microsoft YaHei",system-ui,-apple-system,sans-serif}button,input,select,textarea{font:inherit}.topbar{height:58px;padding:0 28px;background:#fff;border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:20}.brand{display:flex;gap:10px;align-items:center;font-weight:800}.logo{width:30px;height:30px;border-radius:9px;background:linear-gradient(135deg,var(--purple),#988aff);color:#fff;display:grid;place-items:center}.wrap{max-width:1640px;margin:auto;padding:18px 20px 110px}.card{background:#fff;border:1px solid var(--line);border-radius:var(--r);box-shadow:var(--shadow)}.entry{margin-bottom:12px;padding:14px 18px;display:flex;gap:10px;align-items:center}.entry input{flex:1;border:1px solid var(--line);border-radius:10px;padding:10px 12px;font-size:13px}.entry .hint{font-size:11px;color:var(--muted);margin-top:6px}.btn{border:1px solid var(--line);background:#fff;border-radius:10px;padding:9px 13px;cursor:pointer;white-space:nowrap}.btn.primary{background:var(--purple);border-color:var(--purple);color:#fff}.btn:disabled{opacity:.5;cursor:not-allowed}.hero{padding:19px 22px;display:flex;justify-content:space-between;gap:16px}.hero h1{font-size:22px;margin:0}.hero p{margin:7px 0 0;color:var(--muted);font-size:13px}.tags{display:flex;gap:7px;margin-top:10px;flex-wrap:wrap}.tag,.chip{font-size:11px;padding:4px 8px;border-radius:999px;background:#f1f2f6;color:#5f6675}.purple{background:var(--purpleSoft);color:var(--purple)}.flow{margin-top:12px;padding:12px 16px;display:flex;align-items:center;gap:14px}.progress{width:150px}.progress-line{display:flex;align-items:center;gap:8px}.progress-num{font-size:20px;font-weight:850}.track{height:6px;background:#eceef4;border-radius:99px;overflow:hidden;flex:1}.fill{height:100%;background:linear-gradient(90deg,var(--purple),#9487f7)}.stages{display:flex;align-items:center;gap:4px;flex-wrap:wrap}.stage{display:flex;align-items:center;gap:5px;padding:6px 9px;border-radius:9px;font-size:11px;background:#f5f6f9;cursor:pointer;border:1px solid transparent}.stage.completed{background:var(--greenSoft);color:var(--green)}.stage.stale{background:var(--amberSoft);color:#94691f}.stage.pending{background:#f1f2f6;color:#8a91a0}.stage.ready{background:var(--blueSoft);color:var(--blue)}.stage.active{border-color:#bdb5ff;background:var(--purpleSoft);color:var(--purple);font-weight:800}.dot{width:15px;height:15px;border-radius:50%;border:1px solid currentColor;display:grid;place-items:center;font-size:9px}.arrow{color:#c4c8d1}.main{margin-top:12px;overflow:hidden}.tabs{display:flex;gap:2px;padding:0 18px;border-bottom:1px solid var(--line);overflow-x:auto}.tab{padding:13px 16px;font-size:13px;cursor:pointer;border-bottom:2px solid transparent;color:#5e6574;white-space:nowrap}.tab.active{color:var(--purple);border-bottom-color:var(--purple);font-weight:800}.main-head{padding:16px 18px;border-bottom:1px solid var(--line);display:flex;justify-content:space-between}.main-title{font-size:16px;font-weight:800}.main-sub{font-size:11px;color:var(--muted);margin-top:4px}.main-body{padding:16px 18px}.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}.info{border:1px solid var(--line);border-radius:12px;padding:13px}.info h3,.section h3,.module-head h3{font-size:12px;margin:0 0 7px}.info p,.info li{font-size:11px;color:#596071;line-height:1.6}.info ul{margin:0;padding-left:17px}.section{margin-top:16px}.module-block{margin-top:14px}.module-table,.task-table{width:100%;border-collapse:collapse;font-size:11px}.module-table th,.module-table td,.task-table th,.task-table td{padding:9px 8px;border-bottom:1px solid var(--line);text-align:left}.module-table th,.task-table th{background:#fafbfe;color:#687080}.module-table input,.task-table input,.task-table select,.inline-edit{width:100%;border:1px solid transparent;background:transparent;border-radius:7px;padding:6px}.module-table input:hover,.module-table input:focus,.task-table input:hover,.task-table input:focus,.task-table select:hover,.task-table select:focus,.inline-edit:hover,.inline-edit:focus{border-color:#c8c2fa;background:#fff;outline:none}.icon-btn{border:0;background:transparent;color:#8a91a0;cursor:pointer}.qrow{display:grid;grid-template-columns:minmax(240px,1fr) minmax(320px,1.15fr);gap:20px;padding:14px 0;border-bottom:1px solid var(--line)}.qtitle{font-size:12px;font-weight:750}.qhint{font-size:10px;color:var(--muted);margin-top:4px}.choice{display:flex;gap:7px;flex-wrap:wrap}.choice button{border:1px solid var(--line);background:#fff;border-radius:9px;padding:7px 10px;font-size:11px;cursor:pointer}.choice button.active{background:var(--purpleSoft);color:var(--purple);border-color:#beb7ff}.input,.textarea{width:100%;border:1px solid var(--line);border-radius:9px;padding:9px 10px}.textarea{min-height:68px}.task-id{font-size:9px;background:#f1f2f6;padding:2px 5px;border-radius:5px}.type{font-size:10px;padding:3px 7px;border-radius:999px}.frontend{background:var(--greenSoft);color:var(--green)}.backend{background:var(--blueSoft);color:var(--blue)}.other{background:var(--amberSoft);color:var(--amber)}.metric-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:14px}.metric{border:1px solid var(--line);border-radius:12px;padding:13px}.metric b{display:block;font-size:20px}.metric span{font-size:10px;color:var(--muted)}.gantt-wrap{overflow:auto}.gantt{min-width:1080px}.ghead,.grow,.ggroup{display:grid;grid-template-columns:270px 110px 72px 92px 92px repeat(var(--days),minmax(78px,1fr))}.ghead{background:#fafbfe;font-size:10px;color:#687080;font-weight:700}.ghead>div,.gcell,.gday{padding:9px 8px;border-right:1px solid #eef0f5;border-bottom:1px solid #eef0f5}.ggroup{background:#fcfcff;font-size:11px;font-weight:750}.ggroup>div:first-child{grid-column:1/6;padding:9px 10px;border-bottom:1px solid var(--line)}.ggroup>div:last-child{grid-column:6/-1;border-bottom:1px solid var(--line)}.grow{min-height:54px;font-size:11px}.gday{position:relative;padding:0}.bar{position:absolute;left:6px;top:14px;height:24px;border-radius:7px;color:#fff;padding:0 8px;display:flex;align-items:center;font-size:9px;font-weight:800;white-space:nowrap}.bar.frontend{background:#42ad76}.bar.backend{background:#577fdf}.bar.other{background:#d39a43}.bar.critical{outline:2px solid rgba(101,87,230,.35);outline-offset:2px}.footerbar{position:fixed;left:0;right:0;bottom:0;background:#fff;border-top:1px solid var(--line)}.footer-inner{max-width:1640px;margin:auto;padding:12px 20px;display:flex;justify-content:space-between;align-items:center}.footer-meta{display:flex;gap:18px;font-size:11px;color:#5e6574}.error{margin-top:12px;padding:14px;color:#a5483d;background:#fff0ec;border:1px solid #f0c9c1;border-radius:12px;display:none}.notice{margin-top:12px;padding:12px 14px;background:var(--amberSoft);color:#94691f;border:1px solid #f0d9a8;border-radius:12px;font-size:12px;display:none;line-height:1.7}.warn-inline{background:var(--amberSoft);color:#94691f;border-radius:8px;padding:9px 11px;font-size:11px;margin:10px 0;line-height:1.6}.empty-state{padding:40px;text-align:center;color:var(--muted);font-size:13px;line-height:1.8}.markdown{font-size:13px;line-height:1.75;color:#303a4d}.markdown h1,.markdown h2,.markdown h3{margin:18px 0 8px;line-height:1.4}.markdown h1{font-size:20px}.markdown h2{font-size:16px;border-bottom:1px solid var(--line);padding-bottom:6px}.markdown h3{font-size:14px}.markdown p{margin:8px 0}.markdown ul,.markdown ol{margin:8px 0;padding-left:22px}.markdown li{margin:3px 0}.markdown blockquote{margin:10px 0;padding:6px 14px;border-left:3px solid #c8c2fa;background:#fafaff;color:#5e6574}.markdown table{border-collapse:collapse;margin:10px 0;font-size:12px}.markdown table th,.markdown table td{border:1px solid var(--line);padding:6px 10px}.markdown table th{background:#fafbfe}.markdown code{background:#f1f2f6;border-radius:4px;padding:1px 5px;font-size:12px;font-family:ui-monospace,SFMono-Regular,Menlo,monospace}.markdown hr{border:0;border-top:1px solid var(--line);margin:14px 0}.markdown strong{font-weight:800}.markdown pre{background:#f6f7fb;border:1px solid var(--line);border-radius:10px;padding:12px;overflow:auto}.markdown pre code{background:transparent;padding:0}.data-badge{display:inline-flex;align-items:center;gap:6px;font-size:11px;padding:5px 10px;border-radius:999px}.data-badge.demo{background:var(--amberSoft);color:#94691f}.data-badge.real{background:var(--greenSoft);color:var(--green)}@media(max-width:800px){.grid3,.metric-grid{grid-template-columns:1fr}.qrow{grid-template-columns:1fr}.hero{flex-direction:column}.flow{align-items:flex-start;flex-direction:column}.entry{flex-direction:column;align-items:stretch}.footerbar{position:static}}
+</style>
+</head>
+<body>
+<header class="topbar"><div class="brand"><div class="logo">✦</div><div>xdpai</div><div>需求智能评估与排期</div></div><div style="font-size:12px;color:var(--muted)">AI 评估草案 · 只读直连</div></header>
 <main class="wrap">
-<section class="card hero"><div><h1 id="title">加载中...</h1><p id="desc"></p><div class="tags"><span class="tag purple">AI 评估草案</span><span class="tag" id="reqId"></span><span class="tag" id="priority"></span><span class="tag" id="pendingTag"></span></div></div><button class="btn" onclick="location.reload()">重新加载</button></section>
-<div class="error" id="error"></div>
-<section class="card flow"><div class="progress"><div style="font-size:10px;color:var(--muted)">阶段生成</div><div class="progress-line"><div class="progress-num" id="progressNum">0/4</div><div class="track"><div class="fill" id="progressFill"></div></div></div></div><div class="stages" id="stages"></div></section>
-<section class="card main"><div class="main-head"><div><div class="main-title" id="stageTitle"></div><div class="main-sub" id="stageSub"></div></div><div id="stageBadge"></div></div><div class="main-body" id="stageBody"></div></section>
+  <section class="card entry">
+    <div style="flex:1">
+      <div style="display:flex;gap:10px">
+        <input id="taskIdInput" placeholder="输入 XDPai Task ID（如 8b4dd104-eec2-40b4-9160-85ae0a7d788b）" value=""/>
+        <button class="btn primary" id="loadBtn">加载需求</button>
+      </div>
+      <div class="hint">支持 URL 参数 <code>?task_id=xxx</code> 自动加载；数据由页面运行时直连 XDPai 网关（credentials: include）获取。</div>
+    </div>
+  </section>
+
+  <div class="error" id="error"></div>
+  <div class="notice" id="notice"></div>
+
+  <section class="card hero" id="heroCard" style="display:none">
+    <div>
+      <h1 id="title">—</h1>
+      <p id="desc"></p>
+      <div class="tags">
+        <span class="tag purple" id="dataBadge">—</span>
+        <span class="tag" id="reqId"></span>
+        <span class="tag" id="priority"></span>
+        <span class="tag" id="status"></span>
+        <span class="tag" id="pendingTag"></span>
+      </div>
+    </div>
+    <button class="btn" id="reloadBtn">重新加载</button>
+  </section>
+
+  <section class="card flow" id="flowCard" style="display:none">
+    <div class="progress"><div style="font-size:10px;color:var(--muted)">阶段生成</div><div class="progress-line"><div class="progress-num" id="progressNum">0/4</div><div class="track"><div class="fill" id="progressFill"></div></div></div></div>
+    <div class="stages" id="stages"></div>
+  </section>
+
+  <section class="card main" id="mainCard" style="display:none">
+    <div class="tabs" id="tabs">
+      <div class="tab active" data-tab="requirement">需求</div>
+      <div class="tab" data-tab="understanding">需求理解</div>
+      <div class="tab" data-tab="breakdown">任务拆解</div>
+      <div class="tab" data-tab="estimation">工作量评估</div>
+      <div class="tab" data-tab="scheduling">排期生成</div>
+    </div>
+    <div class="main-head">
+      <div><div class="main-title" id="stageTitle"></div><div class="main-sub" id="stageSub"></div></div>
+      <div id="stageBadge"></div>
+    </div>
+    <div class="main-body" id="stageBody"></div>
+  </section>
 </main>
-<footer class="footerbar"><div class="footer-inner"><div class="footer-meta"><span>总工作量 <b id="totalEffort">—</b> 人日</span><span>周期 <b id="duration">—</b> 工作日</span><span>预计交付 <b id="delivery">—</b></span><span id="saveState"></span></div><div><button class="btn" id="save">保存当前修改</button> <button class="btn primary" id="confirm">确认评估</button></div></div></footer>
+<footer class="footerbar" id="footerbar" style="display:none">
+  <div class="footer-inner">
+    <div class="footer-meta"><span>总工作量 <b id="totalEffort">—</b> 人日</span><span>周期 <b id="duration">—</b> 工作日</span><span>预计交付 <b id="delivery">—</b></span><span id="saveState"></span></div>
+    <div style="display:flex;gap:8px"><button class="btn" id="exportBtn">导出本 Tab JSON</button> <button class="btn primary" id="saveBtn">保存写回</button></div>
+  </div>
+</footer>
 <script>
-let initData,understanding,breakdown,estimation,scheduling,active='understanding',showCritical=true;
-const $=s=>document.querySelector(s),typeName={frontend:'前端',backend:'后端',other:'其他'},fmt=d=>d?d.slice(5).replace('-','/'):'—';
-async function load(){
- try{
-  [initData,understanding,breakdown,estimation,scheduling]=await Promise.all(['init.json','understanding.json','breakdown.json','estimation.json','scheduling.json'].map(x=>fetch(x).then(r=>{if(!r.ok)throw new Error(x+' '+r.status);return r.json()})));
-  renderShell();render();
- }catch(e){$('#error').style.display='block';$('#error').textContent='数据加载失败：'+e.message+'。请通过 HTTP Server 运行页面。'}
+'use strict';
+// ==================== API 契约（见 spec/xdpai-mini-app/api.md） ====================
+const GATEWAY = {
+  task: 'https://xdclaw.woa.com/xdpai.gateway.taskcgi.taskcgi',
+  workflow: 'https://xdclaw.woa.com/xdpai.gateway.workflowcgi.workflowcgi',
+};
+const VAR_KEYS = {
+  init: 'requirement_arrangement.init',
+  understanding: 'requirement_arrangement.understanding',
+  breakdown: 'requirement_arrangement.breakdown',
+  estimation: 'requirement_arrangement.estimation',
+  scheduling: 'requirement_arrangement.scheduling',
+};
+const VAR_TO_TAB = { init:'requirement', understanding:'understanding', breakdown:'breakdown', estimation:'estimation', scheduling:'scheduling' };
+const STAGE_ORDER = [['understanding','需求理解'],['breakdown','任务拆解'],['estimation','工作量评估'],['scheduling','排期生成']];
+const STAGE_LABEL = { pending:'待生成', ready:'就绪', completed:'已完成', stale:'需重新生成' };
+const typeName = { frontend:'前端', backend:'后端', other:'其他' };
+const $ = s => document.querySelector(s);
+const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const fmt = d => d ? String(d).slice(5).replace('-','/') : '—';
+
+// ==================== 应用状态 ====================
+let S = {
+  taskId: '',
+  task: null,           // GetTask 返回
+  instance: null,       // GetInstance 返回
+  init: null, understanding: null, breakdown: null, estimation: null, scheduling: null,
+  varsRaw: {},          // 原始 variables_json 对象
+  missing: {},          // 每个阶段是否缺失/解析失败
+  active: 'requirement',
+  demo: false,          // 是否处于演示数据回退
+  dirty: {},            // 每个 Tab 是否被编辑过
+};
+
+// ==================== 服务层 ====================
+async function rpc(base, method, body) {
+  const res = await fetch(base + '/' + method, {
+    method: 'POST',
+    credentials: 'include',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(body || {}),
+  });
+  if (res.status === 302 || res.redirected) {
+    const e = new Error('未登录（网关重定向到登录页）');
+    e.code = 'NOT_LOGIN'; throw e;
+  }
+  if (!res.ok) { const e = new Error('HTTP ' + res.status); e.code = 'HTTP'; e.status = res.status; throw e; }
+  return res.json();
 }
-function renderShell(){const r=initData.requirement;$('#title').textContent='【需求】'+r.title;$('#desc').textContent=understanding.goal||r.description;$('#reqId').textContent=r.id;$('#priority').textContent=r.priority;const pending=understanding.review_items.filter(x=>x.required&&!x.value).length;$('#pendingTag').textContent=pending?pending+' 项待确认':'需求已确认';$('#totalEffort').textContent=estimation.summary.total_effort_days;$('#duration').textContent=scheduling.summary.estimated_working_days;$('#delivery').textContent=fmt(scheduling.summary.delivery_date);renderStages()}
-function renderStages(){const order=[['understanding','需求理解'],['breakdown','任务拆解'],['estimation','工作量评估'],['scheduling','排期生成']];const completed=order.filter(([id])=>initData.stage_status[id]==='completed').length;const p=Math.round(completed/order.length*100);$('#progressNum').textContent=completed+'/'+order.length;$('#progressFill').style.width=p+'%';$('#stages').innerHTML=order.map(([id,name],i)=>'<div class="stage '+initData.stage_status[id]+' '+(active===id?'active':'')+'" data-stage="'+id+'"><span class="dot">'+(initData.stage_status[id]==='completed'?'✓':'!')+'</span>'+name+'</div>'+(i<order.length-1?'<span class="arrow">→</span>':'')).join('');document.querySelectorAll('[data-stage]').forEach(x=>x.onclick=()=>{active=x.dataset.stage;render()})}
-function reviewForm(){return '<div class="section"><h3>待确认</h3>'+understanding.review_items.map(c=>{let control='';if(c.type==='choice'){control='<div class="choice">'+[...c.options,'自定义'].map(o=>'<button data-q="'+c.id+'" data-v="'+o+'" class="'+(c.value===o?'active':'')+'">'+o+'</button>').join('')+'</div>'+(c.value==='自定义'?'<input class="input" data-custom="'+c.id+'" style="margin-top:7px" value="'+(c.custom_value||'')+'" placeholder="请输入自定义答案">':'')}else control='<textarea class="textarea" data-text="'+c.id+'">'+(c.value||'')+'</textarea>';return '<div class="qrow"><div><div class="qtitle">'+c.question+'</div><div class="qhint">AI：'+c.ai_assumption+' · '+c.impact+'</div></div><div>'+control+'</div></div>'}).join('')+'</div>'}
-function moduleTable(side){const ms=understanding.modules.filter(m=>m.side===side);return '<table class="module-table"><thead><tr><th>模块名</th><th>仓库</th><th>主要改动</th><th></th></tr></thead><tbody>'+ms.map(m=>'<tr><td><input data-mid="'+m.id+'" data-mf="name" value="'+m.name+'"></td><td><input data-mid="'+m.id+'" data-mf="repository" value="'+m.repository+'"></td><td><input data-mid="'+m.id+'" data-mf="change_summary" value="'+m.change_summary+'"></td><td><button class="icon-btn" data-del-module="'+m.id+'">删除</button></td></tr>').join('')+'</tbody></table><button class="btn" style="margin-top:8px" data-add-module="'+side+'">+ 添加模块</button>'}
-function bindUnderstanding(){document.querySelectorAll('[data-mid]').forEach(i=>i.onchange=()=>understanding.modules.find(m=>m.id===i.dataset.mid)[i.dataset.mf]=i.value);document.querySelectorAll('[data-del-module]').forEach(b=>b.onclick=()=>{understanding.modules=understanding.modules.filter(m=>m.id!==b.dataset.delModule);renderUnderstanding()});document.querySelectorAll('[data-add-module]').forEach(b=>b.onclick=()=>{understanding.modules.push({id:'M'+Date.now(),side:b.dataset.addModule,name:'新模块',repository:'',change_summary:''});renderUnderstanding()});document.querySelectorAll('[data-q]').forEach(b=>b.onclick=()=>{const q=understanding.review_items.find(x=>x.id===b.dataset.q);q.value=b.dataset.v;renderUnderstanding()});document.querySelectorAll('[data-custom]').forEach(i=>i.onchange=()=>understanding.review_items.find(x=>x.id===i.dataset.custom).custom_value=i.value);document.querySelectorAll('[data-text]').forEach(i=>i.onchange=()=>understanding.review_items.find(x=>x.id===i.dataset.text).value=i.value)}
-function renderUnderstanding(){$('#stageTitle').textContent='需求理解';$('#stageSub').textContent='确认目标、范围、涉及模块和业务假设。';const pending=understanding.review_items.filter(x=>x.required&&!x.value).length;$('#stageBadge').innerHTML='<span class="chip purple">understanding.json · '+pending+' 项待确认</span>';$('#stageBody').innerHTML='<div class="grid3"><div class="info"><h3>目标</h3><p>'+understanding.goal+'</p></div><div class="info"><h3>涉及范围</h3><ul>'+understanding.scope.map(x=>'<li>'+x+'</li>').join('')+'</ul></div><div class="info"><h3>不在范围</h3><ul>'+understanding.out_of_scope.map(x=>'<li>'+x+'</li>').join('')+'</ul></div></div><div class="module-block"><div class="module-head"><h3>前端模块</h3></div>'+moduleTable('frontend')+'</div><div class="module-block"><div class="module-head"><h3>后端模块</h3></div>'+moduleTable('backend')+'</div>'+reviewForm();bindUnderstanding()}
-function renderBreakdown(){$('#stageTitle').textContent='任务拆解';$('#stageSub').textContent='任务定义独立存储，通过 module_id 关联需求理解。';$('#stageBadge').innerHTML='<span class="chip purple">breakdown.json · '+breakdown.tasks.length+' 项</span>';$('#stageBody').innerHTML='<table class="task-table"><thead><tr><th>任务</th><th>模块</th><th>类型</th><th>说明</th><th>依赖</th><th></th></tr></thead><tbody>'+breakdown.tasks.map(t=>'<tr><td><input data-tid="'+t.id+'" data-tf="title" value="'+t.title+'"></td><td><select data-tid="'+t.id+'" data-tf="module_id"><option value="">—</option>'+understanding.modules.map(m=>'<option value="'+m.id+'" '+(m.id===t.module_id?'selected':'')+'>'+m.name+'</option>').join('')+'</select></td><td><select data-tid="'+t.id+'" data-tf="category">'+['frontend','backend','other'].map(c=>'<option value="'+c+'" '+(c===t.category?'selected':'')+'>'+typeName[c]+'</option>').join('')+'</select></td><td><input data-tid="'+t.id+'" data-tf="description" value="'+t.description+'"></td><td><input data-tid="'+t.id+'" data-tf="dependencies" value="'+t.dependencies.join(',')+'"></td><td><button class="icon-btn" data-del-task="'+t.id+'">删除</button></td></tr>').join('')+'</tbody></table><button class="btn" style="margin-top:10px" id="addTask">+ 新增任务</button>';document.querySelectorAll('[data-tid]').forEach(i=>i.onchange=()=>{const t=breakdown.tasks.find(x=>x.id===i.dataset.tid);if(i.dataset.tf==='dependencies')t.dependencies=i.value.split(',').map(x=>x.trim()).filter(Boolean);else if(i.dataset.tf==='module_id')t.module_id=i.value||null;else t[i.dataset.tf]=i.value});document.querySelectorAll('[data-del-task]').forEach(b=>b.onclick=()=>{breakdown.tasks=breakdown.tasks.filter(t=>t.id!==b.dataset.delTask);renderBreakdown()});$('#addTask').onclick=()=>{const id='T-'+String(breakdown.tasks.length+1).padStart(2,'0');breakdown.tasks.push({id,module_id:null,title:'新任务',category:'backend',description:'',dependencies:[]});renderBreakdown()}}
-function taskById(id){return breakdown.tasks.find(t=>t.id===id)||{id,title:id,category:'other'}}
-function recalcEst(){estimation.summary.total_effort_days=estimation.estimations.reduce((s,e)=>s+Number(e.effort_days||0),0);estimation.summary.confidence_counts={high:0,medium:0,low:0};estimation.estimations.forEach(e=>estimation.summary.confidence_counts[e.confidence]++)}
-function renderEstimation(){recalcEst();$('#stageTitle').textContent='工作量评估';$('#stageSub').textContent='只维护 task_id 对应的人日、置信度与估算依据。';$('#stageBadge').innerHTML='<span class="chip purple">estimation.json · '+estimation.summary.total_effort_days+' 人日</span>';$('#stageBody').innerHTML='<div class="metric-grid"><div class="metric"><b>'+estimation.summary.total_effort_days+'</b><span>总人日</span></div><div class="metric"><b>'+estimation.summary.confidence_counts.medium+'</b><span>中置信度</span></div><div class="metric"><b>'+estimation.summary.confidence_counts.high+'</b><span>高置信度</span></div></div><table class="task-table"><thead><tr><th>任务</th><th>人日</th><th>置信度</th><th>估算依据</th><th>不确定因素</th></tr></thead><tbody>'+estimation.estimations.map(e=>{const t=taskById(e.task_id);return '<tr><td><span class="task-id">'+e.task_id+'</span> '+t.title+'</td><td><input class="inline-edit" type="number" step=".5" min=".5" data-eid="'+e.task_id+'" data-ef="effort_days" value="'+e.effort_days+'"></td><td><select class="inline-edit" data-eid="'+e.task_id+'" data-ef="confidence">'+['high','medium','low'].map(c=>'<option '+(c===e.confidence?'selected':'')+'>'+c+'</option>').join('')+'</select></td><td><input class="inline-edit" data-eid="'+e.task_id+'" data-ef="basis" value="'+e.estimate_basis.map(b=>b.item+' '+b.effort_days+'d').join('；')+'"></td><td>'+e.uncertainties.join('；')+'</td></tr>'}).join('')+'</tbody></table>';document.querySelectorAll('[data-eid]').forEach(i=>i.onchange=()=>{const e=estimation.estimations.find(x=>x.task_id===i.dataset.eid);if(i.dataset.ef==='effort_days'){e.effort_days=Number(i.value);if(e.estimate_basis.length===1)e.estimate_basis[0].effort_days=e.effort_days}else if(i.dataset.ef==='confidence')e.confidence=i.value;else if(i.dataset.ef==='basis'){e.estimate_basis=i.value.split('；').filter(Boolean).map((x,idx)=>({item:x.replace(/\s+\d+(\.\d+)?d$/,''),effort_days:idx===0?e.effort_days:0}))}renderEstimation();renderShell()})}
-function workdays(start,end){const out=[],d=new Date(start+'T00:00:00');const e=new Date(end+'T00:00:00');while(d<=e){if(d.getDay()!=0&&d.getDay()!=6)out.push(d.toISOString().slice(0,10));d.setDate(d.getDate()+1)}return out}
-function renderScheduling(){const days=workdays(scheduling.summary.start_date,scheduling.summary.delivery_date);document.documentElement.style.setProperty('--days',days.length);$('#stageTitle').textContent='排期生成';$('#stageSub').textContent='只维护 task_id 对应的负责人和时间安排。';$('#stageBadge').innerHTML='<label class="chip"><input id="critical" type="checkbox" '+(showCritical?'checked':'')+'> 关键路径</label>';let h='<div class="gantt-wrap"><div class="gantt"><div class="ghead"><div>任务</div><div>负责人</div><div>人日</div><div>开始</div><div>结束</div>'+days.map(d=>'<div>'+fmt(d)+'</div>').join('')+'</div>';['frontend','backend','other'].forEach(c=>{const rows=scheduling.schedule.filter(s=>taskById(s.task_id).category===c);h+='<div class="ggroup"><div>'+typeName[c]+' · '+rows.length+' 项</div><div></div></div>';rows.forEach(s=>{const t=taskById(s.task_id),e=estimation.estimations.find(x=>x.task_id===s.task_id);h+='<div class="grow"><div class="gcell"><span class="task-id">'+s.task_id+'</span> '+t.title+'</div><div class="gcell"><input class="inline-edit" data-sid="'+s.task_id+'" data-sf="assignee" value="'+s.assignee+'"></div><div class="gcell">'+(e?e.effort_days:'—')+'</div><div class="gcell"><input class="inline-edit" type="date" data-sid="'+s.task_id+'" data-sf="start_date" value="'+s.start_date+'"></div><div class="gcell"><input class="inline-edit" type="date" data-sid="'+s.task_id+'" data-sf="end_date" value="'+s.end_date+'"></div>';days.forEach(d=>{h+='<div class="gday">';if(d===s.start_date){const span=Math.max(1,days.indexOf(s.end_date)-days.indexOf(s.start_date)+1);h+='<div class="bar '+t.category+' '+(showCritical&&scheduling.summary.critical_path.includes(s.task_id)?'critical':'')+'" style="width:calc('+span+'00% - 12px)">'+s.task_id+'</div>'}h+='</div>'});h+='</div>'})});h+='</div></div>';$('#stageBody').innerHTML=h;$('#critical').onchange=e=>{showCritical=e.target.checked;renderScheduling()};document.querySelectorAll('[data-sid]').forEach(i=>i.onchange=()=>{scheduling.schedule.find(x=>x.task_id===i.dataset.sid)[i.dataset.sf]=i.value;const starts=scheduling.schedule.map(x=>x.start_date).sort(),ends=scheduling.schedule.map(x=>x.end_date).sort();scheduling.summary.start_date=starts[0];scheduling.summary.delivery_date=ends[ends.length-1];scheduling.summary.estimated_working_days=workdays(starts[0],ends[ends.length-1]).length;renderScheduling();renderShell()})}
-function render(){renderStages();if(active==='understanding')renderUnderstanding();else if(active==='breakdown')renderBreakdown();else if(active==='estimation')renderEstimation();else renderScheduling()}
-$('#save').onclick=()=>{$('#saveState').textContent='✓ 当前页面状态已保存到内存';setTimeout(()=>$('#saveState').textContent='',1600)};$('#confirm').onclick=()=>{$('#confirm').textContent='已确认';$('#confirm').disabled=true};load();
-</script></body></html>
+async function getTask(taskId) { return rpc(GATEWAY.task, 'GetTask', { task_id: taskId }); }
+async function getInstance(taskId) { return rpc(GATEWAY.workflow, 'GetInstance', { task_id: taskId }); }
+
+// 解析单个变量值：可能是 JSON 字符串 / 纯文本 / 已解析对象
+function parseVar(raw) {
+  if (raw === null || raw === undefined) return null;
+  if (typeof raw === 'object') return raw;
+  if (typeof raw !== 'string') return raw;
+  const t = raw.trim();
+  if (t === '') return null;
+  try { return JSON.parse(t); } catch { return t; }
+}
+
+// ==================== 加载流程 ====================
+async function load(taskId) {
+  taskId = String(taskId || '').trim();
+  if (!taskId) { showError('请输入 XDPai Task ID。'); return; }
+  reset();
+  S.taskId = taskId;
+  $('#loadBtn').disabled = true; $('#loadBtn').textContent = '加载中…';
+  hideError(); hideNotice();
+  try {
+    // 1) 读任务（需求）
+    let taskRsp;
+    try { taskRsp = await getTask(taskId); }
+    catch (e) {
+      if (e.code === 'HTTP' && e.status === 404) throw Object.assign(new Error('未找到该 XDPai Task。'), { code:'NOT_FOUND' });
+      throw e;
+    }
+    S.task = taskRsp && (taskRsp.task || taskRsp.data || taskRsp);
+    if (!S.task || !S.task.title) throw Object.assign(new Error('未找到该 XDPai Task。'), { code:'NOT_FOUND' });
+
+    // 2) 读流程实例（workflow vars + 节点）
+    try {
+      const instRsp = await getInstance(taskId);
+      S.instance = instRsp && (instRsp.instance || instRsp.data || instRsp);
+      parseInstanceVars();
+    } catch (e) {
+      // SOP 未运行 / 无实例：需求 Tab 仍正常展示，其余显示「尚未生成」
+      S.instance = null;
+      S.varsRaw = {};
+      setMissingAll('该阶段尚未生成（SOP 未运行或无流程实例）。');
+    }
+
+    renderAll();
+  } catch (e) {
+    showError(humanError(e));
+  } finally {
+    $('#loadBtn').disabled = false; $('#loadBtn').textContent = '加载需求';
+  }
+}
+
+function parseInstanceVars() {
+  S.missing = {};
+  let varsObj = {};
+  const vj = S.instance && S.instance.variables_json;
+  if (vj && typeof vj === 'string') { try { varsObj = JSON.parse(vj); } catch { /* 非法 JSON，按全缺失处理 */ } }
+  else if (vj && typeof vj === 'object') varsObj = vj;
+  S.varsRaw = varsObj || {};
+
+  for (const [stage, key] of Object.entries(VAR_KEYS)) {
+    const raw = S.varsRaw[key];
+    if (raw === undefined || raw === null || raw === '') {
+      S[stage] = null;
+      S.missing[stage] = '该阶段尚未生成。';
+    } else {
+      const parsed = parseVar(raw);
+      if (parsed === null || typeof parsed !== 'object') {
+        S[stage] = null;
+        S.missing[stage] = '「' + key + '」数据格式异常（非法 JSON）。';
+      } else {
+        S[stage] = parsed;
+      }
+    }
+  }
+  // init 里带 stage_status 与 requirement 快照
+  if (S.init && S.init.stage_status) { /* 保留 */ }
+  else if (S.init && S.init.requirement) { /* init 只有 requirement，无 stage_status */ }
+}
+
+function setMissingAll(msg) {
+  for (const stage of Object.keys(VAR_KEYS)) S.missing[stage] = msg;
+}
+
+function reset() {
+  S.task = null; S.instance = null;
+  S.init = S.understanding = S.breakdown = S.estimation = S.scheduling = null;
+  S.varsRaw = {}; S.missing = {}; S.active = 'requirement'; S.demo = false; S.dirty = {};
+  ['heroCard','flowCard','mainCard','footerbar'].forEach(id => $('#'+id).style.display = 'none');
+}
+
+function humanError(e) {
+  if (e && e.code === 'NOT_FOUND') return '未找到该 XDPai Task：' + S.taskId;
+  if (e && e.code === 'NOT_LOGIN') return '未登录：请在 xdclaw.woa.com 域下访问本应用（或先登录 xdpai 工作台）。';
+  if (e && e.code === 'HTTP') return '接口请求失败（HTTP ' + e.status + '）：' + (e.message||'');
+  if (e instanceof TypeError) return '网络请求失败：' + e.message + '（可能被 CORS 或网络策略拦截，确认在 xdclaw.woa.com 域下访问）';
+  return '加载失败：' + (e && e.message ? e.message : '未知错误');
+}
+
+// ==================== 渲染入口 ====================
+function renderAll() {
+  $('#heroCard').style.display = ''; $('#flowCard').style.display = ''; $('#mainCard').style.display = ''; $('#footerbar').style.display = '';
+  renderShell(); renderTabs(); render();
+}
+
+function stageStatus(id) {
+  if (S.init && S.init.stage_status && S.init.stage_status[id]) return S.init.stage_status[id];
+  if (S.missing[id]) return 'pending';
+  return S[id] ? 'completed' : 'pending';
+}
+
+function renderShell() {
+  const t = S.task || {};
+  $('#title').textContent = '【需求】' + (t.title || '—');
+  const goal = (S.understanding && S.understanding.goal) || '';
+  $('#desc').textContent = goal || '';
+  $('#reqId').textContent = 'Requirement/Task ID: ' + (t.task_id || S.taskId);
+  $('#priority').textContent = '优先级: ' + (t.priority || '—');
+  $('#status').textContent = '状态: ' + (t.status || '—');
+  const pending = countPending();
+  $('#pendingTag').textContent = pending ? pending + ' 项待确认' : '需求已确认';
+  const est = S.estimation; const sch = S.scheduling;
+  $('#totalEffort').textContent = est && est.summary ? est.summary.total_effort_days : '—';
+  $('#duration').textContent = sch && sch.summary ? sch.summary.estimated_working_days : '—';
+  $('#delivery').textContent = sch && sch.summary ? fmt(sch.summary.delivery_date) : '—';
+  renderStages();
+}
+
+function countPending() {
+  if (!S.understanding || !Array.isArray(S.understanding.review_items)) return 0;
+  return S.understanding.review_items.filter(x => x.required && !x.value).length;
+}
+
+function renderStages() {
+  const completed = STAGE_ORDER.filter(([id]) => stageStatus(id) === 'completed').length;
+  const p = Math.round(completed / STAGE_ORDER.length * 100);
+  $('#progressNum').textContent = completed + '/' + STAGE_ORDER.length;
+  $('#progressFill').style.width = p + '%';
+  $('#stages').innerHTML = STAGE_ORDER.map(([id, name], i) => {
+    const st = stageStatus(id);
+    const dot = st === 'completed' ? '✓' : (st === 'stale' ? '!' : '·');
+    return '<div class="stage ' + st + ' ' + (S.active === id ? 'active' : '') + '" data-stage="' + id + '"><span class="dot">' + dot + '</span>' + name + '</div>' + (i < STAGE_ORDER.length - 1 ? '<span class="arrow">→</span>' : '');
+  }).join('');
+  document.querySelectorAll('[data-stage]').forEach(x => x.onclick = () => { switchTab(x.dataset.stage); });
+}
+
+function renderTabs() {
+  document.querySelectorAll('.tab').forEach(t => {
+    t.classList.toggle('active', t.dataset.tab === S.active);
+    t.onclick = () => switchTab(t.dataset.tab);
+  });
+}
+
+function switchTab(tab) {
+  S.active = tab;
+  renderTabs(); renderStages(); render();
+}
+
+function render() {
+  renderStages();
+  if (S.active === 'requirement') renderRequirement();
+  else if (S.active === 'understanding') renderUnderstanding();
+  else if (S.active === 'breakdown') renderBreakdown();
+  else if (S.active === 'estimation') renderEstimation();
+  else renderScheduling();
+}
+
+function dataBadge(real) {
+  return '<span class="data-badge ' + (real ? 'real' : 'demo') + '">' + (real ? '真实数据' : '演示数据') + '</span>';
+}
+
+// ==================== 需求 Tab ====================
+function renderRequirement() {
+  const t = S.task || {};
+  $('#stageTitle').textContent = '需求';
+  $('#stageSub').textContent = '事实数据（XDPai Task），非 AI 阶段。';
+  $('#stageBadge').innerHTML = '<span class="chip purple">taskcgi/GetTask</span>';
+  const kv = [
+    ['Requirement ID', t.task_id || S.taskId],
+    ['Task ID', t.task_id || S.taskId],
+    ['优先级', t.priority || '—'],
+    ['状态', t.status || '—'],
+    ['创建者', t.creator_name || '—'],
+    ['创建时间', t.created_at || '—'],
+  ];
+  let h = '<div class="grid3">';
+  kv.forEach(([k, v]) => { h += '<div class="info"><h3>' + esc(k) + '</h3><p>' + esc(v) + '</p></div>'; });
+  h += '</div>';
+  h += '<div class="section"><h3>需求正文</h3><div class="markdown">' + markdown(t.description || '（无描述）') + '</div></div>';
+  $('#stageBody').innerHTML = h;
+}
+
+// ==================== 轻量 Markdown 渲染 ====================
+function markdown(src) {
+  if (!src) return '<p>（无内容）</p>';
+  const lines = String(src).replace(/\r\n?/g, '\n').split('\n');
+  let html = '', inList = false, listTag = '', inTable = false, rows = [];
+  const closeList = () => { if (inList) { html += '</' + listTag + '>'; inList = false; } };
+  const closeTable = () => { if (inTable) { html += renderTable(rows); inTable = false; rows = []; } };
+  const inline = s => esc(s)
+    .replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>')
+    .replace(/`([^`]+)`/g, '<code>$1</code>');
+
+  for (const raw of lines) {
+    const line = raw.trimEnd();
+    // 表格
+    if (/^\|.*\|$/.test(line.trim())) {
+      closeList();
+      const cells = line.trim().replace(/^\||\|$/g, '').split('|').map(c => c.trim());
+      if (cells.every(c => /^:?-{2,}:?$/.test(c))) { rows.push({ sep: true }); }
+      else { rows.push({ cells }); }
+      if (!inTable) inTable = true;
+      continue;
+    } else closeTable();
+    // 标题
+    const hm = line.match(/^(#{1,6})\s+(.*)$/);
+    if (hm) { closeList(); const lv = hm[1].length; html += '<h' + lv + '>' + inline(hm[2]) + '</h' + lv + '>'; continue; }
+    // 分隔线
+    if (/^\s*(-{3,}|\*{3,})\s*$/.test(line)) { closeList(); html += '<hr>'; continue; }
+    // 引用
+    if (/^\s*>\s?/.test(line)) { closeList(); html += '<blockquote>' + inline(line.replace(/^\s*>\s?/, '')) + '</blockquote>'; continue; }
+    // 列表
+    const ul = line.match(/^\s*[-*+]\s+(.*)$/);
+    const ol = line.match(/^\s*\d+[.)]\s+(.*)$/);
+    if (ul || ol) {
+      const tag = ul ? 'ul' : 'ol';
+      if (!inList || listTag !== tag) { closeList(); html += '<' + tag + '>'; inList = true; listTag = tag; }
+      html += '<li>' + inline((ul || ol)[1]) + '</li>';
+      continue;
+    }
+    closeList();
+    if (line.trim() === '') { html += ''; continue; }
+    html += '<p>' + inline(line) + '</p>';
+  }
+  closeList(); closeTable();
+  return html;
+}
+function renderTable(rows) {
+  const data = rows.filter(r => !r.sep);
+  if (!data.length) return '';
+  let h = '<table><thead><tr>';
+  data[0].cells.forEach(c => { h += '<th>' + esc(c) + '</th>'; });
+  h += '</tr></thead><tbody>';
+  for (let i = 1; i < data.length; i++) {
+    h += '<tr>';
+    data[i].cells.forEach(c => { h += '<td>' + esc(c) + '</td>'; });
+    h += '</tr>';
+  }
+  h += '</tbody></table>';
+  return h;
+}
+
+// ==================== 需求理解 Tab ====================
+function renderUnderstanding() {
+  const u = S.understanding;
+  $('#stageTitle').textContent = '需求理解';
+  $('#stageSub').textContent = '确认目标、范围、涉及模块和业务假设。';
+  if (!u) { $('#stageBadge').innerHTML = '<span class="chip">未生成</span>'; $('#stageBody').innerHTML = emptyStage('requirement_arrangement.understanding'); return; }
+  const pending = (u.review_items||[]).filter(x => x.required && !x.value).length;
+  $('#stageBadge').innerHTML = '<span class="chip purple">' + pending + ' 项待确认</span>' + (S.missing.understanding ? '' : dataBadge(true));
+  let h = '';
+  if (S.missing.understanding) h += warnInline(S.missing.understanding);
+  h += '<div class="grid3"><div class="info"><h3>目标</h3><p>' + esc(u.goal || '—') + '</p></div>';
+  h += '<div class="info"><h3>涉及范围</h3><ul>' + (u.scope||[]).map(x => '<li>' + esc(x) + '</li>').join('') + '</ul></div>';
+  h += '<div class="info"><h3>不在范围</h3><ul>' + (u.out_of_scope||[]).map(x => '<li>' + esc(x) + '</li>').join('') + '</ul></div></div>';
+  if (u.assumptions && u.assumptions.length) h += '<div class="info" style="margin-top:10px"><h3>假设 / 已确认规则</h3><ul>' + u.assumptions.map(x => '<li>' + esc(x) + '</li>').join('') + '</ul></div>';
+  h += '<div class="module-block"><div class="module-head"><h3>前端模块</h3></div>' + moduleTable('frontend') + '</div>';
+  h += '<div class="module-block"><div class="module-head"><h3>后端模块</h3></div>' + moduleTable('backend') + '</div>';
+  h += reviewForm();
+  $('#stageBody').innerHTML = h;
+  bindUnderstanding();
+}
+function moduleTable(side) {
+  const ms = (S.understanding.modules||[]).filter(m => m.side === side);
+  return '<table class="module-table"><thead><tr><th>模块名</th><th>仓库</th><th>主要改动</th><th></th></tr></thead><tbody>'
+    + ms.map(m => '<tr><td><input data-mid="' + esc(m.id) + '" data-mf="name" value="' + esc(m.name) + '"></td><td><input data-mid="' + esc(m.id) + '" data-mf="repository" value="' + esc(m.repository) + '"></td><td><input data-mid="' + esc(m.id) + '" data-mf="change_summary" value="' + esc(m.change_summary) + '"></td><td><button class="icon-btn" data-del-module="' + esc(m.id) + '">删除</button></td></tr>').join('')
+    + '</tbody></table><button class="btn" style="margin-top:8px" data-add-module="' + side + '">+ 添加模块</button>';
+}
+function bindUnderstanding() {
+  document.querySelectorAll('[data-mid]').forEach(i => i.onchange = () => { const m = S.understanding.modules.find(x => x.id === i.dataset.mid); if (m) { m[i.dataset.mf] = i.value; markDirty('understanding'); } });
+  document.querySelectorAll('[data-del-module]').forEach(b => b.onclick = () => { S.understanding.modules = S.understanding.modules.filter(m => m.id !== b.dataset.delModule); markDirty('understanding'); renderUnderstanding(); });
+  document.querySelectorAll('[data-add-module]').forEach(b => b.onclick = () => { S.understanding.modules.push({ id:'M'+Date.now(), side:b.dataset.addModule, name:'新模块', repository:'', change_summary:'' }); markDirty('understanding'); renderUnderstanding(); });
+  document.querySelectorAll('[data-q]').forEach(b => b.onclick = () => { const q = (S.understanding.review_items||[]).find(x => x.id === b.dataset.q); if (q) { q.value = b.dataset.v; markDirty('understanding'); renderUnderstanding(); } });
+  document.querySelectorAll('[data-custom]').forEach(i => i.onchange = () => { const q = (S.understanding.review_items||[]).find(x => x.id === i.dataset.custom); if (q) { q.custom_value = i.value; markDirty('understanding'); } });
+  document.querySelectorAll('[data-text]').forEach(i => i.onchange = () => { const q = (S.understanding.review_items||[]).find(x => x.id === i.dataset.text); if (q) { q.value = i.value; markDirty('understanding'); } });
+}
+function reviewForm() {
+  const items = S.understanding.review_items || [];
+  if (!items.length) return '';
+  return '<div class="section"><h3>待确认</h3>' + items.map(c => {
+    let control = '';
+    if (c.type === 'choice') {
+      control = '<div class="choice">' + [...(c.options||[]), '自定义'].map(o => '<button data-q="' + esc(c.id) + '" data-v="' + esc(o) + '" class="' + (c.value === o ? 'active' : '') + '">' + esc(o) + '</button>').join('') + '</div>'
+        + (c.value === '自定义' ? '<input class="input" data-custom="' + esc(c.id) + '" style="margin-top:7px" value="' + esc(c.custom_value||'') + '" placeholder="请输入自定义答案">' : '');
+    } else control = '<textarea class="textarea" data-text="' + esc(c.id) + '">' + esc(c.value||'') + '</textarea>';
+    return '<div class="qrow"><div><div class="qtitle">' + esc(c.question) + '</div><div class="qhint">AI：' + esc(c.ai_assumption||'') + (c.impact ? ' · ' + esc(c.impact) : '') + '</div></div><div>' + control + '</div></div>';
+  }).join('') + '</div>';
+}
+
+// ==================== 任务拆解 Tab ====================
+function renderBreakdown() {
+  const b = S.breakdown;
+  $('#stageTitle').textContent = '任务拆解';
+  $('#stageSub').textContent = '任务定义独立存储，通过 module_id 关联需求理解。';
+  if (!b) { $('#stageBadge').innerHTML = '<span class="chip">未生成</span>'; $('#stageBody').innerHTML = emptyStage('requirement_arrangement.breakdown'); return; }
+  $('#stageBadge').innerHTML = '<span class="chip purple">' + (b.tasks||[]).length + ' 项</span>';
+  let h = '';
+  if (S.missing.breakdown) h += warnInline(S.missing.breakdown);
+  h += '<table class="task-table"><thead><tr><th>任务</th><th>模块</th><th>类型</th><th>说明</th><th>依赖</th><th></th></tr></thead><tbody>'
+    + (b.tasks||[]).map(t => '<tr><td><input data-tid="' + esc(t.id) + '" data-tf="title" value="' + esc(t.title) + '"></td><td><select data-tid="' + esc(t.id) + '" data-tf="module_id"><option value="">—</option>' + moduleOptions(t.module_id) + '</select></td><td><select data-tid="' + esc(t.id) + '" data-tf="category">' + ['frontend','backend','other'].map(c => '<option value="' + c + '" ' + (c === t.category ? 'selected' : '') + '>' + typeName[c] + '</option>').join('') + '</select></td><td><input data-tid="' + esc(t.id) + '" data-tf="description" value="' + esc(t.description) + '"></td><td><input data-tid="' + esc(t.id) + '" data-tf="dependencies" value="' + esc((t.dependencies||[]).join(',')) + '"></td><td><button class="icon-btn" data-del-task="' + esc(t.id) + '">删除</button></td></tr>').join('')
+    + '</tbody></table><button class="btn" style="margin-top:10px" id="addTask">+ 新增任务</button>';
+  $('#stageBody').innerHTML = h;
+  document.querySelectorAll('[data-tid]').forEach(i => i.onchange = () => {
+    const t = b.tasks.find(x => x.id === i.dataset.tid); if (!t) return;
+    if (i.dataset.tf === 'dependencies') t.dependencies = i.value.split(',').map(x => x.trim()).filter(Boolean);
+    else if (i.dataset.tf === 'module_id') t.module_id = i.value || null;
+    else t[i.dataset.tf] = i.value;
+    markDirty('breakdown');
+  });
+  document.querySelectorAll('[data-del-task]').forEach(btn => btn.onclick = () => { b.tasks = b.tasks.filter(t => t.id !== btn.dataset.delTask); markDirty('breakdown'); renderBreakdown(); });
+  $('#addTask').onclick = () => { const id = 'T-' + String((b.tasks||[]).length + 1).padStart(2, '0'); b.tasks = b.tasks || []; b.tasks.push({ id, module_id: null, title: '新任务', category: 'backend', description: '', dependencies: [] }); markDirty('breakdown'); renderBreakdown(); };
+}
+function moduleOptions(sel) {
+  const ms = (S.understanding && S.understanding.modules) || [];
+  return ms.map(m => '<option value="' + esc(m.id) + '" ' + (m.id === sel ? 'selected' : '') + '>' + esc(m.name) + '</option>').join('');
+}
+
+// ==================== 工作量评估 Tab ====================
+function taskById(id) { return (S.breakdown && S.breakdown.tasks || []).find(t => t.id === id) || { id, title: id, category: 'other' }; }
+function recalcEst() {
+  const e = S.estimation; if (!e) return;
+  e.summary = e.summary || { confidence_counts: {} };
+  e.summary.total_effort_days = (e.estimations||[]).reduce((s, x) => s + Number(x.effort_days || 0), 0);
+  e.summary.confidence_counts = { high: 0, medium: 0, low: 0 };
+  (e.estimations||[]).forEach(x => { const c = x.confidence; if (c && e.summary.confidence_counts[c] !== undefined) e.summary.confidence_counts[c]++; });
+}
+function renderEstimation() {
+  const e = S.estimation;
+  $('#stageTitle').textContent = '工作量评估';
+  $('#stageSub').textContent = '只维护 task_id 对应的人日、置信度与估算依据。';
+  if (!e) { $('#stageBadge').innerHTML = '<span class="chip">未生成</span>'; $('#stageBody').innerHTML = emptyStage('requirement_arrangement.estimation'); return; }
+  recalcEst();
+  const sc = e.summary && e.summary.confidence_counts || {};
+  $('#stageBadge').innerHTML = '<span class="chip purple">' + (e.summary && e.summary.total_effort_days) + ' 人日</span>';
+  let h = '';
+  if (S.missing.estimation) h += warnInline(S.missing.estimation);
+  h += '<div class="metric-grid"><div class="metric"><b>' + (e.summary ? e.summary.total_effort_days : '—') + '</b><span>总人日</span></div><div class="metric"><b>' + (sc.medium||0) + '</b><span>中置信度</span></div><div class="metric"><b>' + (sc.high||0) + '</b><span>高置信度</span></div></div>';
+  h += '<table class="task-table"><thead><tr><th>任务</th><th>人日</th><th>置信度</th><th>估算依据</th><th>不确定因素</th></tr></thead><tbody>'
+    + (e.estimations||[]).map(x => { const t = taskById(x.task_id); return '<tr><td><span class="task-id">' + esc(x.task_id) + '</span> ' + esc(t.title) + '</td><td><input class="inline-edit" type="number" step=".5" min=".5" data-eid="' + esc(x.task_id) + '" data-ef="effort_days" value="' + esc(x.effort_days) + '"></td><td><select class="inline-edit" data-eid="' + esc(x.task_id) + '" data-ef="confidence">' + ['high','medium','low'].map(c => '<option ' + (c === x.confidence ? 'selected' : '') + '>' + c + '</option>').join('') + '</select></td><td><input class="inline-edit" data-eid="' + esc(x.task_id) + '" data-ef="basis" value="' + esc((x.estimate_basis||[]).map(b => b.item + ' ' + b.effort_days + 'd').join('；')) + '"></td><td>' + esc((x.uncertainties||[]).join('；')) + '</td></tr>'; }).join('')
+    + '</tbody></table>';
+  $('#stageBody').innerHTML = h;
+  document.querySelectorAll('[data-eid]').forEach(i => i.onchange = () => {
+    const x = (e.estimations||[]).find(y => y.task_id === i.dataset.eid); if (!x) return;
+    if (i.dataset.ef === 'effort_days') { x.effort_days = Number(i.value); if (x.estimate_basis && x.estimate_basis.length === 1) x.estimate_basis[0].effort_days = x.effort_days; }
+    else if (i.dataset.ef === 'confidence') x.confidence = i.value;
+    else if (i.dataset.ef === 'basis') { x.estimate_basis = i.value.split('；').filter(Boolean).map((it, idx) => ({ item: it.replace(/\s+\d+(\.\d+)?d$/, ''), effort_days: idx === 0 ? x.effort_days : 0 })); }
+    markDirty('estimation'); renderEstimation(); renderShell();
+  });
+}
+
+// ==================== 排期生成 Tab ====================
+function workdays(start, end) {
+  const out = []; const d = new Date(start + 'T00:00:00'); const e = new Date(end + 'T00:00:00');
+  while (d <= e) { if (d.getDay() !== 0 && d.getDay() !== 6) out.push(d.toISOString().slice(0, 10)); d.setDate(d.getDate() + 1); }
+  return out;
+}
+let showCritical = true;
+function renderScheduling() {
+  const s = S.scheduling;
+  $('#stageTitle').textContent = '排期生成';
+  $('#stageSub').textContent = '只维护 task_id 对应的负责人和时间安排。';
+  if (!s || !s.summary) { $('#stageBadge').innerHTML = '<span class="chip">未生成</span>'; $('#stageBody').innerHTML = emptyStage('requirement_arrangement.scheduling'); return; }
+  $('#stageBadge').innerHTML = '<label class="chip"><input id="critical" type="checkbox" ' + (showCritical ? 'checked' : '') + '> 关键路径</label>';
+  const days = workdays(s.summary.start_date, s.summary.delivery_date);
+  document.documentElement.style.setProperty('--days', days.length);
+  let h = '';
+  if (S.missing.scheduling) h += warnInline(S.missing.scheduling);
+  h += '<div class="gantt-wrap"><div class="gantt"><div class="ghead"><div>任务</div><div>负责人</div><div>人日</div><div>开始</div><div>结束</div>' + days.map(d => '<div>' + fmt(d) + '</div>').join('') + '</div>';
+  ['frontend','backend','other'].forEach(c => {
+    const rows = (s.schedule||[]).filter(x => taskById(x.task_id).category === c);
+    h += '<div class="ggroup"><div>' + typeName[c] + ' · ' + rows.length + ' 项</div><div></div></div>';
+    rows.forEach(x => {
+      const t = taskById(x.task_id); const e = (S.estimation && S.estimation.estimations || []).find(y => y.task_id === x.task_id);
+      h += '<div class="grow"><div class="gcell"><span class="task-id">' + esc(x.task_id) + '</span> ' + esc(t.title) + '</div><div class="gcell"><input class="inline-edit" data-sid="' + esc(x.task_id) + '" data-sf="assignee" value="' + esc(x.assignee) + '"></div><div class="gcell">' + (e ? e.effort_days : '—') + '</div><div class="gcell"><input class="inline-edit" type="date" data-sid="' + esc(x.task_id) + '" data-sf="start_date" value="' + esc(x.start_date) + '"></div><div class="gcell"><input class="inline-edit" type="date" data-sid="' + esc(x.task_id) + '" data-sf="end_date" value="' + esc(x.end_date) + '"></div>';
+      days.forEach(d => { h += '<div class="gday">'; if (d === x.start_date) { const span = Math.max(1, days.indexOf(x.end_date) - days.indexOf(x.start_date) + 1); h += '<div class="bar ' + t.category + ' ' + (showCritical && (s.summary.critical_path||[]).includes(x.task_id) ? 'critical' : '') + '" style="width:calc(' + span + '00% - 12px)">' + esc(x.task_id) + '</div>'; } h += '</div>'; });
+      h += '</div>';
+    });
+  });
+  h += '</div></div>';
+  $('#stageBody').innerHTML = h;
+  const cb = $('#critical'); if (cb) cb.onchange = e => { showCritical = e.target.checked; renderScheduling(); };
+  document.querySelectorAll('[data-sid]').forEach(i => i.onchange = () => {
+    const x = (s.schedule||[]).find(y => y.task_id === i.dataset.sid); if (!x) return;
+    x[i.dataset.sf] = i.value;
+    const starts = (s.schedule||[]).map(y => y.start_date).sort(); const ends = (s.schedule||[]).map(y => y.end_date).sort();
+    s.summary.start_date = starts[0]; s.summary.delivery_date = ends[ends.length - 1];
+    s.summary.estimated_working_days = workdays(starts[0], ends[ends.length - 1]).length;
+    markDirty('scheduling'); renderScheduling(); renderShell();
+  });
+}
+
+// ==================== 空态 / 提示 ====================
+function emptyStage(varName) {
+  return '<div class="empty-state">' + (S.missing[S.active] || '该阶段尚未生成。') + '<br><span style="font-size:11px">对应变量：' + esc(varName) + '</span></div>';
+}
+function warnInline(msg) { return '<div class="warn-inline">⚠ ' + esc(msg) + '</div>'; }
+
+// ==================== 编辑状态 / stale 计算 ====================
+function markDirty(stage) {
+  S.dirty[stage] = true;
+  // 上游修改 → 下游 stale
+  const order = ['understanding', 'breakdown', 'estimation', 'scheduling'];
+  const idx = order.indexOf(stage);
+  if (idx >= 0) {
+    for (let i = idx + 1; i < order.length; i++) {
+      const downstream = order[i];
+      if (S[downstream] && S.dirty[stage]) {
+        // 在前端标记下游 stale（真实写回时由后端联动，这里仅展示）
+        if (S.init && S.init.stage_status && S.init.stage_status[downstream] === 'completed') {
+          S.init.stage_status[downstream] = 'stale';
+        }
+      }
+    }
+  }
+  renderStages();
+}
+
+// ==================== 写回（诚实处理限制） ====================
+function currentVarForTab() {
+  const map = { requirement: null, understanding: 'understanding', breakdown: 'breakdown', estimation: 'estimation', scheduling: 'scheduling' };
+  const stage = map[S.active];
+  if (!stage) return null;
+  const key = VAR_KEYS[stage];
+  const data = S[stage];
+  if (!data) return { key, data: null };
+  // 保留 revision/schema_version 字段，更新内容
+  return { key, data };
+}
+$('#saveBtn').onclick = () => {
+  const info = currentVarForTab();
+  if (!info || !info.data) { flash('当前 Tab 无数据可写回'); return; }
+  // 浏览器侧无 SetWorkflowVar 开放接口（见 spec/xdpai-mini-app/api.md §3）
+  flash('浏览器侧暂不支持写回：平台网关未向浏览器开放 SetWorkflowVar 接口。请使用「导出本 Tab JSON」后经 xdpai 平台 / AI 助手写回。');
+};
+$('#exportBtn').onclick = () => {
+  const info = currentVarForTab();
+  if (!info || !info.data) { flash('当前 Tab 无数据可导出'); return; }
+  const text = JSON.stringify(info.data, null, 2);
+  try { navigator.clipboard.writeText(text); flash('已复制变量「' + info.key + '」的 JSON 到剪贴板'); }
+  catch { prompt('复制以下 JSON（变量 ' + info.key + '）：', text); flash('请复制文本'); }
+};
+function flash(msg) { $('#saveState').textContent = msg; clearTimeout(flash._t); flash._t = setTimeout(() => $('#saveState').textContent = '', 5000); }
+
+// ==================== 错误 / 提示 ====================
+function showError(msg) { const e = $('#error'); e.textContent = msg; e.style.display = 'block'; }
+function hideError() { $('#error').style.display = 'none'; }
+function showNotice(msg) { const n = $('#notice'); n.innerHTML = msg; n.style.display = 'block'; }
+function hideNotice() { $('#notice').style.display = 'none'; }
+
+// ==================== 初始化 ====================
+$('#loadBtn').onclick = () => load($('#taskIdInput').value);
+$('#taskIdInput').addEventListener('keydown', e => { if (e.key === 'Enter') load($('#taskIdInput').value); });
+$('#reloadBtn').onclick = () => load(S.taskId || $('#taskIdInput').value);
+
+(function init() {
+  const q = new URLSearchParams(location.search).get('task_id');
+  if (q) { $('#taskIdInput').value = q; load(q); }
+  else {
+    // 无 task_id 时展示引导态
+    $('#heroCard').style.display = ''; $('#heroCard').querySelector('h1').textContent = '需求智能评估与排期';
+    $('#heroCard').querySelector('p').textContent = '输入 XDPai Task ID，读取需求详情与需求智能排期流程变量（需求理解 / 任务拆解 / 工作量评估 / 排期生成）。';
+    $('#dataBadge').textContent = '等待输入 Task ID';
+  }
+})();
+</script>
+</body>
+</html>

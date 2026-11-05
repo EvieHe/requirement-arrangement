@@ -1,0 +1,9 @@
+{
+  "appId": "requirement-arrangement",
+  "name": "需求智能评估与排期",
+  "description": "输入 XDPai Task ID，读取需求详情与需求智能排期流程变量（需求理解/任务拆解/工作量评估/排期生成），支持编辑与查看。",
+  "upstreamType": "static",
+  "entry": "index.html",
+  "dist": ".",
+  "visibility": "public"
+}
