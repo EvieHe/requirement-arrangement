@@ -1,7 +1,7 @@
 <!doctype html>
 <html lang="zh-CN">
 <head>
-  <meta name="app-version" content="v15">
+  <meta name="app-version" content="v16">
 <meta charset="utf-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1"/>
 <title>xdpai · 需求智能评估与排期</title>
@@ -45,6 +45,10 @@
 .chat-bubble-md blockquote{margin:6px 0;padding:4px 10px;border-left:3px solid #c8c2fa;background:#fafaff;color:#5e6574}
 .chat-bubble-md strong{font-weight:800}
 .chat-bubble-md hr{border:0;border-top:1px solid #e0e3ea;margin:8px 0}
+/* 流式思考区 + 光标 */
+.chat-stream-thinking{font-size:12px;color:#9aa1ad;background:#f4f5f9;border-radius:8px;padding:6px 10px;margin-bottom:6px;white-space:pre-wrap;line-height:1.5}
+.stream-cursor{display:inline-block;width:7px;height:14px;background:var(--purple);vertical-align:-2px;margin-left:2px;animation:chatBlink 1s step-end infinite}
+@keyframes chatBlink{0%,100%{opacity:1}50%{opacity:0}}
 @media(max-width:800px){.chat-panel{right:8px;bottom:70px;width:calc(100vw - 16px);height:60vh}}
 </style>
 </head>
@@ -793,10 +797,10 @@ function chatMsgIsAI(m) { return m.sender_type === 'silicon' || m.sender_type ==
 function chatMsgIsSystem(m) { return m.type === 'system' || m.sender_type === 'system'; }
 function chatSenderName(m) { return m.sender_nickname || m.sender_name || m.sender_id || '未知'; }
 
-async function loadChatMessages() {
+async function loadChatMessages(silent) {
   const convId = getConvId();
   if (!convId) { $('#chatList').innerHTML = '<div class="chat-msg"><div class="chat-bubble">未获取到会话 ID，请先加载需求。</div></div>'; return; }
-  $('#chatList').innerHTML = '<div class="chat-msg"><div class="chat-bubble" style="color:#b7bcc7">加载消息中…</div></div>';
+  if (!silent) $('#chatList').innerHTML = '<div class="chat-msg"><div class="chat-bubble" style="color:#b7bcc7">加载消息中…</div></div>';
   try {
     const r = await fetch(GATEWAY_IM + '/GetMessages', {
       method: 'POST', credentials: 'include', headers: { 'Content-Type': 'application/json' },
@@ -808,12 +812,12 @@ async function loadChatMessages() {
     if (Array.isArray(msgs) && msgs.length) msgs = msgs.slice().reverse();  // 倒序返回 → 恢复正序
     renderChatMessages(msgs);
   } catch (e) {
-    $('#chatList').innerHTML = '<div class="chat-msg"><div class="chat-bubble">加载失败：' + esc(e && e.message || '') + '</div></div>';
+    if (!silent) $('#chatList').innerHTML = '<div class="chat-msg"><div class="chat-bubble">加载失败：' + esc(e && e.message || '') + '</div></div>';
   }
 }
 function renderChatMessages(msgs) {
   if (!msgs.length) { $('#chatList').innerHTML = '<div class="chat-msg"><div class="chat-bubble" style="color:#b7bcc7">暂无消息</div></div>'; return; }
-  $('#chatList').innerHTML = msgs.map(m => {
+  let html = msgs.map(m => {
     const mine = chatMsgIsMine(m);
     const ai = chatMsgIsAI(m);
     const sys = chatMsgIsSystem(m);
@@ -832,6 +836,11 @@ function renderChatMessages(msgs) {
       + '<div class="chat-time">' + time + '</div>'
       + '</div>';
   }).join('');
+  // 有 AI 消息正在回复（status=sending）→ 追加「正在回复」指示
+  if (msgs.some(m => m.status === 'sending' && chatMsgIsAI(m))) {
+    html += '<div class="chat-msg"><div class="chat-sender">AI<span class="chat-ai-tag">正在回复</span></div><div class="chat-bubble chat-bubble-md"><span class="stream-cursor"></span></div></div>';
+  }
+  $('#chatList').innerHTML = html;
   const list = $('#chatList'); list.scrollTop = list.scrollHeight;
 }
 async function sendChatMessage() {
@@ -866,14 +875,24 @@ $('#chatFab').onclick = () => {
   const panel = $('#chatPanel');
   const show = panel.style.display === 'none';
   panel.style.display = show ? 'flex' : 'none';
-  if (show) loadChatMessages();
+  if (show) { loadChatMessages(); startChatPoll(); }
+  else stopChatPoll();
 };
-$('#chatClose').onclick = () => { $('#chatPanel').style.display = 'none'; };
+$('#chatClose').onclick = () => { $('#chatPanel').style.display = 'none'; stopChatPoll(); };
 $('#chatRefresh').onclick = loadChatMessages;
 $('#chatSend').onclick = sendChatMessage;
 $('#chatText').addEventListener('keydown', e => {
   if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendChatMessage(); }
 });
+
+// ==================== 自动刷新（轮询，替代真流式） ====================
+// 真流式（tipai/web 的 WS 通道 wss://xdclaw.woa.com/xdpai.gateway.ws.ws/?token=t_uid）在小应用域不可行：
+// ① t_uid 是 xdclaw.woa.com 域登录 cookie，app.xdpai.woa.com 跨域读不到（实测 cookie 列表无 t_uid）；
+// ② xdpai-apps check 硬约束禁止读取登录 cookie。
+// 折中：浮层打开时每 3 秒轮询 GetMessages，AI 回复中显示「正在回复」，回复完自动刷新出完整消息。
+let chatPollTimer = null;
+function startChatPoll() { stopChatPoll(); chatPollTimer = setInterval(() => loadChatMessages(true), 3000); }
+function stopChatPoll() { if (chatPollTimer) { clearInterval(chatPollTimer); chatPollTimer = null; } }
 </script>
 </body>
 </html>
