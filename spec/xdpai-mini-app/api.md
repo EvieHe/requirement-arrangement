@@ -69,7 +69,13 @@ rpc SetWorkflowVar(xdpai.workbench.sop.SetWorkflowVarReq) returns (xdpai.workben
 
 并转发到 sop 后端。页面已能 `GetInstance` 拿到 `instance_id`，透传后写回链路即可打通（`GetInstance → SetWorkflowVar(instance_id, name, value)`）。更友好可改为收 `task_id`（由网关转 instance_id，与 mcp 服务一致）。
 
-**当前结论**：读链路完整直连；写链路受平台网关缺口阻塞，页面诚实标记「保存写回」并保留「导出本 Tab JSON」兜底（经 xdpai 平台 / AI 助手写回）。
+**当前结论**：读链路完整直连；写链路受平台网关缺口阻塞。
+
+**已采用的折中实现（先跑通，后提需）**：页面「保存写回」不再造假按钮，改为**生成可执行的写回命令**（`curl` 调 `apipai.woa.com/xdpai.aihelper.mcp.mcp/SetWorkflowVar`，token 用 `$XDPAI_MCP_TOKEN` 环境变量占位、不硬编码），复制后由用户在具备 `XDPAI_MCP_TOKEN` 的环境（本地虾 / 沙箱）执行即可真正写回。同时保留「导出本 Tab JSON」兜底。
+
+> 曾评估「页面让用户填个人 token 后浏览器直连」，实测**不可行**：即使带 token，浏览器跨域到 `apipai.woa.com` 仍被 CORS 拦截（`Failed to fetch`）。CORS 是浏览器强制机制，JS 无法绕过，与 token 无关。
+
+**后续待办（平台侧提需）**：在 `workflowcgi` 透传 `SetWorkflowVar` 后，页面把「生成命令」改为浏览器直连写回（`GetInstance → SetWorkflowVar`），去掉对 `XDPAI_MCP_TOKEN` 的依赖。
 
 ## 4. 重跑 AI 节点
 

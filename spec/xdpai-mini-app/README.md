@@ -456,7 +456,11 @@ stale 必须明确提示：
 
 **修复建议（平台侧）**：`workflowcgi` 照 `GetInstance` 模式透传 `SetWorkflowVar`（页面已能 `GetInstance` 拿 `instance_id`，透传后写回即可打通）。
 
-因此页面**不造假「保存写回」按钮**：编辑为内存态，并提供「导出本 Tab JSON」兜底（用户/ AI 助手经 xdpai 平台 / xdpai skill 写回）。平台透传后，本节的写回语义可直接接入。
+因此页面**不造假「保存写回」按钮**：编辑为内存态，「保存写回」改为**生成可执行写回命令**（`curl` 调 mcp 网关，token 用 `$XDPAI_MCP_TOKEN` 环境变量占位、不硬编码），复制后在具备 token 的环境执行即可写回；并保留「导出本 Tab JSON」兜底。
+
+> 曾评估「页面让用户填个人 token 后浏览器直连」，实测不可行：带 token 跨域到 `apipai.woa.com` 仍被 CORS 拦截。CORS 与 token 无关，JS 无法绕过。
+
+**后续待办**：平台在 `workflowcgi` 透传 `SetWorkflowVar` 后，页面改为浏览器直连写回（`GetInstance → SetWorkflowVar`），去掉对 `XDPAI_MCP_TOKEN` 的依赖。
 
 ---
 

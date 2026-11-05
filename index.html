@@ -1,7 +1,7 @@
 <!doctype html>
 <html lang="zh-CN">
 <head>
-  <meta name="app-version" content="v10">
+  <meta name="app-version" content="v11">
 <meta charset="utf-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1"/>
 <title>xdpai · 需求智能评估与排期</title>
@@ -544,7 +544,10 @@ function markDirty(stage) {
   renderStages();
 }
 
-// ==================== 写回（诚实处理限制） ====================
+// ==================== 写回 ====================
+// 浏览器侧当前无直连写接口（workflowcgi 未透传 SetWorkflowVar；mcp 网关 CORS 拦截）。
+// 折中：生成「可执行的写回命令」，用户在具备 XDPAI_MCP_TOKEN 的环境（本地虾/沙箱）执行即可真正写回。
+// 待平台在 workflowcgi 透传 SetWorkflowVar 后，此处改为浏览器直连（见 spec/xdpai-mini-app/api.md §3）。
 function currentVarForTab() {
   const map = { requirement: null, understanding: 'understanding', breakdown: 'breakdown', estimation: 'estimation', scheduling: 'scheduling' };
   const stage = map[S.active];
@@ -552,14 +555,40 @@ function currentVarForTab() {
   const key = VAR_KEYS[stage];
   const data = S[stage];
   if (!data) return { key, data: null };
-  // 保留 revision/schema_version 字段，更新内容
   return { key, data };
 }
-$('#saveBtn').onclick = () => {
+// 生成一条 curl 写回命令（heredoc + --data-binary，规避 shell 转义；token 用环境变量占位，不硬编码）
+function buildWritebackCmd(key, data) {
+  const valueStr = JSON.stringify(data);                                   // 变量值 = JSON 字符串
+  const payload = JSON.stringify({ task_id: S.taskId, name: key, value: valueStr });
+  return 'curl -s -X POST "https://apipai.woa.com/xdpai.aihelper.mcp.mcp/SetWorkflowVar" \\\n'
+    + '  -H "Content-Type: application/json" \\\n'
+    + '  -H "Authorization: Bearer $XDPAI_MCP_TOKEN" \\\n'
+    + "  --data-binary @- <<'XDPAI_PAYLOAD'\n"
+    + payload + '\n'
+    + 'XDPAI_PAYLOAD';
+}
+// 收集「当前 Tab 变量 + 可能已变更的 init（stage_status）」
+function collectWritebackCmds() {
   const info = currentVarForTab();
-  if (!info || !info.data) { flash('当前 Tab 无数据可写回'); return; }
-  // 浏览器侧无 SetWorkflowVar 开放接口（见 spec/xdpai-mini-app/api.md §3）
-  flash('浏览器侧暂不支持写回：平台网关未向浏览器开放 SetWorkflowVar 接口。请使用「导出本 Tab JSON」后经 xdpai 平台 / AI 助手写回。');
+  if (!info || !info.data) return [];
+  const cmds = [{ key: info.key, cmd: buildWritebackCmd(info.key, info.data) }];
+  if (S.init && S.init.stage_status && S.dirty && Object.values(S.dirty).some(Boolean)) {
+    cmds.push({ key: VAR_KEYS.init, cmd: buildWritebackCmd(VAR_KEYS.init, S.init) });
+  }
+  return cmds;
+}
+function showWriteback(cmds) {
+  const text = cmds.map(c => '# 写回变量：' + c.key + '\n' + c.cmd).join('\n\n');
+  try { navigator.clipboard.writeText(text); }
+  catch (e) { /* 剪贴板不可用则靠 prompt 兜底 */ }
+  prompt('已复制写回命令到剪贴板。也可从下面手动复制（在具备 XDPAI_MCP_TOKEN 的环境执行，本地虾/沙箱）：', text);
+  flash('已生成写回命令（含 ' + cmds.map(c => c.key).join('、') + '）并复制，在具备 XDPAI_MCP_TOKEN 的环境执行即可写回。');
+}
+$('#saveBtn').onclick = () => {
+  const cmds = collectWritebackCmds();
+  if (!cmds.length) { flash('当前 Tab 无数据可写回'); return; }
+  showWriteback(cmds);
 };
 $('#exportBtn').onclick = () => {
   const info = currentVarForTab();
@@ -568,7 +597,7 @@ $('#exportBtn').onclick = () => {
   try { navigator.clipboard.writeText(text); flash('已复制变量「' + info.key + '」的 JSON 到剪贴板'); }
   catch { prompt('复制以下 JSON（变量 ' + info.key + '）：', text); flash('请复制文本'); }
 };
-function flash(msg) { $('#saveState').textContent = msg; clearTimeout(flash._t); flash._t = setTimeout(() => $('#saveState').textContent = '', 5000); }
+function flash(msg) { $('#saveState').textContent = msg; clearTimeout(flash._t); flash._t = setTimeout(() => $('#saveState').textContent = '', 6000); }
 
 // ==================== 错误 / 提示 ====================
 function showError(msg) { const e = $('#error'); e.textContent = msg; e.style.display = 'block'; }
