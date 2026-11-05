@@ -45,13 +45,31 @@ requirement_arrangement.scheduling
 
 ## 3. 写 workflow var —— ⚠️ 浏览器侧无开放接口（核心限制）
 
+> 已参考 xdpai skill 的 `workflow_set_var.sh` 逻辑并实测验证（2026-11-05 用 ego-browser 在应用页内 fetch 实测）：
+
 | 层 | 接口 | 入参 | 浏览器可直连 |
 |---|---|---|---|
-| sop 后端 | `xdpai.workbench.sop` 的 `SetWorkflowVar` | `{instance_id, name, value}` | ❌（内部服务） |
-| workflowcgi 网关 | 未透传 SetWorkflowVar | — | ❌ |
-| agent 侧 mcp | `xdpai.aihelper.mcp.mcp` 的 `SetWorkflowVar` | `{task_id, name, value}` | ❌（Bearer token，浏览器拿不到） |
+| sop 后端 | `xdpai.workbench.sop` 的 `SetWorkflowVar` | `{instance_id, name, value}` | ❌（内部 trpc 服务，无对外网关） |
+| workflowcgi 网关 | **未透传 SetWorkflowVar**（proto v0.0.9 无此 rpc） | — | ❌ |
+| agent 侧 mcp | `xdpai.aihelper.mcp.mcp` 的 `SetWorkflowVar` | `{task_id, name, value}` | ❌（① apipai.woa.com 跨域 CORS 拦截 → `Failed to fetch`；② Bearer `XDPAI_MCP_TOKEN` 为平台注入 agent 凭证，浏览器无） |
 
-**结论**：读链路（GetTask / GetInstance）浏览器可完整直连；**写链路（写回 workflow var）当前平台网关未向浏览器开放**。页面据此诚实处理「保存写回」，不造假按钮。
+**实测证据**（应用页 `requirement-arrangement.app.xdpai.woa.com` 内 fetch）：
+
+- `xdclaw.woa.com/xdpai.gateway.workflowcgi.workflowcgi/GetInstance` → 200（读链路 ✅，返回 `instance_id`）
+- `xdclaw.woa.com/xdpai.aihelper.mcp.mcp/GetWorkflowVar` → `Failed to fetch`（xdclaw 域无 mcp 入口）
+- `apipai.woa.com/xdpai.aihelper.mcp.mcp/GetWorkflowVar` → `Failed to fetch`（CORS 白名单不含 app.xdpai.woa.com）
+
+**根因**：浏览器可达的唯一 workflow 网关 `workflowcgi`（xdclaw.woa.com，cookie + CORS 白名单）**没有透传 sop 后端的 `SetWorkflowVar`**；而带 `SetWorkflowVar` 的 mcp 网关（apipai.woa.com）是 agent 侧（Bearer token + 无 CORS），浏览器不可达。
+
+**修复建议（平台侧，一行 proto）**：在 `xdpai.gateway.workflowcgi` 照 `GetInstance` 的透传模式新增
+
+```proto
+rpc SetWorkflowVar(xdpai.workbench.sop.SetWorkflowVarReq) returns (xdpai.workbench.sop.SetWorkflowVarRsp);
+```
+
+并转发到 sop 后端。页面已能 `GetInstance` 拿到 `instance_id`，透传后写回链路即可打通（`GetInstance → SetWorkflowVar(instance_id, name, value)`）。更友好可改为收 `task_id`（由网关转 instance_id，与 mcp 服务一致）。
+
+**当前结论**：读链路完整直连；写链路受平台网关缺口阻塞，页面诚实标记「保存写回」并保留「导出本 Tab JSON」兜底（经 xdpai 平台 / AI 助手写回）。
 
 ## 4. 重跑 AI 节点
 

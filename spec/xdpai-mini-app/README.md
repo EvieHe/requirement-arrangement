@@ -445,14 +445,18 @@ stale 必须明确提示：
 
 不要一次保存覆盖全部变量。
 
-### ⚠️ 写回能力限制（已查证，2026-11-05）
+### ⚠️ 写回能力限制（已查证并实测，2026-11-05）
 
-浏览器侧**当前没有开放的「写 workflow var」接口**，详见 `api.md §3`：
+浏览器侧**当前没有开放的「写 workflow var」接口**。已参考 xdpai skill 的 `workflow_set_var.sh`（其逻辑为 `apipai.woa.com/xdpai.aihelper.mcp.mcp/SetWorkflowVar` + Bearer token + 入参 `task_id`）并实测三条路径，均不可行，详见 `api.md §3`：
 
-- `sop` 后端有 `SetWorkflowVar(instance_id, name, value)`，但 `workflowcgi` 网关**未透传**该接口；
-- agent 侧 `xdpai.aihelper.mcp.mcp/SetWorkflowVar` 需 Bearer token，浏览器拿不到。
+- `sop` 后端有 `SetWorkflowVar(instance_id, name, value)`，但 `workflowcgi` 网关（浏览器可达的唯一 workflow 网关）**未透传**该接口（proto v0.0.9 无此 rpc）；
+- agent 侧 mcp `SetWorkflowVar(task_id, name, value)` 在 `apipai.woa.com`，浏览器跨域被 CORS 拦截（实测 `Failed to fetch`），且需平台注入的 `XDPAI_MCP_TOKEN`。
 
-因此页面**不造假「保存写回」按钮**：编辑为内存态，并提供「导出本 Tab JSON」兜底（用户/ AI 助手经 xdpai 平台写回）。平台开放浏览器写接口后，本节的写回语义可直接接入。
+**根因**：浏览器可达的 `workflowcgi`（xdclaw.woa.com，cookie + CORS 白名单）缺 `SetWorkflowVar` 透传；带该接口的 mcp 网关是 agent 侧，浏览器不可达。
+
+**修复建议（平台侧）**：`workflowcgi` 照 `GetInstance` 模式透传 `SetWorkflowVar`（页面已能 `GetInstance` 拿 `instance_id`，透传后写回即可打通）。
+
+因此页面**不造假「保存写回」按钮**：编辑为内存态，并提供「导出本 Tab JSON」兜底（用户/ AI 助手经 xdpai 平台 / xdpai skill 写回）。平台透传后，本节的写回语义可直接接入。
 
 ---
 
