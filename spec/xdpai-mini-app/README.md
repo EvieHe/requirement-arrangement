@@ -222,13 +222,14 @@ Hero 不展示完整需求正文，只展示：
 
 遵循 requirement-arrangement-planner schema 4.0。
 
-展示并**支持编辑**：
+展示：
 
-- goal（textarea 编辑）
-- scope（列表，逐项编辑 + 增删）
-- out_of_scope（列表，逐项编辑 + 增删）
-- assumptions（列表，逐项编辑 + 增删）
-- frontend modules / backend modules
+- goal
+- scope
+- out_of_scope
+- frontend modules
+- backend modules
+- assumptions / confirmed rules（如果后续 schema 拆分，则按最新 Skill）
 - review_items
 
 模块支持编辑：
@@ -255,8 +256,6 @@ review_items：
 
 - ai_assumption
 - impact
-
-> 编辑后的写回与其它阶段一致：走「提交变更」（只发 diff + 回退下游节点），详见 §13。
 
 ---
 
@@ -481,8 +480,6 @@ stale 必须明确提示：
 | 任务拆解 | 工作量评估 |
 | 工作量评估 | 排期生成 |
 | 排期生成 | 排期生成 |
-
-**防重复提交**：提交成功后刷新原始快照，再次点击「提交变更」时 diff 为空、不会重复发同一条通知。
 
 > 曾评估「页面让用户填个人 token 后浏览器直连」，实测不可行：带 token 跨域到 `apipai.woa.com` 仍被 CORS 拦截。CORS 与 token 无关，JS 无法绕过。
 
@@ -739,7 +736,6 @@ Task ID
 - 编辑（内存态）+ 上游修改 → 下游 stale 联动
 - 错误状态：Task 不存在 / SOP 未运行 / 变量缺失 / JSON 非法 / API 失败，均不白屏
 - **提交变更**：diff（只发人改的字段）+ 回退下游节点重新评估（见 §13，实测打通）
-- 防重复提交：提交后刷新快照，重复点击不再发同一条通知
 
 ### 尚无法实现
 
@@ -748,32 +744,4 @@ Task ID
 ### 待验证
 
 - 真实 task_id 端到端：`8b4dd104-eec2-40b4-9160-85ae0a7d788b`（已实测读链路 + 发消息链路）
-
----
-
-## 23. 聊天浮层（与任务会话 AI 对话）
-
-工作台页面提供右下角**聊天浮层**，让人不用跳出页面就能与任务会话里的 AI 对话、查看它的回复——把「人机协作」闭环在页面上。
-
-### 复用与实现
-
-- **复用已有组件契约**：消息历史组件 `message-history`（`cp-67374d13-1832-4abc-abe9-71e96f3199e1`），其契约即 `imcgi` 网关的 `GetMessages`（入参 `conversation_id` / `limit`，返回 `messages`，倒序需 reverse，`text` 取自 `content.text`，`sender_name` 由成员名映射）。
-- **发送**：`imcgi` 网关的 `SendMessage`（已在「提交变更」中打通）。
-- **UI 风格**：参考 xdpai 前端 `tipai/web` 的聊天样式，不从头造组件。
-
-### 交互
-
-```
-右下角悬浮按钮
-  → 点击展开浮层（消息列表 + 输入框 + 发送）
-  → 消息列表：GetMessages 拉历史（自己靠右、AI 靠左）
-  → 输入框发送 → SendMessage → 刷新列表
-  → 看到 AI 的回复（发送后刷新 / 手动刷新）
-```
-
-### 关键约束
-
-- 浮层只做「读历史 + 发消息」，不做撤回/已读/流式控制（组件契约的边界）
-- `conversation_id` 复用「提交变更」的 `conv_id`（来自 `GetInstance` / `GetTask`）
-- 消息文本转义展示，不执行消息中的 HTML 或工具输出
 
