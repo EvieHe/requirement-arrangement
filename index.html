@@ -1,13 +1,32 @@
 <!doctype html>
 <html lang="zh-CN">
 <head>
-  <meta name="app-version" content="v13">
+  <meta name="app-version" content="v14">
 <meta charset="utf-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1"/>
 <title>xdpai · 需求智能评估与排期</title>
 <style>
 :root{--bg:#f6f7fb;--line:#e7e9f1;--text:#182033;--muted:#707787;--purple:#6557e6;--purpleSoft:#f1efff;--green:#2f9d68;--greenSoft:#eaf7f0;--blue:#4b78e6;--blueSoft:#edf2ff;--amber:#c88c34;--amberSoft:#fff5df;--red:#c14b3a;--redSoft:#fff0ec;--shadow:0 8px 24px rgba(28,37,64,.055);--r:16px}
 *{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font-family:Inter,"PingFang SC","Microsoft YaHei",system-ui,-apple-system,sans-serif}button,input,select,textarea{font:inherit}.topbar{height:58px;padding:0 28px;background:#fff;border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:20}.brand{display:flex;gap:10px;align-items:center;font-weight:800}.logo{width:30px;height:30px;border-radius:9px;background:linear-gradient(135deg,var(--purple),#988aff);color:#fff;display:grid;place-items:center}.wrap{max-width:1640px;margin:auto;padding:18px 20px 110px}.card{background:#fff;border:1px solid var(--line);border-radius:var(--r);box-shadow:var(--shadow)}.entry{margin-bottom:12px;padding:14px 18px;display:flex;gap:10px;align-items:center}.entry input{flex:1;border:1px solid var(--line);border-radius:10px;padding:10px 12px;font-size:13px}.entry .hint{font-size:11px;color:var(--muted);margin-top:6px}.btn{border:1px solid var(--line);background:#fff;border-radius:10px;padding:9px 13px;cursor:pointer;white-space:nowrap}.btn.primary{background:var(--purple);border-color:var(--purple);color:#fff}.btn:disabled{opacity:.5;cursor:not-allowed}.hero{padding:19px 22px;display:flex;justify-content:space-between;gap:16px}.hero h1{font-size:22px;margin:0}.hero p{margin:7px 0 0;color:var(--muted);font-size:13px}.tags{display:flex;gap:7px;margin-top:10px;flex-wrap:wrap}.tag,.chip{font-size:11px;padding:4px 8px;border-radius:999px;background:#f1f2f6;color:#5f6675}.purple{background:var(--purpleSoft);color:var(--purple)}.flow{margin-top:12px;padding:12px 16px;display:flex;align-items:center;gap:14px}.progress{width:150px}.progress-line{display:flex;align-items:center;gap:8px}.progress-num{font-size:20px;font-weight:850}.track{height:6px;background:#eceef4;border-radius:99px;overflow:hidden;flex:1}.fill{height:100%;background:linear-gradient(90deg,var(--purple),#9487f7)}.stages{display:flex;align-items:center;gap:4px;flex-wrap:wrap}.stage{display:flex;align-items:center;gap:5px;padding:6px 9px;border-radius:9px;font-size:11px;background:#f5f6f9;cursor:pointer;border:1px solid transparent}.stage.completed{background:var(--greenSoft);color:var(--green)}.stage.stale{background:var(--amberSoft);color:#94691f}.stage.pending{background:#f1f2f6;color:#8a91a0}.stage.ready{background:var(--blueSoft);color:var(--blue)}.stage.active{border-color:#bdb5ff;background:var(--purpleSoft);color:var(--purple);font-weight:800}.dot{width:15px;height:15px;border-radius:50%;border:1px solid currentColor;display:grid;place-items:center;font-size:9px}.arrow{color:#c4c8d1}.main{margin-top:12px;overflow:hidden}.tabs{display:flex;gap:2px;padding:0 18px;border-bottom:1px solid var(--line);overflow-x:auto}.tab{padding:13px 16px;font-size:13px;cursor:pointer;border-bottom:2px solid transparent;color:#5e6574;white-space:nowrap}.tab.active{color:var(--purple);border-bottom-color:var(--purple);font-weight:800}.main-head{padding:16px 18px;border-bottom:1px solid var(--line);display:flex;justify-content:space-between}.main-title{font-size:16px;font-weight:800}.main-sub{font-size:11px;color:var(--muted);margin-top:4px}.main-body{padding:16px 18px}.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}.info{border:1px solid var(--line);border-radius:12px;padding:13px}.info h3,.section h3,.module-head h3{font-size:12px;margin:0 0 7px}.info p,.info li{font-size:11px;color:#596071;line-height:1.6}.info ul{margin:0;padding-left:17px}.section{margin-top:16px}.module-block{margin-top:14px}.module-table,.task-table{width:100%;border-collapse:collapse;font-size:11px}.module-table th,.module-table td,.task-table th,.task-table td{padding:9px 8px;border-bottom:1px solid var(--line);text-align:left}.module-table th,.task-table th{background:#fafbfe;color:#687080}.module-table input,.task-table input,.task-table select,.inline-edit{width:100%;border:1px solid transparent;background:transparent;border-radius:7px;padding:6px}.module-table input:hover,.module-table input:focus,.task-table input:hover,.task-table input:focus,.task-table select:hover,.task-table select:focus,.inline-edit:hover,.inline-edit:focus{border-color:#c8c2fa;background:#fff;outline:none}.icon-btn{border:0;background:transparent;color:#8a91a0;cursor:pointer}.qrow{display:grid;grid-template-columns:minmax(240px,1fr) minmax(320px,1.15fr);gap:20px;padding:14px 0;border-bottom:1px solid var(--line)}.qtitle{font-size:12px;font-weight:750}.qhint{font-size:10px;color:var(--muted);margin-top:4px}.choice{display:flex;gap:7px;flex-wrap:wrap}.choice button{border:1px solid var(--line);background:#fff;border-radius:9px;padding:7px 10px;font-size:11px;cursor:pointer}.choice button.active{background:var(--purpleSoft);color:var(--purple);border-color:#beb7ff}.input,.textarea{width:100%;border:1px solid var(--line);border-radius:9px;padding:9px 10px}.textarea{min-height:68px}.task-id{font-size:9px;background:#f1f2f6;padding:2px 5px;border-radius:5px}.type{font-size:10px;padding:3px 7px;border-radius:999px}.frontend{background:var(--greenSoft);color:var(--green)}.backend{background:var(--blueSoft);color:var(--blue)}.other{background:var(--amberSoft);color:var(--amber)}.metric-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:14px}.metric{border:1px solid var(--line);border-radius:12px;padding:13px}.metric b{display:block;font-size:20px}.metric span{font-size:10px;color:var(--muted)}.gantt-wrap{overflow:auto}.gantt{min-width:1080px}.ghead,.grow,.ggroup{display:grid;grid-template-columns:270px 110px 72px 92px 92px repeat(var(--days),minmax(78px,1fr))}.ghead{background:#fafbfe;font-size:10px;color:#687080;font-weight:700}.ghead>div,.gcell,.gday{padding:9px 8px;border-right:1px solid #eef0f5;border-bottom:1px solid #eef0f5}.ggroup{background:#fcfcff;font-size:11px;font-weight:750}.ggroup>div:first-child{grid-column:1/6;padding:9px 10px;border-bottom:1px solid var(--line)}.ggroup>div:last-child{grid-column:6/-1;border-bottom:1px solid var(--line)}.grow{min-height:54px;font-size:11px}.gday{position:relative;padding:0}.bar{position:absolute;left:6px;top:14px;height:24px;border-radius:7px;color:#fff;padding:0 8px;display:flex;align-items:center;font-size:9px;font-weight:800;white-space:nowrap}.bar.frontend{background:#42ad76}.bar.backend{background:#577fdf}.bar.other{background:#d39a43}.bar.critical{outline:2px solid rgba(101,87,230,.35);outline-offset:2px}.footerbar{position:fixed;left:0;right:0;bottom:0;background:#fff;border-top:1px solid var(--line)}.footer-inner{max-width:1640px;margin:auto;padding:12px 20px;display:flex;justify-content:space-between;align-items:center}.footer-meta{display:flex;gap:18px;font-size:11px;color:#5e6574}.error{margin-top:12px;padding:14px;color:#a5483d;background:#fff0ec;border:1px solid #f0c9c1;border-radius:12px;display:none}.notice{margin-top:12px;padding:12px 14px;background:var(--amberSoft);color:#94691f;border:1px solid #f0d9a8;border-radius:12px;font-size:12px;display:none;line-height:1.7}.warn-inline{background:var(--amberSoft);color:#94691f;border-radius:8px;padding:9px 11px;font-size:11px;margin:10px 0;line-height:1.6}.empty-state{padding:40px;text-align:center;color:var(--muted);font-size:13px;line-height:1.8}.markdown{font-size:13px;line-height:1.75;color:#303a4d}.markdown h1,.markdown h2,.markdown h3{margin:18px 0 8px;line-height:1.4}.markdown h1{font-size:20px}.markdown h2{font-size:16px;border-bottom:1px solid var(--line);padding-bottom:6px}.markdown h3{font-size:14px}.markdown p{margin:8px 0}.markdown ul,.markdown ol{margin:8px 0;padding-left:22px}.markdown li{margin:3px 0}.markdown blockquote{margin:10px 0;padding:6px 14px;border-left:3px solid #c8c2fa;background:#fafaff;color:#5e6574}.markdown table{border-collapse:collapse;margin:10px 0;font-size:12px}.markdown table th,.markdown table td{border:1px solid var(--line);padding:6px 10px}.markdown table th{background:#fafbfe}.markdown code{background:#f1f2f6;border-radius:4px;padding:1px 5px;font-size:12px;font-family:ui-monospace,SFMono-Regular,Menlo,monospace}.markdown hr{border:0;border-top:1px solid var(--line);margin:14px 0}.markdown strong{font-weight:800}.markdown pre{background:#f6f7fb;border:1px solid var(--line);border-radius:10px;padding:12px;overflow:auto}.markdown pre code{background:transparent;padding:0}.data-badge{display:inline-flex;align-items:center;gap:6px;font-size:11px;padding:5px 10px;border-radius:999px}.data-badge.demo{background:var(--amberSoft);color:#94691f}.data-badge.real{background:var(--greenSoft);color:var(--green)}@media(max-width:800px){.grid3,.metric-grid{grid-template-columns:1fr}.qrow{grid-template-columns:1fr}.hero{flex-direction:column}.flow{align-items:flex-start;flex-direction:column}.entry{flex-direction:column;align-items:stretch}.footerbar{position:static}}
+/* 对话浮层 */
+.chat-fab{position:fixed;right:24px;bottom:88px;width:52px;height:52px;border-radius:50%;border:none;background:var(--purple);color:#fff;font-size:24px;cursor:pointer;box-shadow:0 6px 18px rgba(101,87,230,.35);z-index:40;display:flex;align-items:center;justify-content:center;transition:transform .15s}.chat-fab:hover{transform:scale(1.08)}
+.chat-panel{position:fixed;right:24px;bottom:150px;width:380px;max-width:calc(100vw - 32px);height:520px;max-height:calc(100vh - 180px);background:#fff;border:1px solid var(--line);border-radius:16px;box-shadow:0 16px 48px rgba(28,37,64,.18);z-index:50;display:flex;flex-direction:column;overflow:hidden}
+.chat-head{display:flex;align-items:center;justify-content:space-between;padding:12px 16px;border-bottom:1px solid var(--line);background:#fafbfe}
+.chat-title{font-size:14px;font-weight:800}
+.chat-head-actions{display:flex;gap:6px}
+.chat-head-btn{border:none;background:transparent;color:#8a91a0;cursor:pointer;font-size:16px;padding:4px 8px;border-radius:8px;line-height:1}.chat-head-btn:hover{background:#f1f2f6;color:#5e6574}
+.chat-list{flex:1;overflow-y:auto;padding:14px;display:flex;flex-direction:column;gap:10px;background:var(--bg)}
+.chat-msg{display:flex;flex-direction:column;max-width:85%;align-self:flex-start}
+.chat-msg.mine{align-self:flex-end;align-items:flex-end}
+.chat-msg .chat-sender{font-size:11px;color:var(--muted);margin-bottom:3px;display:flex;align-items:center;gap:5px}
+.chat-msg .chat-ai-tag{font-size:9px;background:#f1f2f6;color:#5f6675;padding:1px 5px;border-radius:4px}
+.chat-msg .chat-bubble{font-size:13px;line-height:1.6;padding:9px 12px;border-radius:12px;word-break:break-word;white-space:pre-wrap;background:#fff;border:1px solid var(--line)}
+.chat-msg.mine .chat-bubble{background:var(--purple);border-color:var(--purple);color:#fff}
+.chat-msg .chat-time{font-size:10px;color:#b7bcc7;margin-top:3px}
+.chat-input-bar{display:flex;gap:8px;align-items:flex-end;padding:10px 12px;border-top:1px solid var(--line);background:#fff}
+.chat-textarea{flex:1;border:1px solid var(--line);border-radius:10px;padding:8px 10px;font-size:13px;resize:none;max-height:100px;min-height:36px}
+.chat-input-bar .btn{padding:8px 14px}
+@media(max-width:800px){.chat-panel{right:8px;bottom:70px;width:calc(100vw - 16px);height:60vh}}
 </style>
 </head>
 <body>
@@ -67,6 +86,23 @@
     <div style="display:flex;gap:8px"><button class="btn" id="exportBtn">导出本 Tab JSON</button> <button class="btn primary" id="saveBtn">提交变更</button></div>
   </div>
 </footer>
+<!-- 对话浮层入口 -->
+<button id="chatFab" class="chat-fab" title="与 AI 对话" style="display:none">💬</button>
+<!-- 对话浮层 -->
+<div id="chatPanel" class="chat-panel" style="display:none">
+  <div class="chat-head">
+    <span class="chat-title">任务会话</span>
+    <div class="chat-head-actions">
+      <button id="chatRefresh" class="chat-head-btn" title="刷新消息">⟳</button>
+      <button id="chatClose" class="chat-head-btn" title="关闭">✕</button>
+    </div>
+  </div>
+  <div id="chatList" class="chat-list"></div>
+  <div class="chat-input-bar">
+    <textarea id="chatText" class="chat-textarea" placeholder="输入消息，Enter 发送 / Shift+Enter 换行" rows="1"></textarea>
+    <button id="chatSend" class="btn primary" title="发送">发送</button>
+  </div>
+</div>
 <script>
 'use strict';
 // ==================== API 契约（见 spec/xdpai-mini-app/api.md） ====================
@@ -164,6 +200,7 @@ async function load(taskId) {
 
     saveOriginal();
     renderAll();
+    initChat();
   } catch (e) {
     showError(humanError(e));
   } finally {
@@ -688,7 +725,10 @@ $('#saveBtn').onclick = async () => {
   $('#saveBtn').disabled = true; $('#saveBtn').textContent = '发送中…';
   try {
     const ok = await sendChangeMessage(info.stage, changes);
-    if (ok) flash('已通知 agent：' + STAGE_NAME[info.stage] + ' 有 ' + changes.length + ' 处改动，将回退到「' + STAGE_ROLLBACK[info.stage] + '」重新评估。');
+    if (ok) {
+      saveOriginal();  // 提交成功后刷新快照，防止再次点击重复发同样的 diff
+      flash('已通知 agent：' + STAGE_NAME[info.stage] + ' 有 ' + changes.length + ' 处改动，将回退到「' + STAGE_ROLLBACK[info.stage] + '」重新评估。');
+    }
   } catch (e) {
     flash('发消息失败：' + (e && e.message ? e.message : '未知错误'));
   } finally {
@@ -725,6 +765,88 @@ $('#reloadBtn').onclick = () => load(S.taskId || $('#taskIdInput').value);
     $('#dataBadge').textContent = '等待输入 Task ID';
   }
 })();
+
+// ==================== 对话浮层（复用 imcgi 消息接口，对齐 tipai/web 聊天组件） ====================
+let chatUserId = '';  // 当前用户 id（区分 mine/other）
+
+function chatMsgIsMine(m) { return chatUserId && m.sender_id === chatUserId; }
+function chatMsgIsAI(m) { return m.sender_type === 'silicon' || m.sender_type === 'agent'; }
+function chatSenderName(m) { return m.sender_nickname || m.sender_name || m.sender_id || '未知'; }
+
+async function loadChatMessages() {
+  const convId = getConvId();
+  if (!convId) { $('#chatList').innerHTML = '<div class="chat-msg"><div class="chat-bubble">未获取到会话 ID，请先加载需求。</div></div>'; return; }
+  $('#chatList').innerHTML = '<div class="chat-msg"><div class="chat-bubble" style="color:#b7bcc7">加载消息中…</div></div>';
+  try {
+    const r = await fetch(GATEWAY_IM + '/GetMessages', {
+      method: 'POST', credentials: 'include', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ conversation_id: convId, limit: 50 }),
+    });
+    if (!r.ok) throw new Error('HTTP ' + r.status);
+    const d = await r.json();
+    let msgs = d.messages || d.list || d.items || [];
+    if (Array.isArray(msgs) && msgs.length) msgs = msgs.slice().reverse();  // 倒序返回 → 恢复正序
+    renderChatMessages(msgs);
+  } catch (e) {
+    $('#chatList').innerHTML = '<div class="chat-msg"><div class="chat-bubble">加载失败：' + esc(e && e.message || '') + '</div></div>';
+  }
+}
+function renderChatMessages(msgs) {
+  if (!msgs.length) { $('#chatList').innerHTML = '<div class="chat-msg"><div class="chat-bubble" style="color:#b7bcc7">暂无消息</div></div>'; return; }
+  $('#chatList').innerHTML = msgs.map(m => {
+    const mine = chatMsgIsMine(m);
+    const ai = chatMsgIsAI(m);
+    const name = chatSenderName(m);
+    const text = (m.content && m.content.text) || m.text || '';
+    const time = m.created_at ? String(m.created_at).slice(11, 16) : '';
+    return '<div class="chat-msg ' + (mine ? 'mine' : '') + '">'
+      + '<div class="chat-sender">' + esc(name) + (ai ? '<span class="chat-ai-tag">AI</span>' : '') + '</div>'
+      + '<div class="chat-bubble">' + esc(text) + '</div>'
+      + '<div class="chat-time">' + time + '</div>'
+      + '</div>';
+  }).join('');
+  const list = $('#chatList'); list.scrollTop = list.scrollHeight;
+}
+async function sendChatMessage() {
+  const convId = getConvId();
+  const text = $('#chatText').value.trim();
+  if (!convId) { flash('未获取到会话 ID'); return; }
+  if (!text) return;
+  $('#chatSend').disabled = true; $('#chatSend').textContent = '发送中';
+  try {
+    const r = await fetch(GATEWAY_IM + '/SendMessage', {
+      method: 'POST', credentials: 'include', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ conversation_id: convId, sender_type: 'user', type: 'text', content: { text } }),
+    });
+    if (!r.ok) throw new Error('HTTP ' + r.status);
+    $('#chatText').value = '';
+    await loadChatMessages();
+  } catch (e) {
+    flash('发送失败：' + (e && e.message || ''));
+  } finally {
+    $('#chatSend').disabled = false; $('#chatSend').textContent = '发送';
+  }
+}
+// 加载成功后初始化：取当前用户 id + 显示入口
+async function initChat() {
+  try {
+    const r = await fetch('/_identity', { credentials: 'include', headers: { Accept: 'application/json' } });
+    if (r.ok) { const id = await r.json(); chatUserId = id.uid || ''; }
+  } catch (e) { /* 忽略身份获取失败 */ }
+  $('#chatFab').style.display = getConvId() ? '' : 'none';
+}
+$('#chatFab').onclick = () => {
+  const panel = $('#chatPanel');
+  const show = panel.style.display === 'none';
+  panel.style.display = show ? 'flex' : 'none';
+  if (show) loadChatMessages();
+};
+$('#chatClose').onclick = () => { $('#chatPanel').style.display = 'none'; };
+$('#chatRefresh').onclick = loadChatMessages;
+$('#chatSend').onclick = sendChatMessage;
+$('#chatText').addEventListener('keydown', e => {
+  if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendChatMessage(); }
+});
 </script>
 </body>
 </html>
