@@ -222,14 +222,13 @@ Hero 不展示完整需求正文，只展示：
 
 遵循 requirement-arrangement-planner schema 4.0。
 
-展示：
+展示并**支持编辑**：
 
-- goal
-- scope
-- out_of_scope
-- frontend modules
-- backend modules
-- assumptions / confirmed rules（如果后续 schema 拆分，则按最新 Skill）
+- goal（textarea 编辑）
+- scope（列表，逐项编辑 + 增删）
+- out_of_scope（列表，逐项编辑 + 增删）
+- assumptions（列表，逐项编辑 + 增删）
+- frontend modules / backend modules
 - review_items
 
 模块支持编辑：
@@ -256,6 +255,8 @@ review_items：
 
 - ai_assumption
 - impact
+
+> 编辑后的写回与其它阶段一致：走「提交变更」（只发 diff + 回退下游节点），详见 §13。
 
 ---
 
@@ -445,15 +446,47 @@ stale 必须明确提示：
 
 不要一次保存覆盖全部变量。
 
-### 写回实现（发消息触发 AI 助手写回，2026-11-05 实测打通）
+### 写回实现（diff + 回退节点，2026-11-05 实测打通）
 
 浏览器侧**没有直连「写 workflow var」的接口**（详见 `api.md §3`）：`workflowcgi` 未透传 `SetWorkflowVar`，mcp 网关 CORS 拦截。
 
-但**「发消息」的网页 IM 网关 `imcgi`（xdclaw.woa.com）有 CORS 白名单 + cookie 鉴权，浏览器可达**。因此写回走「发消息」：页面「保存写回」把写回指令发到任务会话（`conv_id` 来自 `GetInstance`/`GetTask`），由会话中的 AI 助手执行 `workflow_set_var` 真正写回。实测发消息成功（`sender_id=eviehehe`）。
+但**「发消息」的网页 IM 网关 `imcgi`（xdclaw.woa.com）有 CORS 白名单 + cookie 鉴权，浏览器可达**。因此写回走「发消息」：页面「提交变更」把**人改了哪些字段（diff）**发到任务会话，由会话中的 AI 助手（有 `XDPAI_MCP_TOKEN`）更新变量并回退到下游节点重新评估。
+
+**交互**：
+
+```
+编辑（加载时存原始快照）
+  → 点「提交变更」
+  → diff（对比快照 vs 当前数据，只挑出改动的字段）
+  → 发一条通知到任务会话：diff 明细 + 「更新变量 + 回退到 xx 节点重新评估」
+  → AI 助手更新变量（last_modified_by=human）→ 回退下游节点重跑
+  → 刷新看到重新生成的结果
+```
+
+**通知语义**（用 SOP 术语，不造新词）：
+
+```
+我在工作台审查「工作量评估」时做了以下修正（human edit，权威）：
+- BE-01 人日（effort_days）：3 → 4
+
+请先更新 requirement_arrangement.estimation（last_modified_by 置为 human，重算 summary），
+然后回退到「排期生成」节点，让它基于更新后的数据重新评估。
+```
+
+**阶段 → 回退节点映射**：
+
+| 改的阶段 | 回退到 |
+|---|---|
+| 需求理解 | 任务拆解 |
+| 任务拆解 | 工作量评估 |
+| 工作量评估 | 排期生成 |
+| 排期生成 | 排期生成 |
+
+**防重复提交**：提交成功后刷新原始快照，再次点击「提交变更」时 diff 为空、不会重复发同一条通知。
 
 > 曾评估「页面让用户填个人 token 后浏览器直连」，实测不可行：带 token 跨域到 `apipai.woa.com` 仍被 CORS 拦截。CORS 与 token 无关，JS 无法绕过。
 
-**后续待办**：平台在 `workflowcgi` 透传 `SetWorkflowVar` 后，页面改为浏览器直连写回（`GetInstance → SetWorkflowVar`），不依赖 AI 助手、可实时校验。当前「发消息」依赖会话中 AI 助手在线且理解指令，作为过渡方案。
+**后续待办**：平台在 `workflowcgi` 透传 `SetWorkflowVar` 后，页面改为浏览器直连写回（`GetInstance → SetWorkflowVar`），不依赖 AI 助手、可实时校验。当前「发消息 + 回退」依赖会话中 AI 助手在线且理解指令，作为过渡方案。
 
 ---
 
@@ -705,14 +738,42 @@ Task ID
 - `GetInstance` → 解析 `variables_json` → 4 个 AI Tab（需求理解 / 任务拆解 / 工作量评估 / 排期生成，含甘特图、关键路径）
 - 编辑（内存态）+ 上游修改 → 下游 stale 联动
 - 错误状态：Task 不存在 / SOP 未运行 / 变量缺失 / JSON 非法 / API 失败，均不白屏
-- 写回：诚实标记「浏览器侧暂不支持」，提供「导出本 Tab JSON」兜底
+- **提交变更**：diff（只发人改的字段）+ 回退下游节点重新评估（见 §13，实测打通）
+- 防重复提交：提交后刷新快照，重复点击不再发同一条通知
 
 ### 尚无法实现
 
-- **写回 workflow var**：平台网关未向浏览器开放 `SetWorkflowVar`（原因见 `api.md §3`）
-- **重跑 AI 节点**：浏览器侧无「按阶段重跑」入口
+- **浏览器直连写 workflow var**：平台网关未向浏览器开放 `SetWorkflowVar`（原因见 `api.md §3`），当前经「发消息 + AI 助手」间接实现
 
 ### 待验证
 
-- 真实 task_id 端到端：`8b4dd104-eec2-40b4-9160-85ae0a7d788b`（发布后在 xdclaw 域下验证取数）
+- 真实 task_id 端到端：`8b4dd104-eec2-40b4-9160-85ae0a7d788b`（已实测读链路 + 发消息链路）
+
+---
+
+## 23. 聊天浮层（与任务会话 AI 对话）
+
+工作台页面提供右下角**聊天浮层**，让人不用跳出页面就能与任务会话里的 AI 对话、查看它的回复——把「人机协作」闭环在页面上。
+
+### 复用与实现
+
+- **复用已有组件契约**：消息历史组件 `message-history`（`cp-67374d13-1832-4abc-abe9-71e96f3199e1`），其契约即 `imcgi` 网关的 `GetMessages`（入参 `conversation_id` / `limit`，返回 `messages`，倒序需 reverse，`text` 取自 `content.text`，`sender_name` 由成员名映射）。
+- **发送**：`imcgi` 网关的 `SendMessage`（已在「提交变更」中打通）。
+- **UI 风格**：参考 xdpai 前端 `tipai/web` 的聊天样式，不从头造组件。
+
+### 交互
+
+```
+右下角悬浮按钮
+  → 点击展开浮层（消息列表 + 输入框 + 发送）
+  → 消息列表：GetMessages 拉历史（自己靠右、AI 靠左）
+  → 输入框发送 → SendMessage → 刷新列表
+  → 看到 AI 的回复（发送后刷新 / 手动刷新）
+```
+
+### 关键约束
+
+- 浮层只做「读历史 + 发消息」，不做撤回/已读/流式控制（组件契约的边界）
+- `conversation_id` 复用「提交变更」的 `conv_id`（来自 `GetInstance` / `GetTask`）
+- 消息文本转义展示，不执行消息中的 HTML 或工具输出
 
