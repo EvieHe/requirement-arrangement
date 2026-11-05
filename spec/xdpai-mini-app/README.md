@@ -445,22 +445,15 @@ stale 必须明确提示：
 
 不要一次保存覆盖全部变量。
 
-### ⚠️ 写回能力限制（已查证并实测，2026-11-05）
+### 写回实现（发消息触发 AI 助手写回，2026-11-05 实测打通）
 
-浏览器侧**当前没有开放的「写 workflow var」接口**。已参考 xdpai skill 的 `workflow_set_var.sh`（其逻辑为 `apipai.woa.com/xdpai.aihelper.mcp.mcp/SetWorkflowVar` + Bearer token + 入参 `task_id`）并实测三条路径，均不可行，详见 `api.md §3`：
+浏览器侧**没有直连「写 workflow var」的接口**（详见 `api.md §3`）：`workflowcgi` 未透传 `SetWorkflowVar`，mcp 网关 CORS 拦截。
 
-- `sop` 后端有 `SetWorkflowVar(instance_id, name, value)`，但 `workflowcgi` 网关（浏览器可达的唯一 workflow 网关）**未透传**该接口（proto v0.0.9 无此 rpc）；
-- agent 侧 mcp `SetWorkflowVar(task_id, name, value)` 在 `apipai.woa.com`，浏览器跨域被 CORS 拦截（实测 `Failed to fetch`），且需平台注入的 `XDPAI_MCP_TOKEN`。
-
-**根因**：浏览器可达的 `workflowcgi`（xdclaw.woa.com，cookie + CORS 白名单）缺 `SetWorkflowVar` 透传；带该接口的 mcp 网关是 agent 侧，浏览器不可达。
-
-**修复建议（平台侧）**：`workflowcgi` 照 `GetInstance` 模式透传 `SetWorkflowVar`（页面已能 `GetInstance` 拿 `instance_id`，透传后写回即可打通）。
-
-因此页面**不造假「保存写回」按钮**：编辑为内存态，「保存写回」改为**生成可执行写回命令**（`curl` 调 mcp 网关，token 用 `$XDPAI_MCP_TOKEN` 环境变量占位、不硬编码），复制后在具备 token 的环境执行即可写回；并保留「导出本 Tab JSON」兜底。
+但**「发消息」的网页 IM 网关 `imcgi`（xdclaw.woa.com）有 CORS 白名单 + cookie 鉴权，浏览器可达**。因此写回走「发消息」：页面「保存写回」把写回指令发到任务会话（`conv_id` 来自 `GetInstance`/`GetTask`），由会话中的 AI 助手执行 `workflow_set_var` 真正写回。实测发消息成功（`sender_id=eviehehe`）。
 
 > 曾评估「页面让用户填个人 token 后浏览器直连」，实测不可行：带 token 跨域到 `apipai.woa.com` 仍被 CORS 拦截。CORS 与 token 无关，JS 无法绕过。
 
-**后续待办**：平台在 `workflowcgi` 透传 `SetWorkflowVar` 后，页面改为浏览器直连写回（`GetInstance → SetWorkflowVar`），去掉对 `XDPAI_MCP_TOKEN` 的依赖。
+**后续待办**：平台在 `workflowcgi` 透传 `SetWorkflowVar` 后，页面改为浏览器直连写回（`GetInstance → SetWorkflowVar`），不依赖 AI 助手、可实时校验。当前「发消息」依赖会话中 AI 助手在线且理解指令，作为过渡方案。
 
 ---
 

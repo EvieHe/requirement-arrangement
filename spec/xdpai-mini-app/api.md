@@ -69,13 +69,17 @@ rpc SetWorkflowVar(xdpai.workbench.sop.SetWorkflowVarReq) returns (xdpai.workben
 
 并转发到 sop 后端。页面已能 `GetInstance` 拿到 `instance_id`，透传后写回链路即可打通（`GetInstance → SetWorkflowVar(instance_id, name, value)`）。更友好可改为收 `task_id`（由网关转 instance_id，与 mcp 服务一致）。
 
-**当前结论**：读链路完整直连；写链路受平台网关缺口阻塞。
+**当前结论**：读链路完整直连；**写链路通过「发消息」间接实现**。
 
-**已采用的折中实现（先跑通，后提需）**：页面「保存写回」不再造假按钮，改为**生成可执行的写回命令**（`curl` 调 `apipai.woa.com/xdpai.aihelper.mcp.mcp/SetWorkflowVar`，token 用 `$XDPAI_MCP_TOKEN` 环境变量占位、不硬编码），复制后由用户在具备 `XDPAI_MCP_TOKEN` 的环境（本地虾 / 沙箱）执行即可真正写回。同时保留「导出本 Tab JSON」兜底。
+**已采用的实现（发消息触发 AI 助手写回）**：页面「保存写回」通过网页 IM 网关 `xdclaw.woa.com/xdpai.gateway.imcgi.imcgi/SendMessage`（cookie 鉴权 + CORS 白名单含 app.xdpai.woa.com，浏览器可达）把一条「写回指令」消息发到任务会话（`conv_id` 来自 `GetInstance` / `GetTask`），由会话中的 AI 助手（有 `XDPAI_MCP_TOKEN`）执行 `workflow_set_var` 真正写回。实测：发消息成功（返回 `message_id`、`sender_id=eviehehe`）。
+
+| 层 | 接口 | 入参 | 浏览器可直连 |
+|---|---|---|---|
+| 发消息网关 | `xdclaw.woa.com/xdpai.gateway.imcgi.imcgi/SendMessage` | `{conversation_id, sender_type, type, content:{text}}` | ✅（CORS 白名单 + cookie 鉴权） |
 
 > 曾评估「页面让用户填个人 token 后浏览器直连」，实测**不可行**：即使带 token，浏览器跨域到 `apipai.woa.com` 仍被 CORS 拦截（`Failed to fetch`）。CORS 是浏览器强制机制，JS 无法绕过，与 token 无关。
 
-**后续待办（平台侧提需）**：在 `workflowcgi` 透传 `SetWorkflowVar` 后，页面把「生成命令」改为浏览器直连写回（`GetInstance → SetWorkflowVar`），去掉对 `XDPAI_MCP_TOKEN` 的依赖。
+**后续待办（平台侧提需）**：在 `workflowcgi` 透传 `SetWorkflowVar` 后，页面可把「发消息」改为**浏览器直连写回**（`GetInstance → SetWorkflowVar`），不依赖 AI 助手、写回更确定、可实时校验。当前「发消息」依赖会话中 AI 助手在线且理解指令，作为过渡方案。
 
 ## 4. 重跑 AI 节点
 
