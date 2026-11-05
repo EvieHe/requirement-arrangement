@@ -1,7 +1,7 @@
 <!doctype html>
 <html lang="zh-CN">
 <head>
-  <meta name="app-version" content="v12">
+  <meta name="app-version" content="v13">
 <meta charset="utf-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1"/>
 <title>xdpai · 需求智能评估与排期</title>
@@ -64,7 +64,7 @@
 <footer class="footerbar" id="footerbar" style="display:none">
   <div class="footer-inner">
     <div class="footer-meta"><span>总工作量 <b id="totalEffort">—</b> 人日</span><span>周期 <b id="duration">—</b> 工作日</span><span>预计交付 <b id="delivery">—</b></span><span id="saveState"></span></div>
-    <div style="display:flex;gap:8px"><button class="btn" id="exportBtn">导出本 Tab JSON</button> <button class="btn primary" id="saveBtn">保存写回</button></div>
+    <div style="display:flex;gap:8px"><button class="btn" id="exportBtn">导出本 Tab JSON</button> <button class="btn primary" id="saveBtn">提交变更</button></div>
   </div>
 </footer>
 <script>
@@ -100,6 +100,7 @@ let S = {
   active: 'requirement',
   demo: false,          // 是否处于演示数据回退
   dirty: {},            // 每个 Tab 是否被编辑过
+  original: {},         // 加载时的原始快照，用于 diff 出「人改了哪些字段」
 };
 
 // ==================== 服务层 ====================
@@ -161,6 +162,7 @@ async function load(taskId) {
       setMissingAll('该阶段尚未生成（SOP 未运行或无流程实例）。');
     }
 
+    saveOriginal();
     renderAll();
   } catch (e) {
     showError(humanError(e));
@@ -204,8 +206,16 @@ function setMissingAll(msg) {
 function reset() {
   S.task = null; S.instance = null;
   S.init = S.understanding = S.breakdown = S.estimation = S.scheduling = null;
-  S.varsRaw = {}; S.missing = {}; S.active = 'requirement'; S.demo = false; S.dirty = {};
+  S.varsRaw = {}; S.missing = {}; S.active = 'requirement'; S.demo = false; S.dirty = {}; S.original = {};
   ['heroCard','flowCard','mainCard','footerbar'].forEach(id => $('#'+id).style.display = 'none');
+}
+
+// 保存加载时的原始快照（用于 diff）
+function saveOriginal() {
+  S.original = {};
+  ['understanding', 'breakdown', 'estimation', 'scheduling'].forEach(st => {
+    S.original[st] = S[st] ? JSON.parse(JSON.stringify(S[st])) : null;
+  });
 }
 
 function humanError(e) {
@@ -544,37 +554,124 @@ function markDirty(stage) {
   renderStages();
 }
 
-// ==================== 写回 ====================
-// 浏览器直连写 workflow var 的网关（workflowcgi）未透传 SetWorkflowVar；mcp 网关（apipai.woa.com）CORS 拦截。
+// ==================== 提交变更 ====================
+// 浏览器直连写 workflow var 的网关（workflowcgi）未透传 SetWorkflowVar；mcp 网关 CORS 拦截。
 // 但「发消息」的网页网关 imcgi（xdclaw.woa.com）有 CORS 白名单 + cookie 鉴权，浏览器可达。
-// 因此写回走「发消息」：页面把写回指令发到任务会话，由会话中的 AI 助手（有 XDPAI_MCP_TOKEN）执行 workflow_set_var 真正写回。
-// 待平台在 workflowcgi 透传 SetWorkflowVar 后，此处可改为浏览器直连写回（见 spec/xdpai-mini-app/api.md §3）。
+// 因此提交变更走「发消息」：页面把「人改了哪些字段」发到任务会话，由会话中的 AI 助手（有 XDPAI_MCP_TOKEN）
+// 更新变量并回退到下游节点重新评估。待平台透传 SetWorkflowVar 后可改直连（见 spec/xdpai-mini-app/api.md §3）。
 const GATEWAY_IM = 'https://xdclaw.woa.com/xdpai.gateway.imcgi.imcgi';
+const STAGE_NAME = { understanding: '需求理解', breakdown: '任务拆解', estimation: '工作量评估', scheduling: '排期生成' };
+const STAGE_ROLLBACK = { understanding: '任务拆解', breakdown: '工作量评估', estimation: '排期生成', scheduling: '排期生成' };
+const FIELD_LABEL = {
+  effort_days: '人日', confidence: '置信度',
+  title: '标题', module_id: '模块', category: '类型', description: '说明', dependencies: '依赖',
+  name: '模块名', repository: '仓库', change_summary: '主要改动',
+  assignee: '负责人', start_date: '开始日期', end_date: '结束日期',
+};
 function currentVarForTab() {
   const map = { requirement: null, understanding: 'understanding', breakdown: 'breakdown', estimation: 'estimation', scheduling: 'scheduling' };
   const stage = map[S.active];
   if (!stage) return null;
   const key = VAR_KEYS[stage];
   const data = S[stage];
-  if (!data) return { key, data: null };
-  return { key, data };
+  if (!data) return { stage, key, data: null };
+  return { stage, key, data };
 }
 function getConvId() {
   return (S.instance && S.instance.conv_id) || (S.task && S.task.conv_id) || '';
 }
-// 构造写回指令消息（自然语言 + 结构化 JSON，AI 助手可确定性执行）
-function buildWritebackMessage(key, data) {
-  const json = JSON.stringify(data, null, 2);
-  return '【写回请求】请将工作流变量「' + key + '」写回为以下 JSON（保持 schema 4.0 结构，'
-    + '用 xdpai skill 的 workflow_set_var 写入 task_id=' + S.taskId + '，完整替换该变量值）：\n\n'
-    + '```json\n' + json + '\n```\n\n'
-    + '写回完成后请回复「已写回」。';
+function moduleName(id) {
+  if (!id) return '(空)';
+  const m = (S.understanding && S.understanding.modules || []).find(x => x.id === id);
+  return m ? m.name : id;
 }
-// 通过 imcgi 发写回指令消息到任务会话
-async function sendWritebackMessage(key, data) {
+// diff 出「人改了哪些字段」：对比原始快照与当前数据
+function diffStage(stage) {
+  const orig = S.original[stage];
+  const curr = S[stage];
+  if (!orig || !curr) return [];
+  const changes = [];
+  const push = (target, field, from, to) => changes.push({ target, field, from, to });
+
+  if (stage === 'estimation') {
+    const om = new Map((orig.estimations || []).map(e => [e.task_id, e]));
+    const cm = new Map((curr.estimations || []).map(e => [e.task_id, e]));
+    for (const [tid, ce] of cm) {
+      const oe = om.get(tid);
+      if (!oe) { push(tid, 'effort_days', null, ce.effort_days); continue; }
+      if (Number(oe.effort_days) !== Number(ce.effort_days)) push(tid, 'effort_days', oe.effort_days, ce.effort_days);
+      if (oe.confidence !== ce.confidence) push(tid, 'confidence', oe.confidence, ce.confidence);
+    }
+    for (const tid of om.keys()) if (!cm.has(tid)) push(tid, 'effort_days', om.get(tid).effort_days, null);
+  }
+  else if (stage === 'breakdown') {
+    const om = new Map((orig.tasks || []).map(t => [t.id, t]));
+    const cm = new Map((curr.tasks || []).map(t => [t.id, t]));
+    for (const [id, ct] of cm) {
+      const ot = om.get(id);
+      if (!ot) { push(id, 'title', null, ct.title); continue; }
+      if ((ot.title || '') !== (ct.title || '')) push(id, 'title', ot.title, ct.title);
+      if ((ot.module_id || null) !== (ct.module_id || null)) push(id, 'module_id', moduleName(ot.module_id), moduleName(ct.module_id));
+      if ((ot.category || '') !== (ct.category || '')) push(id, 'category', ot.category, ct.category);
+      if ((ot.description || '') !== (ct.description || '')) push(id, 'description', ot.description, ct.description);
+      if (JSON.stringify(ot.dependencies || []) !== JSON.stringify(ct.dependencies || []))
+        push(id, 'dependencies', (ot.dependencies || []).join(',') || '(无)', (ct.dependencies || []).join(',') || '(无)');
+    }
+    for (const id of om.keys()) if (!cm.has(id)) push(id, 'title', om.get(id).title, null);
+  }
+  else if (stage === 'understanding') {
+    const om = new Map((orig.modules || []).map(m => [m.id, m]));
+    const cm = new Map((curr.modules || []).map(m => [m.id, m]));
+    for (const [id, cmo] of cm) {
+      const omo = om.get(id);
+      if (!omo) { push(id, 'name', null, cmo.name); continue; }
+      if ((omo.name || '') !== (cmo.name || '')) push(id, 'name', omo.name, cmo.name);
+      if ((omo.repository || '') !== (cmo.repository || '')) push(id, 'repository', omo.repository || '(空)', cmo.repository || '(空)');
+      if ((omo.change_summary || '') !== (cmo.change_summary || '')) push(id, 'change_summary', omo.change_summary, cmo.change_summary);
+    }
+    for (const id of om.keys()) if (!cm.has(id)) push(id, 'name', om.get(id).name, null);
+    const oq = new Map((orig.review_items || []).map(q => [q.id, q]));
+    const cq = new Map((curr.review_items || []).map(q => [q.id, q]));
+    for (const [id, cqq] of cq) {
+      const oqq = oq.get(id); if (!oqq) continue;
+      const ov = oqq.value || ''; const cv = cqq.value || '';
+      const ocv = oqq.custom_value || ''; const ccv = cqq.custom_value || '';
+      if (ov !== cv || ocv !== ccv)
+        push(id, 'value', ov || '(未答)', cv === '自定义' ? ccv : cv || '(未答)');
+    }
+  }
+  else if (stage === 'scheduling') {
+    const om = new Map((orig.schedule || []).map(s => [s.task_id, s]));
+    const cm = new Map((curr.schedule || []).map(s => [s.task_id, s]));
+    for (const [tid, cs] of cm) {
+      const os = om.get(tid);
+      if (!os) { push(tid, 'start_date', null, cs.start_date); continue; }
+      if ((os.assignee || '') !== (cs.assignee || '')) push(tid, 'assignee', os.assignee, cs.assignee);
+      if ((os.start_date || '') !== (cs.start_date || '')) push(tid, 'start_date', os.start_date, cs.start_date);
+      if ((os.end_date || '') !== (cs.end_date || '')) push(tid, 'end_date', os.end_date, cs.end_date);
+    }
+    for (const tid of om.keys()) if (!cm.has(tid)) push(tid, 'assignee', om.get(tid).assignee, null);
+  }
+  return changes;
+}
+// 构造变更通知（diff + 回退节点，用 SOP 自己的术语）
+function buildChangeMessage(stage, changes) {
+  const lines = changes.map(c => {
+    const label = FIELD_LABEL[c.field] || c.field;
+    if (c.from === null) return '- ' + c.target + ' ' + label + '（' + c.field + '）：新增为 ' + c.to;
+    if (c.to === null) return '- ' + c.target + ' ' + label + '（' + c.field + '）：删除（原「' + c.from + '」）';
+    return '- ' + c.target + ' ' + label + '（' + c.field + '）：' + c.from + ' → ' + c.to;
+  });
+  return '我在工作台（requirement-arrangement-workbench）审查「' + STAGE_NAME[stage] + '」时做了以下修正（human edit，权威）：\n\n'
+    + lines.join('\n') + '\n\n'
+    + '请先更新 ' + VAR_KEYS[stage] + '（revision.last_modified_by 置为 human，重算 summary），'
+    + '然后回退到「' + STAGE_ROLLBACK[stage] + '」节点，让它基于更新后的数据重新评估。';
+}
+// 通过 imcgi 发变更通知到任务会话
+async function sendChangeMessage(stage, changes) {
   const convId = getConvId();
-  if (!convId) { flash('未获取到任务会话 ID，无法发消息写回'); return false; }
-  const msg = buildWritebackMessage(key, data);
+  if (!convId) { flash('未获取到任务会话 ID，无法发消息'); return false; }
+  const msg = buildChangeMessage(stage, changes);
   const res = await fetch(GATEWAY_IM + '/SendMessage', {
     method: 'POST', credentials: 'include',
     headers: { 'Content-Type': 'application/json' },
@@ -585,15 +682,17 @@ async function sendWritebackMessage(key, data) {
 }
 $('#saveBtn').onclick = async () => {
   const info = currentVarForTab();
-  if (!info || !info.data) { flash('当前 Tab 无数据可写回'); return; }
+  if (!info || !info.data) { flash('当前 Tab 无数据可提交'); return; }
+  const changes = diffStage(info.stage);
+  if (!changes.length) { flash('当前 Tab 未检测到改动'); return; }
   $('#saveBtn').disabled = true; $('#saveBtn').textContent = '发送中…';
   try {
-    const ok = await sendWritebackMessage(info.key, info.data);
-    if (ok) flash('已发送写回请求「' + info.key + '」到任务会话，AI 助手将执行写回。稍后刷新可看到最新结果。');
+    const ok = await sendChangeMessage(info.stage, changes);
+    if (ok) flash('已通知 agent：' + STAGE_NAME[info.stage] + ' 有 ' + changes.length + ' 处改动，将回退到「' + STAGE_ROLLBACK[info.stage] + '」重新评估。');
   } catch (e) {
     flash('发消息失败：' + (e && e.message ? e.message : '未知错误'));
   } finally {
-    $('#saveBtn').disabled = false; $('#saveBtn').textContent = '保存写回';
+    $('#saveBtn').disabled = false; $('#saveBtn').textContent = '提交变更';
   }
 };
 $('#exportBtn').onclick = () => {
