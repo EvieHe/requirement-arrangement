@@ -1,15 +1,15 @@
 <!doctype html>
 <html lang="zh-CN">
 <head>
-  <meta name="app-version" content="v17">
+  <meta name="app-version" content="v18">
 <meta charset="utf-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1"/>
 <title>xdpai · 需求智能评估与排期</title>
 <style>
-:root{--bg:#f6f7fb;--line:#e7e9f1;--text:#182033;--muted:#707787;--purple:#6557e6;--purpleSoft:#f1efff;--green:#2f9d68;--greenSoft:#eaf7f0;--blue:#4b78e6;--blueSoft:#edf2ff;--amber:#c88c34;--amberSoft:#fff5df;--red:#c14b3a;--redSoft:#fff0ec;--shadow:0 8px 24px rgba(28,37,64,.055);--r:16px}
-*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font-family:Inter,"PingFang SC","Microsoft YaHei",system-ui,-apple-system,sans-serif}button,input,select,textarea{font:inherit}.topbar{height:58px;padding:0 28px;background:#fff;border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:20}.brand{display:flex;gap:10px;align-items:center;font-weight:800}.logo{width:30px;height:30px;border-radius:9px;background:linear-gradient(135deg,var(--purple),#988aff);color:#fff;display:grid;place-items:center}.wrap{max-width:1640px;margin:auto;padding:18px 20px 110px}.card{background:#fff;border:1px solid var(--line);border-radius:var(--r);box-shadow:var(--shadow)}.entry{margin-bottom:12px;padding:14px 18px;display:flex;gap:10px;align-items:center}.entry input{flex:1;border:1px solid var(--line);border-radius:10px;padding:10px 12px;font-size:13px}.entry .hint{font-size:11px;color:var(--muted);margin-top:6px}.btn{border:1px solid var(--line);background:#fff;border-radius:10px;padding:9px 13px;cursor:pointer;white-space:nowrap}.btn.primary{background:var(--purple);border-color:var(--purple);color:#fff}.btn:disabled{opacity:.5;cursor:not-allowed}.hero{padding:19px 22px;display:flex;justify-content:space-between;gap:16px}.hero h1{font-size:22px;margin:0}.hero p{margin:7px 0 0;color:var(--muted);font-size:13px}.tags{display:flex;gap:7px;margin-top:10px;flex-wrap:wrap}.tag,.chip{font-size:11px;padding:4px 8px;border-radius:999px;background:#f1f2f6;color:#5f6675}.purple{background:var(--purpleSoft);color:var(--purple)}.amber{background:var(--amberSoft);color:#94691f}.flow{margin-top:12px;padding:12px 16px;display:flex;align-items:center;gap:14px}.progress{width:150px}.progress-line{display:flex;align-items:center;gap:8px}.progress-num{font-size:20px;font-weight:850}.track{height:6px;background:#eceef4;border-radius:99px;overflow:hidden;flex:1}.fill{height:100%;background:linear-gradient(90deg,var(--purple),#9487f7)}.stages{display:flex;align-items:center;gap:4px;flex-wrap:wrap}.stage{display:flex;align-items:center;gap:5px;padding:6px 9px;border-radius:9px;font-size:11px;background:#f5f6f9;cursor:pointer;border:1px solid transparent}.stage.completed{background:var(--greenSoft);color:var(--green)}.stage.stale{background:var(--amberSoft);color:#94691f}.stage.pending{background:#f1f2f6;color:#8a91a0}.stage.ready{background:var(--blueSoft);color:var(--blue)}.stage.active{border-color:#bdb5ff;background:var(--purpleSoft);color:var(--purple);font-weight:800}.dot{width:15px;height:15px;border-radius:50%;border:1px solid currentColor;display:grid;place-items:center;font-size:9px}.arrow{color:#c4c8d1}.main{margin-top:12px;overflow:hidden}.tabs{display:flex;gap:2px;padding:0 18px;border-bottom:1px solid var(--line);overflow-x:auto}.tab{padding:13px 16px;font-size:13px;cursor:pointer;border-bottom:2px solid transparent;color:#5e6574;white-space:nowrap}.tab.active{color:var(--purple);border-bottom-color:var(--purple);font-weight:800}.main-head{padding:16px 18px;border-bottom:1px solid var(--line);display:flex;justify-content:space-between}.main-title{font-size:16px;font-weight:800}.main-sub{font-size:11px;color:var(--muted);margin-top:4px}.main-body{padding:16px 18px}.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}.info{border:1px solid var(--line);border-radius:12px;padding:13px}.info h3,.section h3,.module-head h3{font-size:12px;margin:0 0 7px}.info p,.info li{font-size:11px;color:#596071;line-height:1.6}.info ul{margin:0;padding-left:17px}.section{margin-top:16px}.module-block{margin-top:14px}.module-table,.task-table{width:100%;border-collapse:collapse;font-size:11px}.module-table th,.module-table td,.task-table th,.task-table td{padding:9px 8px;border-bottom:1px solid var(--line);text-align:left}.module-table th,.task-table th{background:#fafbfe;color:#687080}.module-table input,.task-table input,.task-table select,.inline-edit{width:100%;border:1px solid #e8eaf2;background:#fcfdff;border-radius:7px;padding:6px;cursor:text}.module-table input:hover,.module-table input:focus,.task-table input:hover,.task-table input:focus,.task-table select:hover,.task-table select:focus,.inline-edit:hover,.inline-edit:focus{border-color:#c8c2fa;background:#fff;outline:none}.icon-btn{border:0;background:transparent;color:#8a91a0;cursor:pointer}.qrow{display:grid;grid-template-columns:minmax(240px,1fr) minmax(320px,1.15fr);gap:20px;padding:14px 0;border-bottom:1px solid var(--line)}.qtitle{font-size:12px;font-weight:750}.qhint{font-size:10px;color:var(--muted);margin-top:4px}.choice{display:flex;gap:7px;flex-wrap:wrap}.choice button{border:1px solid var(--line);background:#fff;border-radius:9px;padding:7px 10px;font-size:11px;cursor:pointer}.choice button.active{background:var(--purpleSoft);color:var(--purple);border-color:#beb7ff}.input,.textarea{width:100%;border:1px solid var(--line);border-radius:9px;padding:9px 10px}.textarea{min-height:68px}.task-id{font-size:9px;background:#f1f2f6;padding:2px 5px;border-radius:5px}.type{font-size:10px;padding:3px 7px;border-radius:999px}.frontend{background:var(--greenSoft);color:var(--green)}.backend{background:var(--blueSoft);color:var(--blue)}.other{background:var(--amberSoft);color:var(--amber)}.metric-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:14px}.metric{border:1px solid var(--line);border-radius:12px;padding:13px}.metric b{display:block;font-size:20px}.metric span{font-size:10px;color:var(--muted)}.gantt-wrap{overflow:auto}.gantt{min-width:1080px}.ghead,.grow,.ggroup{display:grid;grid-template-columns:270px 110px 72px 92px 92px repeat(var(--days),minmax(78px,1fr))}.ghead{background:#fafbfe;font-size:10px;color:#687080;font-weight:700}.ghead>div,.gcell,.gday{padding:9px 8px;border-right:1px solid #eef0f5;border-bottom:1px solid #eef0f5}.ggroup{background:#fcfcff;font-size:11px;font-weight:750}.ggroup>div:first-child{grid-column:1/6;padding:9px 10px;border-bottom:1px solid var(--line)}.ggroup>div:last-child{grid-column:6/-1;border-bottom:1px solid var(--line)}.grow{min-height:54px;font-size:11px}.gday{position:relative;padding:0}.bar{position:absolute;left:6px;top:14px;height:24px;border-radius:7px;color:#fff;padding:0 8px;display:flex;align-items:center;font-size:9px;font-weight:800;white-space:nowrap}.bar.frontend{background:#42ad76}.bar.backend{background:#577fdf}.bar.other{background:#d39a43}.bar.critical{outline:2px solid rgba(101,87,230,.35);outline-offset:2px}.footerbar{position:fixed;left:0;right:0;bottom:0;background:#fff;border-top:1px solid var(--line)}.footer-inner{max-width:1640px;margin:auto;padding:12px 20px;display:flex;justify-content:space-between;align-items:center}.footer-meta{display:flex;gap:18px;font-size:11px;color:#5e6574}.error{margin-top:12px;padding:14px;color:#a5483d;background:#fff0ec;border:1px solid #f0c9c1;border-radius:12px;display:none}.notice{margin-top:12px;padding:12px 14px;background:var(--amberSoft);color:#94691f;border:1px solid #f0d9a8;border-radius:12px;font-size:12px;display:none;line-height:1.7}.warn-inline{background:var(--amberSoft);color:#94691f;border-radius:8px;padding:9px 11px;font-size:11px;margin:10px 0;line-height:1.6}.empty-state{padding:40px;text-align:center;color:var(--muted);font-size:13px;line-height:1.8}.markdown{font-size:13px;line-height:1.75;color:#303a4d}.markdown h1,.markdown h2,.markdown h3{margin:18px 0 8px;line-height:1.4}.markdown h1{font-size:20px}.markdown h2{font-size:16px;border-bottom:1px solid var(--line);padding-bottom:6px}.markdown h3{font-size:14px}.markdown p{margin:8px 0}.markdown ul,.markdown ol{margin:8px 0;padding-left:22px}.markdown li{margin:3px 0}.markdown blockquote{margin:10px 0;padding:6px 14px;border-left:3px solid #c8c2fa;background:#fafaff;color:#5e6574}.markdown table{border-collapse:collapse;margin:10px 0;font-size:12px}.markdown table th,.markdown table td{border:1px solid var(--line);padding:6px 10px}.markdown table th{background:#fafbfe}.markdown code{background:#f1f2f6;border-radius:4px;padding:1px 5px;font-size:12px;font-family:ui-monospace,SFMono-Regular,Menlo,monospace}.markdown hr{border:0;border-top:1px solid var(--line);margin:14px 0}.markdown strong{font-weight:800}.markdown pre{background:#f6f7fb;border:1px solid var(--line);border-radius:10px;padding:12px;overflow:auto}.markdown pre code{background:transparent;padding:0}.data-badge{display:inline-flex;align-items:center;gap:6px;font-size:11px;padding:5px 10px;border-radius:999px}.data-badge.demo{background:var(--amberSoft);color:#94691f}.data-badge.real{background:var(--greenSoft);color:var(--green)}@media(max-width:800px){.grid3,.metric-grid{grid-template-columns:1fr}.qrow{grid-template-columns:1fr}.hero{flex-direction:column}.flow{align-items:flex-start;flex-direction:column}.entry{flex-direction:column;align-items:stretch}.footerbar{position:static}}
+:root{--bg:#f6f7fb;--line:#e7e9f1;--text:#182033;--muted:#5e6574;--accent:#0f766e;--accentSoft:#e6f2f0;--green:#2f9d68;--greenSoft:#eaf7f0;--blue:#4b78e6;--blueSoft:#edf2ff;--amber:#c88c34;--amberSoft:#fff5df;--red:#c14b3a;--redSoft:#fff0ec;--shadow:0 8px 24px rgba(28,37,64,.055);--r:16px}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font-family:Inter,"PingFang SC","Microsoft YaHei",system-ui,-apple-system,sans-serif}button,input,select,textarea{font:inherit}.topbar{height:58px;padding:0 28px;background:#fff;border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:20}.brand{display:flex;gap:10px;align-items:center;font-weight:800}.logo{width:30px;height:30px;border-radius:9px;background:var(--accent);color:#fff;display:grid;place-items:center}.wrap{max-width:1640px;margin:auto;padding:18px 20px 110px}.card{background:#fff;border:1px solid var(--line);border-radius:var(--r);box-shadow:var(--shadow)}.entry{margin-bottom:12px;padding:14px 18px;display:flex;gap:10px;align-items:center}.entry input{flex:1;border:1px solid var(--line);border-radius:10px;padding:10px 12px;font-size:13px}.entry .hint{font-size:11px;color:var(--muted);margin-top:6px}.btn{border:1px solid var(--line);background:#fff;border-radius:10px;padding:9px 13px;cursor:pointer;white-space:nowrap}.btn.primary{background:var(--accent);border-color:var(--accent);color:#fff}.btn:disabled{opacity:.5;cursor:not-allowed}.hero{padding:19px 22px;display:flex;justify-content:space-between;gap:16px}.hero h1{font-size:22px;margin:0}.hero p{margin:7px 0 0;color:var(--muted);font-size:13px}.tags{display:flex;gap:7px;margin-top:10px;flex-wrap:wrap}.tag,.chip{font-size:11px;padding:4px 8px;border-radius:999px;background:#f1f2f6;color:#5f6675}.accent{background:var(--accentSoft);color:var(--accent)}.amber{background:var(--amberSoft);color:#94691f}.flow{margin-top:12px;padding:12px 16px;display:flex;align-items:center;gap:14px}.progress{width:150px}.progress-line{display:flex;align-items:center;gap:8px}.progress-num{font-size:20px;font-weight:850}.track{height:6px;background:#eceef4;border-radius:99px;overflow:hidden;flex:1}.fill{height:100%;background:var(--accent)}.stages{display:flex;align-items:center;gap:4px;flex-wrap:wrap}.stage{display:flex;align-items:center;gap:5px;padding:6px 9px;border-radius:9px;font-size:11px;background:#f5f6f9;cursor:pointer;border:1px solid transparent}.stage.completed{background:var(--greenSoft);color:var(--green)}.stage.stale{background:var(--amberSoft);color:#94691f}.stage.pending{background:#f1f2f6;color:#8a91a0}.stage.ready{background:var(--blueSoft);color:var(--blue)}.stage.active{border-color:#99d6cf;background:var(--accentSoft);color:var(--accent);font-weight:800}.dot{width:15px;height:15px;border-radius:50%;border:1px solid currentColor;display:grid;place-items:center;font-size:9px}.arrow{color:#c4c8d1}.main{margin-top:12px;overflow:hidden}.tabs{display:flex;gap:2px;padding:0 18px;border-bottom:1px solid var(--line);overflow-x:auto}.tab{padding:13px 16px;font-size:13px;cursor:pointer;border-bottom:2px solid transparent;color:#5e6574;white-space:nowrap}.tab.active{color:var(--accent);border-bottom-color:var(--accent);font-weight:800}.main-head{padding:16px 18px;border-bottom:1px solid var(--line);display:flex;justify-content:space-between}.main-title{font-size:16px;font-weight:800}.main-sub{font-size:11px;color:var(--muted);margin-top:4px}.main-body{padding:16px 18px}.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}.info{border:1px solid var(--line);border-radius:12px;padding:13px}.info h3,.section h3,.module-head h3{font-size:12px;margin:0 0 7px}.info p,.info li{font-size:11px;color:#596071;line-height:1.6}.info ul{margin:0;padding-left:17px}.section{margin-top:16px}.module-block{margin-top:14px}.module-table,.task-table{width:100%;border-collapse:collapse;font-size:11px}.module-table th,.module-table td,.task-table th,.task-table td{padding:9px 8px;border-bottom:1px solid var(--line);text-align:left}.module-table th,.task-table th{background:#fafbfe;color:#687080}.module-table input,.task-table input,.task-table select,.inline-edit{width:100%;border:1px solid #e8eaf2;background:#fcfdff;border-radius:7px;padding:6px;cursor:text}.module-table input:hover,.module-table input:focus,.task-table input:hover,.task-table input:focus,.task-table select:hover,.task-table select:focus,.inline-edit:hover,.inline-edit:focus{border-color:#99d6cf;background:#fff;outline:none}.icon-btn{border:0;background:transparent;color:#8a91a0;cursor:pointer}.qrow{display:grid;grid-template-columns:minmax(240px,1fr) minmax(320px,1.15fr);gap:20px;padding:14px 0;border-bottom:1px solid var(--line)}.qtitle{font-size:12px;font-weight:750}.qhint{font-size:10px;color:var(--muted);margin-top:4px}.choice{display:flex;gap:7px;flex-wrap:wrap}.choice button{border:1px solid var(--line);background:#fff;border-radius:9px;padding:7px 10px;font-size:11px;cursor:pointer}.choice button.active{background:var(--accentSoft);color:var(--accent);border-color:#99d6cf}.input,.textarea{width:100%;border:1px solid var(--line);border-radius:9px;padding:9px 10px}.textarea{min-height:68px}.task-id{font-size:9px;background:#f1f2f6;padding:2px 5px;border-radius:5px}.type{font-size:10px;padding:3px 7px;border-radius:999px}.frontend{background:var(--greenSoft);color:var(--green)}.backend{background:var(--blueSoft);color:var(--blue)}.other{background:var(--amberSoft);color:var(--amber)}.metric-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:14px}.metric{border:1px solid var(--line);border-radius:12px;padding:13px}.metric b{display:block;font-size:20px}.metric span{font-size:10px;color:var(--muted)}.gantt-wrap{overflow:auto}.gantt{min-width:1080px}.ghead,.grow,.ggroup{display:grid;grid-template-columns:270px 110px 72px 92px 92px repeat(var(--days),minmax(78px,1fr))}.ghead{background:#fafbfe;font-size:10px;color:#687080;font-weight:700}.ghead>div,.gcell,.gday{padding:9px 8px;border-right:1px solid #eef0f5;border-bottom:1px solid #eef0f5}.ggroup{background:#fcfcff;font-size:11px;font-weight:750}.ggroup>div:first-child{grid-column:1/6;padding:9px 10px;border-bottom:1px solid var(--line)}.ggroup>div:last-child{grid-column:6/-1;border-bottom:1px solid var(--line)}.grow{min-height:54px;font-size:11px}.gday{position:relative;padding:0}.bar{position:absolute;left:6px;top:14px;height:24px;border-radius:7px;color:#fff;padding:0 8px;display:flex;align-items:center;font-size:9px;font-weight:800;white-space:nowrap}.bar.frontend{background:#42ad76}.bar.backend{background:#577fdf}.bar.other{background:#d39a43}.bar.critical{outline:2px solid rgba(15,118,110,.35);outline-offset:2px}.footerbar{position:fixed;left:0;right:0;bottom:0;background:#fff;border-top:1px solid var(--line)}.footer-inner{max-width:1640px;margin:auto;padding:12px 20px;display:flex;justify-content:space-between;align-items:center}.footer-meta{display:flex;gap:18px;font-size:11px;color:#5e6574}.error{margin-top:12px;padding:14px;color:#a5483d;background:#fff0ec;border:1px solid #f0c9c1;border-radius:12px;display:none}.notice{margin-top:12px;padding:12px 14px;background:var(--amberSoft);color:#94691f;border:1px solid #f0d9a8;border-radius:12px;font-size:12px;display:none;line-height:1.7}.warn-inline{background:var(--amberSoft);color:#94691f;border-radius:8px;padding:9px 11px;font-size:11px;margin:10px 0;line-height:1.6}.empty-state{padding:40px;text-align:center;color:var(--muted);font-size:13px;line-height:1.8}.markdown{font-size:13px;line-height:1.75;color:#303a4d}.markdown h1,.markdown h2,.markdown h3{margin:18px 0 8px;line-height:1.4}.markdown h1{font-size:20px}.markdown h2{font-size:16px;border-bottom:1px solid var(--line);padding-bottom:6px}.markdown h3{font-size:14px}.markdown p{margin:8px 0}.markdown ul,.markdown ol{margin:8px 0;padding-left:22px}.markdown li{margin:3px 0}.markdown blockquote{margin:10px 0;padding:6px 14px;border-left:3px solid #99d6cf;background:#fafaff;color:#5e6574}.markdown table{border-collapse:collapse;margin:10px 0;font-size:12px}.markdown table th,.markdown table td{border:1px solid var(--line);padding:6px 10px}.markdown table th{background:#fafbfe}.markdown code{background:#f1f2f6;border-radius:4px;padding:1px 5px;font-size:12px;font-family:ui-monospace,SFMono-Regular,Menlo,monospace}.markdown hr{border:0;border-top:1px solid var(--line);margin:14px 0}.markdown strong{font-weight:800}.markdown pre{background:#f6f7fb;border:1px solid var(--line);border-radius:10px;padding:12px;overflow:auto}.markdown pre code{background:transparent;padding:0}.data-badge{display:inline-flex;align-items:center;gap:6px;font-size:11px;padding:5px 10px;border-radius:999px}.data-badge.demo{background:var(--amberSoft);color:#94691f}.data-badge.real{background:var(--greenSoft);color:var(--green)}@media(max-width:800px){.grid3,.metric-grid{grid-template-columns:1fr}.qrow{grid-template-columns:1fr}.hero{flex-direction:column}.flow{align-items:flex-start;flex-direction:column}.entry{flex-direction:column;align-items:stretch}.footerbar{position:static}}
 /* 对话浮层 */
-.chat-fab{position:fixed;right:24px;bottom:88px;width:52px;height:52px;border-radius:50%;border:none;background:var(--purple);color:#fff;font-size:24px;cursor:pointer;box-shadow:0 6px 18px rgba(101,87,230,.35);z-index:40;display:flex;align-items:center;justify-content:center;transition:transform .15s}.chat-fab:hover{transform:scale(1.08)}
+.chat-fab{position:fixed;right:24px;bottom:88px;width:52px;height:52px;border-radius:50%;border:none;background:var(--accent);color:#fff;font-size:24px;cursor:pointer;box-shadow:0 6px 18px rgba(15,118,110,.35);z-index:40;display:flex;align-items:center;justify-content:center;transition:transform .15s}.chat-fab:hover{transform:scale(1.08)}
 .chat-panel{position:fixed;right:24px;bottom:150px;width:380px;max-width:calc(100vw - 32px);height:520px;max-height:calc(100vh - 180px);background:#fff;border:1px solid var(--line);border-radius:16px;box-shadow:0 16px 48px rgba(28,37,64,.18);z-index:50;display:flex;flex-direction:column;overflow:hidden}
 .chat-head{display:flex;align-items:center;justify-content:space-between;padding:12px 16px;border-bottom:1px solid var(--line);background:#fafbfe}
 .chat-title{font-size:14px;font-weight:800}
@@ -21,7 +21,7 @@
 .chat-msg .chat-sender{font-size:11px;color:var(--muted);margin-bottom:3px;display:flex;align-items:center;gap:5px}
 .chat-msg .chat-ai-tag{font-size:9px;background:#f1f2f6;color:#5f6675;padding:1px 5px;border-radius:4px}
 .chat-msg .chat-bubble{font-size:13px;line-height:1.6;padding:9px 12px;border-radius:12px;word-break:break-word;white-space:pre-wrap;background:#fff;border:1px solid var(--line)}
-.chat-msg.mine .chat-bubble{background:var(--purple);border-color:var(--purple);color:#fff}
+.chat-msg.mine .chat-bubble{background:var(--accent);border-color:var(--accent);color:#fff}
 .chat-msg .chat-time{font-size:10px;color:#b7bcc7;margin-top:3px}
 .chat-input-bar{display:flex;gap:8px;align-items:flex-end;padding:10px 12px;border-top:1px solid var(--line);background:#fff}
 .chat-textarea{flex:1;border:1px solid var(--line);border-radius:10px;padding:8px 10px;font-size:13px;resize:none;max-height:100px;min-height:36px}
@@ -42,12 +42,12 @@
 .chat-bubble-md table{border-collapse:collapse;margin:6px 0;font-size:12px;width:100%}
 .chat-bubble-md th,.chat-bubble-md td{border:1px solid #e0e3ea;padding:4px 8px}
 .chat-bubble-md th{background:#f5f6f9}
-.chat-bubble-md blockquote{margin:6px 0;padding:4px 10px;border-left:3px solid #c8c2fa;background:#fafaff;color:#5e6574}
+.chat-bubble-md blockquote{margin:6px 0;padding:4px 10px;border-left:3px solid #99d6cf;background:#fafaff;color:#5e6574}
 .chat-bubble-md strong{font-weight:800}
 .chat-bubble-md hr{border:0;border-top:1px solid #e0e3ea;margin:8px 0}
 /* 流式思考区 + 光标 */
 .chat-stream-thinking{font-size:12px;color:#9aa1ad;background:#f4f5f9;border-radius:8px;padding:6px 10px;margin-bottom:6px;white-space:pre-wrap;line-height:1.5}
-.stream-cursor{display:inline-block;width:7px;height:14px;background:var(--purple);vertical-align:-2px;margin-left:2px;animation:chatBlink 1s step-end infinite}
+.stream-cursor{display:inline-block;width:7px;height:14px;background:var(--accent);vertical-align:-2px;margin-left:2px;animation:chatBlink 1s step-end infinite}
 @keyframes chatBlink{0%,100%{opacity:1}50%{opacity:0}}
 @media(max-width:800px){.chat-panel{right:8px;bottom:70px;width:calc(100vw - 16px);height:60vh}.chat-resize{display:none}}
 /* ==================== 动效 ==================== */
@@ -68,15 +68,24 @@
 .chat-head{cursor:move;user-select:none}
 .chat-resize{position:absolute;right:0;bottom:0;width:18px;height:18px;cursor:nwse-resize;z-index:2}
 .chat-resize::after{content:'';position:absolute;right:4px;bottom:4px;width:8px;height:8px;border-right:2px solid #c4c8d1;border-bottom:2px solid #c4c8d1}
+/* 可读性：小字字距 / CJK 行高 / 触控目标 / 隐藏标签 */
+.tag,.chip,.stage,.task-id,.type,.footer-meta,.metric span,.main-sub,.hint,.chat-time,.chat-sender,.qtitle,.qhint{letter-spacing:.01em}
+.hero h1{line-height:1.35}
+.main-title{line-height:1.4}
+.chat-title{line-height:1.4}
+.hero-meta{font-size:11px;color:var(--muted);margin-top:8px;letter-spacing:.01em}
+.sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
+.chat-head-btn{padding:6px 10px;min-width:24px;min-height:24px}
 @media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
 </style>
 </head>
 <body>
-<header class="topbar"><div class="brand"><div class="logo">✦</div><div>xdpai</div><div>需求智能评估与排期</div></div><div style="font-size:12px;color:var(--muted)">AI 评估草案 · 只读直连</div></header>
+<header class="topbar"><div class="brand"><div class="logo"><svg width="16" height="16" viewBox="0 0 18 18" fill="none" aria-hidden="true"><circle cx="5" cy="9" r="2.4" stroke="currentColor" stroke-width="1.7"/><circle cx="13" cy="9" r="2.4" stroke="currentColor" stroke-width="1.7"/><path d="M7.4 9h3.2" stroke="currentColor" stroke-width="1.7"/></svg></div><div>xdpai</div><div>需求智能评估与排期</div></div><div style="font-size:12px;color:var(--muted)">AI 评估草案 · 可审阅修正</div></header>
 <main class="wrap">
   <section class="card entry">
     <div style="flex:1">
       <div style="display:flex;gap:10px">
+        <label class="sr-only" for="taskIdInput">XDPai Task ID</label>
         <input id="taskIdInput" placeholder="输入 XDPai Task ID（如 8b4dd104-eec2-40b4-9160-85ae0a7d788b）" value=""/>
         <button class="btn primary" id="loadBtn">加载需求</button>
       </div>
@@ -91,11 +100,9 @@
     <div>
       <h1 id="title">—</h1>
       <p id="desc"></p>
+      <div class="hero-meta" id="heroMeta"></div>
       <div class="tags">
-        <span class="tag purple" id="dataBadge">—</span>
-        <span class="tag" id="reqId"></span>
-        <span class="tag" id="priority"></span>
-        <span class="tag" id="status"></span>
+        <span class="tag accent" id="dataBadge">—</span>
         <span class="tag" id="pendingTag"></span>
       </div>
     </div>
@@ -125,18 +132,18 @@
 <footer class="footerbar" id="footerbar" style="display:none">
   <div class="footer-inner">
     <div class="footer-meta"><span>总工作量 <b id="totalEffort">—</b> 人日</span><span>周期 <b id="duration">—</b> 工作日</span><span>预计交付 <b id="delivery">—</b></span><span id="saveState"></span></div>
-    <div style="display:flex;gap:8px"><button class="btn" id="exportBtn">导出本 Tab JSON</button> <button class="btn primary" id="saveBtn">提交变更</button></div>
+    <div style="display:flex;gap:8px"><button class="btn" id="exportBtn">复制本页 JSON</button> <button class="btn primary" id="saveBtn">提交修改</button></div>
   </div>
 </footer>
 <!-- 对话浮层入口 -->
-<button id="chatFab" class="chat-fab" title="与 AI 对话" style="display:none">💬</button>
+<button id="chatFab" class="chat-fab" title="与 AI 对话" aria-label="与 AI 对话" style="display:none"><svg width="22" height="22" viewBox="0 0 22 22" fill="none" aria-hidden="true"><path d="M3 5.5A2.5 2.5 0 0 1 5.5 3h11A2.5 2.5 0 0 1 19 5.5v8a2.5 2.5 0 0 1-2.5 2.5H9.2l-4.5 3v-3H5.5A2.5 2.5 0 0 1 3 13.5v-8Z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg></button>
 <!-- 对话浮层 -->
 <div id="chatPanel" class="chat-panel" style="display:none">
   <div class="chat-head" id="chatHead">
     <span class="chat-title">任务会话</span>
     <div class="chat-head-actions">
-      <button id="chatRefresh" class="chat-head-btn" title="刷新消息">⟳</button>
-      <button id="chatClose" class="chat-head-btn" title="关闭">✕</button>
+      <button id="chatRefresh" class="chat-head-btn" title="刷新消息" aria-label="刷新消息">⟳</button>
+      <button id="chatClose" class="chat-head-btn" title="关闭" aria-label="关闭">✕</button>
     </div>
   </div>
   <div id="chatList" class="chat-list"></div>
@@ -230,7 +237,7 @@ async function load(taskId) {
       S.task = offline.task;
       S.instance = offline.instance;
       parseInstanceVars();
-      showNotice('当前为<strong>离线演示模式</strong>：展示仓库内置测试数据（task <code>' + esc(S.taskId) + '</code>），非实时 XDPai 数据；提交变更、对话等功能不可用。');
+      showNotice('当前为<strong>离线演示模式</strong>：展示仓库内置测试数据（task <code>' + esc(S.taskId) + '</code>），非实时 XDPai 数据；提交修改、对话等功能不可用。');
     }
     saveOriginal();
     renderAll();
@@ -355,12 +362,10 @@ function renderShell() {
   $('#title').textContent = '【需求】' + (t.title || '—');
   const goal = (S.understanding && S.understanding.goal) || '';
   $('#desc').textContent = goal || '';
-  $('#reqId').textContent = 'Requirement/Task ID: ' + (t.task_id || S.taskId);
-  $('#priority').textContent = '优先级: ' + (t.priority || '—');
-  $('#status').textContent = '状态: ' + (t.status || '—');
+  $('#heroMeta').textContent = 'Requirement ID ' + (t.task_id || S.taskId) + ' · 优先级 ' + (t.priority || '—') + ' · 状态 ' + (t.status || '—');
   const badge = $('#dataBadge');
   badge.textContent = S.demo ? '演示数据（离线）' : '真实数据';
-  badge.className = 'tag ' + (S.demo ? 'amber' : 'purple');
+  badge.className = 'tag ' + (S.demo ? 'amber' : 'accent');
   const pending = countPending();
   $('#pendingTag').textContent = pending ? pending + ' 项待确认' : '需求已确认';
   const est = S.estimation; const sch = S.scheduling;
@@ -430,7 +435,7 @@ function renderRequirement() {
   const t = S.task || {};
   $('#stageTitle').textContent = '需求';
   $('#stageSub').textContent = '事实数据（XDPai Task），非 AI 阶段。';
-  $('#stageBadge').innerHTML = '<span class="chip purple">taskcgi/GetTask</span>';
+  $('#stageBadge').innerHTML = '<span class="chip accent">taskcgi/GetTask</span>';
   const kv = [
     ['Requirement ID', t.task_id || S.taskId],
     ['Task ID', t.task_id || S.taskId],
@@ -513,7 +518,7 @@ function renderUnderstanding() {
   $('#stageSub').textContent = '确认目标、范围、涉及模块和业务假设。';
   if (!u) { $('#stageBadge').innerHTML = '<span class="chip">未生成</span>'; $('#stageBody').innerHTML = emptyStage('requirement_arrangement.understanding'); return; }
   const pending = (u.review_items||[]).filter(x => x.required && !x.value).length;
-  $('#stageBadge').innerHTML = '<span class="chip purple">' + pending + ' 项待确认</span>' + (S.missing.understanding ? '' : dataBadge(true));
+  $('#stageBadge').innerHTML = '<span class="chip accent">' + pending + ' 项待确认</span>' + (S.missing.understanding ? '' : dataBadge(true));
   let h = '';
   if (S.missing.understanding) h += warnInline(S.missing.understanding);
   h += '<div class="grid3"><div class="info"><h3>目标</h3><p>' + esc(u.goal || '—') + '</p></div>';
@@ -559,7 +564,7 @@ function renderBreakdown() {
   $('#stageTitle').textContent = '任务拆解';
   $('#stageSub').textContent = '任务定义独立存储，通过 module_id 关联需求理解。';
   if (!b) { $('#stageBadge').innerHTML = '<span class="chip">未生成</span>'; $('#stageBody').innerHTML = emptyStage('requirement_arrangement.breakdown'); return; }
-  $('#stageBadge').innerHTML = '<span class="chip purple">' + (b.tasks||[]).length + ' 项</span>';
+  $('#stageBadge').innerHTML = '<span class="chip accent">' + (b.tasks||[]).length + ' 项</span>';
   let h = '';
   if (S.missing.breakdown) h += warnInline(S.missing.breakdown);
   h += '<table class="task-table"><thead><tr><th>任务</th><th>模块</th><th>类型</th><th>说明</th><th>依赖</th><th></th></tr></thead><tbody>'
@@ -597,7 +602,7 @@ function renderEstimation() {
   if (!e) { $('#stageBadge').innerHTML = '<span class="chip">未生成</span>'; $('#stageBody').innerHTML = emptyStage('requirement_arrangement.estimation'); return; }
   recalcEst();
   const sc = e.summary && e.summary.confidence_counts || {};
-  $('#stageBadge').innerHTML = '<span class="chip purple">' + (e.summary && e.summary.total_effort_days) + ' 人日</span>';
+  $('#stageBadge').innerHTML = '<span class="chip accent">' + (e.summary && e.summary.total_effort_days) + ' 人日</span>';
   let h = '';
   if (S.missing.estimation) h += warnInline(S.missing.estimation);
   h += '<div class="metric-grid"><div class="metric"><b>' + (e.summary ? e.summary.total_effort_days : '—') + '</b><span>总人日</span></div><div class="metric"><b>' + (sc.medium||0) + '</b><span>中置信度</span></div><div class="metric"><b>' + (sc.high||0) + '</b><span>高置信度</span></div></div>';
@@ -808,7 +813,7 @@ async function sendChangeMessage(stage, changes) {
   return true;
 }
 $('#saveBtn').onclick = async () => {
-  if (S.demo) { flash('离线演示模式，无法提交变更到真实任务。'); return; }
+  if (S.demo) { flash('离线演示模式，无法提交修改到真实任务。'); return; }
   const info = currentVarForTab();
   if (!info || !info.data) { flash('当前 Tab 无数据可提交'); return; }
   const changes = diffStage(info.stage);
@@ -823,7 +828,7 @@ $('#saveBtn').onclick = async () => {
   } catch (e) {
     flash('发消息失败：' + (e && e.message ? e.message : '未知错误'));
   } finally {
-    $('#saveBtn').disabled = false; $('#saveBtn').textContent = '提交变更';
+    $('#saveBtn').disabled = false; $('#saveBtn').textContent = '提交修改';
   }
 };
 $('#exportBtn').onclick = () => {
