@@ -870,10 +870,10 @@ function chatMsgIsAI(m) { return m.sender_type === 'silicon' || m.sender_type ==
 function chatMsgIsSystem(m) { return m.type === 'system' || m.sender_type === 'system'; }
 function chatSenderName(m) { return m.sender_nickname || m.sender_name || m.sender_id || '未知'; }
 
-async function loadChatMessages(silent) {
+async function loadChatMessages() {
   const convId = getConvId();
   if (!convId) { $('#chatList').innerHTML = '<div class="chat-msg"><div class="chat-bubble">未获取到会话 ID，请先加载需求。</div></div>'; return; }
-  if (!silent) $('#chatList').innerHTML = '<div class="chat-msg"><div class="chat-bubble" style="color:#b7bcc7">加载消息中…</div></div>';
+  $('#chatList').innerHTML = '<div class="chat-msg"><div class="chat-bubble" style="color:#b7bcc7">加载消息中…</div></div>';
   try {
     const r = await fetch(GATEWAY_IM + '/GetMessages', {
       method: 'POST', credentials: 'include', headers: { 'Content-Type': 'application/json' },
@@ -885,7 +885,7 @@ async function loadChatMessages(silent) {
     if (Array.isArray(msgs) && msgs.length) msgs = msgs.slice().reverse();  // 倒序返回 → 恢复正序
     renderChatMessages(msgs);
   } catch (e) {
-    if (!silent) $('#chatList').innerHTML = '<div class="chat-msg"><div class="chat-bubble">加载失败：' + esc(e && e.message || '') + '</div></div>';
+    $('#chatList').innerHTML = '<div class="chat-msg"><div class="chat-bubble">加载失败：' + esc(e && e.message || '') + '</div></div>';
   }
 }
 function renderChatMessages(msgs) {
@@ -948,24 +948,14 @@ $('#chatFab').onclick = () => {
   const panel = $('#chatPanel');
   const show = panel.style.display === 'none';
   panel.style.display = show ? 'flex' : 'none';
-  if (show) { loadChatMessages(); startChatPoll(); }
-  else stopChatPoll();
+  if (show) loadChatMessages();
 };
-$('#chatClose').onclick = () => { $('#chatPanel').style.display = 'none'; stopChatPoll(); };
+$('#chatClose').onclick = () => { $('#chatPanel').style.display = 'none'; };
 $('#chatRefresh').onclick = loadChatMessages;
 $('#chatSend').onclick = sendChatMessage;
 $('#chatText').addEventListener('keydown', e => {
   if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendChatMessage(); }
 });
-
-// ==================== 自动刷新（轮询，替代真流式） ====================
-// 真流式（tipai/web 的 WS 通道 wss://xdclaw.woa.com/xdpai.gateway.ws.ws/?token=t_uid）在小应用域不可行：
-// ① t_uid 是 xdclaw.woa.com 域登录 cookie，app.xdpai.woa.com 跨域读不到（实测 cookie 列表无 t_uid）；
-// ② xdpai-apps check 硬约束禁止读取登录 cookie。
-// 折中：浮层打开时每 3 秒轮询 GetMessages，AI 回复中显示「正在回复」，回复完自动刷新出完整消息。
-let chatPollTimer = null;
-function startChatPoll() { stopChatPoll(); chatPollTimer = setInterval(() => loadChatMessages(true), 3000); }
-function stopChatPoll() { if (chatPollTimer) { clearInterval(chatPollTimer); chatPollTimer = null; } }
 
 // ==================== 对话浮层：拖动 + 调整大小 + 位置记忆 ====================
 const CHAT_MIN_W = 320, CHAT_MIN_H = 400;

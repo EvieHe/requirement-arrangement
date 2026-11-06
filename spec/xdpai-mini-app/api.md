@@ -113,9 +113,9 @@ tipai/web 的真流式为 WebSocket `wss://xdclaw.woa.com/xdpai.gateway.ws.ws/?t
 1. `t_uid` 是 `xdclaw.woa.com` 域的登录 cookie，`app.xdpai.woa.com` 跨域读不到（实测 cookie 列表无 `t_uid`）；
 2. xdpai-apps `check` 硬约束（`IDENTITY_SELF_PARSED`）禁止代码读取登录 cookie。
 
-**折中**：浮层打开时每 3 秒轮询 `GetMessages`，检测 `status=sending` 的 AI 消息显示「正在回复」，落库后自动刷新出完整消息。
+**折中**：不做自动轮询，浮层提供手动刷新按钮（重新拉取 `GetMessages`，检测 `status=sending` 的 AI 消息显示「正在回复」）；发送消息后自动刷新一次。
 
-**后续待办**：平台提供免 token 的流式通道（imcgi 加 SSE 拉流，或 WS 网关加 CORS + 跨域 token 透传）后，替换轮询为逐字流式。
+**后续待办**：平台提供免 token 的流式通道（imcgi 加 SSE 拉流，或 WS 网关加 CORS + 跨域 token 透传）后，替换手动刷新为逐字流式。
 
 ## 6. 测试数据
 

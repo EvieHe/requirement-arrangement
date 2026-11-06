@@ -506,16 +506,16 @@ stale 必须明确提示：
   - 调整大小：右下角 resize handle，可拖拽改宽高，设最小尺寸（如 320×400）
   - 位置 / 尺寸记忆到 `localStorage`，下次打开保持
 
-### 流式（折中：轮询，真流式在小应用域不可行）
+### 刷新（手动，不做自动轮询）
 
 tipai/web 的真流式走 WebSocket 通道 `wss://xdclaw.woa.com/xdpai.gateway.ws.ws/?token=<t_uid>`，订阅 `agent:stream`（text/thinking chunk 增量）+ `agent:stream_end`。但该通道在小应用域**不可行**：
 
 1. `t_uid` 是 `xdclaw.woa.com` 域的登录 cookie，`app.xdpai.woa.com` 跨域读不到（实测 cookie 列表无 `t_uid`）；
 2. xdpai-apps `check` 硬约束禁止代码读取登录 cookie。
 
-折中：浮层打开时**每 3 秒轮询 `GetMessages`**，检测到 `status=sending` 的 AI 消息时显示「正在回复」+ 光标闪烁，回复落库后自动刷新出完整消息（带 Markdown 渲染）。关闭浮层即停轮询。
+故**不做自动轮询刷新**，浮层提供**手动刷新按钮**（重新拉取 `GetMessages`，检测到 `status=sending` 的 AI 消息时显示「正在回复」）。发送消息后也会自动刷新一次。避免自动刷新把用户已滚动到历史位置的列表强制拉回最新。
 
-> 真流式待办：平台提供免 token 的流式通道（如 imcgi 加 SSE 拉流，或 WS 网关加 CORS + 跨域 token 透传）后，可替换轮询为逐字流式。
+> 真流式待办：平台提供免 token 的流式通道（如 imcgi 加 SSE 拉流，或 WS 网关加 CORS + 跨域 token 透传）后，可改回自动流式。
 
 ---
 
@@ -771,12 +771,12 @@ Task ID
 - 错误状态：Task 不存在 / SOP 未运行 / 变量缺失 / JSON 非法 / API 失败，均不白屏
 - **提交变更**：diff（只发人改的字段）+ 回退下游节点重新评估（见 §13，实测打通）+ 防重复提交
 - **对话浮层**：右下角悬浮按钮，imcgi 消息接口，气泡式列表（自己 / AI / 系统三类），AI 消息 Markdown 渲染，系统消息节点流转展示，输入发送 + 刷新（见 §13「对话浮层」）
-- **流式折中**：浮层打开每 3 秒轮询 `GetMessages`，检测 `status=sending` 显示「正在回复」，回复落库自动刷新（真流式在小应用域不可行，见 §13「流式」）
+- **刷新**：手动刷新按钮重新拉取 `GetMessages`，检测 `status=sending` 显示「正在回复」；发送消息后自动刷新一次（不做自动轮询，见 §13「刷新」）
 
 ### 尚无法实现
 
 - **浏览器直连写 workflow var**：平台网关未向浏览器开放 `SetWorkflowVar`（原因见 `api.md §3`），当前经「发消息 + AI 助手」间接实现
-- **真流式**：tipai/web 的 WS 通道需 `t_uid` cookie（跨域读不到）+ 触发 check 硬约束，折中为轮询；待平台提供免 token 流式通道
+- **真流式**：tipai/web 的 WS 通道需 `t_uid` cookie（跨域读不到）+ 触发 check 硬约束，折中为手动刷新；待平台提供免 token 流式通道
 
 ### 待验证
 
