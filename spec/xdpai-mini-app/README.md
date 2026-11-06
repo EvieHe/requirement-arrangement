@@ -485,6 +485,34 @@ stale 必须明确提示：
 
 **后续待办**：平台在 `workflowcgi` 透传 `SetWorkflowVar` 后，页面改为浏览器直连写回（`GetInstance → SetWorkflowVar`），不依赖 AI 助手、可实时校验。当前「发消息 + 回退」依赖会话中 AI 助手在线且理解指令，作为过渡方案。
 
+### 防重复提交
+
+「提交变更」成功后**刷新原始快照**（`saveOriginal`），再次点击时 diff 为空，提示「未检测到改动」——不会把同一批 diff 重复发给 agent。
+
+### 对话浮层（与 AI 对话，复用 tipai/web 组件 + imcgi 消息接口）
+
+页面右下角提供「与 AI 对话」悬浮按钮，点开浮层即可在页面内直接和任务会话里的 AI 对话、看到它的回复（含节点流转）。复用 `git.woa.com/tipai/web` 的聊天组件设计 + `imcgi` 消息接口契约，未从零自研。
+
+- **入口**：右下角悬浮按钮，仅在获取到会话 ID（`conv_id`）后显示
+- **消息列表**：三类气泡
+  - 自己发的（`sender_id` == 当前 uid）靠右紫色气泡，纯文本
+  - AI（`sender_type` = silicon/agent，或 `type` = agent_response）带「AI」标签，正文 **Markdown 渲染**（标题 / 列表 / 代码块 / 表格 / 引用 / 加粗 / 行内代码）
+  - 系统（`type` = system，或 `sender_type` = system）居中灰色卡片，承载**节点流转 / 状态变更**展示（如「🎉 SOP 流程已全部完成」「何艺萍 变更状态：审核中 → 已完成」）
+- **拉取**：`GetMessages` 拉会话历史（返回倒序 → 恢复正序）
+- **发送**：`SendMessage` 发到任务会话，Enter 发送 / Shift+Enter 换行，发送后自动刷新
+- **刷新**：手动刷新按钮拉最新回复
+
+### 流式（折中：轮询，真流式在小应用域不可行）
+
+tipai/web 的真流式走 WebSocket 通道 `wss://xdclaw.woa.com/xdpai.gateway.ws.ws/?token=<t_uid>`，订阅 `agent:stream`（text/thinking chunk 增量）+ `agent:stream_end`。但该通道在小应用域**不可行**：
+
+1. `t_uid` 是 `xdclaw.woa.com` 域的登录 cookie，`app.xdpai.woa.com` 跨域读不到（实测 cookie 列表无 `t_uid`）；
+2. xdpai-apps `check` 硬约束禁止代码读取登录 cookie。
+
+折中：浮层打开时**每 3 秒轮询 `GetMessages`**，检测到 `status=sending` 的 AI 消息时显示「正在回复」+ 光标闪烁，回复落库后自动刷新出完整消息（带 Markdown 渲染）。关闭浮层即停轮询。
+
+> 真流式待办：平台提供免 token 的流式通道（如 imcgi 加 SSE 拉流，或 WS 网关加 CORS + 跨域 token 透传）后，可替换轮询为逐字流式。
+
 ---
 
 ## 14. 上游修改与 stale
@@ -725,8 +753,10 @@ Task ID
 | 读任务（需求） | `xdclaw.woa.com/xdpai.gateway.taskcgi.taskcgi/GetTask` | `{task_id}` | ✅ |
 | 读流程实例（vars + 节点） | `xdclaw.woa.com/xdpai.gateway.workflowcgi.workflowcgi/GetInstance` | `{task_id}` | ✅ |
 | 写流程变量 | `sop` 后端 `SetWorkflowVar` | `{instance_id,name,value}` | ❌（workflowcgi 未透传） |
+| 发消息 | `xdclaw.woa.com/xdpai.gateway.imcgi.imcgi/SendMessage` | `{conversation_id, sender_type, type, content:{text}}` | ✅ |
+| 读消息 | `xdclaw.woa.com/xdpai.gateway.imcgi.imcgi/GetMessages` | `{conversation_id, limit}` | ✅ |
 
-关键结论：**读链路完整直连，写链路浏览器无开放接口**（详见 §13 与 `api.md §3`）。
+关键结论：**读链路完整直连，写链路经「发消息 + AI 助手」间接实现**（详见 §13 与 `api.md §3`）。
 
 ### 已实现
 
@@ -735,13 +765,16 @@ Task ID
 - `GetInstance` → 解析 `variables_json` → 4 个 AI Tab（需求理解 / 任务拆解 / 工作量评估 / 排期生成，含甘特图、关键路径）
 - 编辑（内存态）+ 上游修改 → 下游 stale 联动
 - 错误状态：Task 不存在 / SOP 未运行 / 变量缺失 / JSON 非法 / API 失败，均不白屏
-- **提交变更**：diff（只发人改的字段）+ 回退下游节点重新评估（见 §13，实测打通）
+- **提交变更**：diff（只发人改的字段）+ 回退下游节点重新评估（见 §13，实测打通）+ 防重复提交
+- **对话浮层**：右下角悬浮按钮，imcgi 消息接口，气泡式列表（自己 / AI / 系统三类），AI 消息 Markdown 渲染，系统消息节点流转展示，输入发送 + 刷新（见 §13「对话浮层」）
+- **流式折中**：浮层打开每 3 秒轮询 `GetMessages`，检测 `status=sending` 显示「正在回复」，回复落库自动刷新（真流式在小应用域不可行，见 §13「流式」）
 
 ### 尚无法实现
 
 - **浏览器直连写 workflow var**：平台网关未向浏览器开放 `SetWorkflowVar`（原因见 `api.md §3`），当前经「发消息 + AI 助手」间接实现
+- **真流式**：tipai/web 的 WS 通道需 `t_uid` cookie（跨域读不到）+ 触发 check 硬约束，折中为轮询；待平台提供免 token 流式通道
 
 ### 待验证
 
-- 真实 task_id 端到端：`8b4dd104-eec2-40b4-9160-85ae0a7d788b`（已实测读链路 + 发消息链路）
+- 真实 task_id 端到端：`8b4dd104-eec2-40b4-9160-85ae0a7d788b`（已实测读链路 + 发消息链路 + 对话浮层收发消息）
 

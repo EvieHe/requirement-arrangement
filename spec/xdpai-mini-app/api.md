@@ -85,7 +85,39 @@ rpc SetWorkflowVar(xdpai.workbench.sop.SetWorkflowVarReq) returns (xdpai.workben
 
 workflowcgi 有 `AdvanceWorkflow` / `RejectNode`（流程控制，需 instance_id + 权限），但没有「按阶段重跑」的语义；SOP 后端有 `RollbackWorkflow`。当前均未在浏览器侧开放为「重跑某阶段」的入口。页面明确标记限制，不做假按钮。
 
-## 5. 测试数据
+## 5. 消息与会话（对话浮层）
+
+对话浮层复用网页 IM 网关 `imcgi`（同 `xdclaw.woa.com` 域，cookie 鉴权 + CORS 白名单含 `app.xdpai.woa.com`），浏览器可达。
+
+| 方法 | 入参 | 返回 | 说明 |
+|---|---|---|---|
+| `GetMessages` | `{"conversation_id":"...","limit":50}` | `messages[]`（**倒序**，需 reverse 恢复正序） | 拉取会话历史 |
+| `SendMessage` | `{"conversation_id":"...","sender_type":"user","type":"text","content":{"text":"..."}}` | `message_id` / `sender_id` | 发消息到任务会话 |
+
+`conv_id` 来源：`GetInstance` 返回的 `instance.conv_id`，或 `GetTask` 返回的 `task.conv_id`（实测二者一致）。
+
+消息关键字段：`sender_id / sender_nickname / sender_type / type / status / content.text / created_at`。
+
+消息分类（渲染规则）：
+
+| 类型 | 判定 | 渲染 |
+|---|---|---|
+| 自己 | `sender_id` == 当前 uid（经 `/_identity` 获取） | 靠右紫色气泡，纯文本 |
+| AI | `sender_type` = silicon/agent，或 `type` = agent_response | 带「AI」标签，正文 Markdown 渲染 |
+| 系统 | `type` = system，或 `sender_type` = system | 居中灰色卡片（节点流转 / 状态变更） |
+
+### 流式通道（查证结论：小应用域不可行）
+
+tipai/web 的真流式为 WebSocket `wss://xdclaw.woa.com/xdpai.gateway.ws.ws/?token=<t_uid>`，订阅 `agent:stream`（text / thinking chunk 增量）+ `agent:stream_end`。但小应用域**不可行**：
+
+1. `t_uid` 是 `xdclaw.woa.com` 域的登录 cookie，`app.xdpai.woa.com` 跨域读不到（实测 cookie 列表无 `t_uid`）；
+2. xdpai-apps `check` 硬约束（`IDENTITY_SELF_PARSED`）禁止代码读取登录 cookie。
+
+**折中**：浮层打开时每 3 秒轮询 `GetMessages`，检测 `status=sending` 的 AI 消息显示「正在回复」，落库后自动刷新出完整消息。
+
+**后续待办**：平台提供免 token 的流式通道（imcgi 加 SSE 拉流，或 WS 网关加 CORS + 跨域 token 透传）后，替换轮询为逐字流式。
+
+## 6. 测试数据
 
 - 测试 task_id：`8b4dd104-eec2-40b4-9160-85ae0a7d788b`（与仓库 5 份 JSON 的 `requirement_id` 一致；xdpai 中 task 即 requirement）。
 - 5 份 JSON 仅作为开发 / Mock Mode 数据，非生产事实源。
