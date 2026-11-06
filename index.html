@@ -1,7 +1,7 @@
 <!doctype html>
 <html lang="zh-CN">
 <head>
-  <meta name="app-version" content="v18">
+  <meta name="app-version" content="v19">
 <meta charset="utf-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1"/>
 <title>xdpai · 需求智能评估与排期</title>
@@ -695,7 +695,7 @@ const GATEWAY_IM = 'https://xdclaw.woa.com/xdpai.gateway.imcgi.imcgi';
 const STAGE_NAME = { understanding: '需求理解', breakdown: '任务拆解', estimation: '工作量评估', scheduling: '排期生成' };
 const STAGE_ROLLBACK = { understanding: '任务拆解', breakdown: '工作量评估', estimation: '排期生成', scheduling: '排期生成' };
 const FIELD_LABEL = {
-  effort_days: '人日', confidence: '置信度',
+  effort_days: '人日', confidence: '置信度', estimate_basis: '估算依据',
   title: '标题', module_id: '模块', category: '类型', description: '说明', dependencies: '依赖',
   name: '模块名', repository: '仓库', change_summary: '主要改动',
   assignee: '负责人', start_date: '开始日期', end_date: '结束日期',
@@ -730,9 +730,15 @@ function diffStage(stage) {
     const cm = new Map((curr.estimations || []).map(e => [e.task_id, e]));
     for (const [tid, ce] of cm) {
       const oe = om.get(tid);
-      if (!oe) { push(tid, 'effort_days', null, ce.effort_days); continue; }
+      if (!oe) {
+        push(tid, 'effort_days', null, ce.effort_days);
+        if (ce.confidence) push(tid, 'confidence', null, ce.confidence);
+        if (ce.estimate_basis) push(tid, 'estimate_basis', null, ce.estimate_basis);
+        continue;
+      }
       if (Number(oe.effort_days) !== Number(ce.effort_days)) push(tid, 'effort_days', oe.effort_days, ce.effort_days);
       if (oe.confidence !== ce.confidence) push(tid, 'confidence', oe.confidence, ce.confidence);
+      if ((oe.estimate_basis || '') !== (ce.estimate_basis || '')) push(tid, 'estimate_basis', oe.estimate_basis, ce.estimate_basis);
     }
     for (const tid of om.keys()) if (!cm.has(tid)) push(tid, 'effort_days', om.get(tid).effort_days, null);
   }
@@ -741,7 +747,14 @@ function diffStage(stage) {
     const cm = new Map((curr.tasks || []).map(t => [t.id, t]));
     for (const [id, ct] of cm) {
       const ot = om.get(id);
-      if (!ot) { push(id, 'title', null, ct.title); continue; }
+      if (!ot) {
+        push(id, 'title', null, ct.title);
+        if (ct.module_id) push(id, 'module_id', null, moduleName(ct.module_id));
+        if (ct.category) push(id, 'category', null, ct.category);
+        if (ct.description) push(id, 'description', null, ct.description);
+        if ((ct.dependencies || []).length) push(id, 'dependencies', null, (ct.dependencies || []).join(','));
+        continue;
+      }
       if ((ot.title || '') !== (ct.title || '')) push(id, 'title', ot.title, ct.title);
       if ((ot.module_id || null) !== (ct.module_id || null)) push(id, 'module_id', moduleName(ot.module_id), moduleName(ct.module_id));
       if ((ot.category || '') !== (ct.category || '')) push(id, 'category', ot.category, ct.category);
@@ -756,7 +769,12 @@ function diffStage(stage) {
     const cm = new Map((curr.modules || []).map(m => [m.id, m]));
     for (const [id, cmo] of cm) {
       const omo = om.get(id);
-      if (!omo) { push(id, 'name', null, cmo.name); continue; }
+      if (!omo) {
+        push(id, 'name', null, cmo.name);
+        if (cmo.repository) push(id, 'repository', null, cmo.repository);
+        if (cmo.change_summary) push(id, 'change_summary', null, cmo.change_summary);
+        continue;
+      }
       if ((omo.name || '') !== (cmo.name || '')) push(id, 'name', omo.name, cmo.name);
       if ((omo.repository || '') !== (cmo.repository || '')) push(id, 'repository', omo.repository || '(空)', cmo.repository || '(空)');
       if ((omo.change_summary || '') !== (cmo.change_summary || '')) push(id, 'change_summary', omo.change_summary, cmo.change_summary);
@@ -777,7 +795,12 @@ function diffStage(stage) {
     const cm = new Map((curr.schedule || []).map(s => [s.task_id, s]));
     for (const [tid, cs] of cm) {
       const os = om.get(tid);
-      if (!os) { push(tid, 'start_date', null, cs.start_date); continue; }
+      if (!os) {
+        push(tid, 'start_date', null, cs.start_date);
+        if (cs.assignee) push(tid, 'assignee', null, cs.assignee);
+        if (cs.end_date) push(tid, 'end_date', null, cs.end_date);
+        continue;
+      }
       if ((os.assignee || '') !== (cs.assignee || '')) push(tid, 'assignee', os.assignee, cs.assignee);
       if ((os.start_date || '') !== (cs.start_date || '')) push(tid, 'start_date', os.start_date, cs.start_date);
       if ((os.end_date || '') !== (cs.end_date || '')) push(tid, 'end_date', os.end_date, cs.end_date);
