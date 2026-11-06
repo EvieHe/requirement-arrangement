@@ -1,7 +1,7 @@
 <!doctype html>
 <html lang="zh-CN">
 <head>
-  <meta name="app-version" content="v16">
+  <meta name="app-version" content="v17">
 <meta charset="utf-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1"/>
 <title>xdpai · 需求智能评估与排期</title>
@@ -49,7 +49,26 @@
 .chat-stream-thinking{font-size:12px;color:#9aa1ad;background:#f4f5f9;border-radius:8px;padding:6px 10px;margin-bottom:6px;white-space:pre-wrap;line-height:1.5}
 .stream-cursor{display:inline-block;width:7px;height:14px;background:var(--purple);vertical-align:-2px;margin-left:2px;animation:chatBlink 1s step-end infinite}
 @keyframes chatBlink{0%,100%{opacity:1}50%{opacity:0}}
-@media(max-width:800px){.chat-panel{right:8px;bottom:70px;width:calc(100vw - 16px);height:60vh}}
+@media(max-width:800px){.chat-panel{right:8px;bottom:70px;width:calc(100vw - 16px);height:60vh}.chat-resize{display:none}}
+/* ==================== 动效 ==================== */
+@keyframes cardIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+.card-enter{animation:cardIn .3s ease-out both}
+@keyframes fadeIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
+@keyframes fadeOut{from{opacity:1}to{opacity:0}}
+.main-body.fade-in{animation:fadeIn .2s ease-out}
+.main-body.fade-out{animation:fadeOut .1s ease-out}
+.fill{transition:width .4s ease}
+.stage{transition:background .2s,color .2s,border-color .2s}
+.tab{transition:color .15s,border-color .15s}
+.btn{transition:transform .12s,background .12s,border-color .12s,opacity .12s}
+.btn:active{transform:scale(.97)}
+.bar{transform-origin:left center;animation:barIn .35s ease-out both}
+@keyframes barIn{from{opacity:0;transform:scaleX(.3)}to{opacity:1;transform:scaleX(1)}}
+/* 对话浮层：拖动 + 调整大小 */
+.chat-head{cursor:move;user-select:none}
+.chat-resize{position:absolute;right:0;bottom:0;width:18px;height:18px;cursor:nwse-resize;z-index:2}
+.chat-resize::after{content:'';position:absolute;right:4px;bottom:4px;width:8px;height:8px;border-right:2px solid #c4c8d1;border-bottom:2px solid #c4c8d1}
+@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
 </style>
 </head>
 <body>
@@ -113,7 +132,7 @@
 <button id="chatFab" class="chat-fab" title="与 AI 对话" style="display:none">💬</button>
 <!-- 对话浮层 -->
 <div id="chatPanel" class="chat-panel" style="display:none">
-  <div class="chat-head">
+  <div class="chat-head" id="chatHead">
     <span class="chat-title">任务会话</span>
     <div class="chat-head-actions">
       <button id="chatRefresh" class="chat-head-btn" title="刷新消息">⟳</button>
@@ -125,6 +144,7 @@
     <textarea id="chatText" class="chat-textarea" placeholder="输入消息，Enter 发送 / Shift+Enter 换行" rows="1"></textarea>
     <button id="chatSend" class="btn primary" title="发送">发送</button>
   </div>
+  <div class="chat-resize" id="chatResize" title="拖拽调整大小"></div>
 </div>
 <script>
 'use strict';
@@ -289,6 +309,14 @@ function humanError(e) {
 // ==================== 渲染入口 ====================
 function renderAll() {
   $('#heroCard').style.display = ''; $('#flowCard').style.display = ''; $('#mainCard').style.display = ''; $('#footerbar').style.display = '';
+  // 进入动效：骨架渐入 + 错峰浮现
+  [['heroCard',0],['flowCard',70],['mainCard',140],['footerbar',210]].forEach(([id, delay]) => {
+    const el = $('#'+id);
+    el.classList.remove('card-enter');
+    void el.offsetWidth;            // 强制 reflow，重启动画
+    el.style.animationDelay = delay + 'ms';
+    el.classList.add('card-enter');
+  });
   renderShell(); renderTabs(); render();
 }
 
@@ -341,8 +369,20 @@ function renderTabs() {
 }
 
 function switchTab(tab) {
+  if (tab === S.active) return;
   S.active = tab;
-  renderTabs(); renderStages(); render();
+  renderTabs(); renderStages();
+  // 交叉淡入淡出：旧内容淡出 → 新内容淡入
+  const body = $('#stageBody');
+  body.classList.add('fade-out');
+  clearTimeout(switchTab._t);
+  switchTab._t = setTimeout(() => {
+    render();
+    body.classList.remove('fade-out');
+    body.classList.add('fade-in');
+    clearTimeout(switchTab._t2);
+    switchTab._t2 = setTimeout(() => body.classList.remove('fade-in'), 220);
+  }, 100);
 }
 
 function render() {
@@ -893,6 +933,81 @@ $('#chatText').addEventListener('keydown', e => {
 let chatPollTimer = null;
 function startChatPoll() { stopChatPoll(); chatPollTimer = setInterval(() => loadChatMessages(true), 3000); }
 function stopChatPoll() { if (chatPollTimer) { clearInterval(chatPollTimer); chatPollTimer = null; } }
+
+// ==================== 对话浮层：拖动 + 调整大小 + 位置记忆 ====================
+const CHAT_MIN_W = 320, CHAT_MIN_H = 400;
+const CHAT_LAYOUT_KEY = 'ra-chat-layout';
+function applyChatLeftTop(p) {
+  const r = p.getBoundingClientRect();
+  p.style.right = 'auto'; p.style.bottom = 'auto';
+  p.style.left = r.left + 'px'; p.style.top = r.top + 'px';
+  p.style.width = r.width + 'px'; p.style.height = r.height + 'px';
+}
+function saveChatLayout() {
+  const p = $('#chatPanel');
+  const r = p.getBoundingClientRect();
+  try { localStorage.setItem(CHAT_LAYOUT_KEY, JSON.stringify({ left: r.left, top: r.top, width: r.width, height: r.height })); } catch (e) {}
+}
+function restoreChatLayout() {
+  if (window.innerWidth <= 800) return;
+  try {
+    const raw = localStorage.getItem(CHAT_LAYOUT_KEY);
+    if (!raw) return;
+    const l = JSON.parse(raw);
+    if (!l || l.width < CHAT_MIN_W || l.height < CHAT_MIN_H) return;
+    if (l.left < -l.width + 80 || l.left > window.innerWidth - 80 || l.top < 0 || l.top > window.innerHeight - 60) return;
+    const p = $('#chatPanel');
+    p.style.right = 'auto'; p.style.bottom = 'auto';
+    p.style.left = l.left + 'px'; p.style.top = l.top + 'px';
+    p.style.width = l.width + 'px'; p.style.height = l.height + 'px';
+  } catch (e) {}
+}
+function initChatDragResize() {
+  const p = $('#chatPanel');
+  const head = $('#chatHead');
+  const handle = $('#chatResize');
+  // 拖动（标题栏作为 handle）
+  head.addEventListener('mousedown', e => {
+    if (window.innerWidth <= 800) return;
+    if (e.target.closest('.chat-head-btn')) return;
+    e.preventDefault();
+    applyChatLeftTop(p);
+    const startX = e.clientX, startY = e.clientY;
+    const r = p.getBoundingClientRect();
+    const startLeft = r.left, startTop = r.top;
+    const onMove = ev => {
+      let nl = startLeft + (ev.clientX - startX);
+      let nt = startTop + (ev.clientY - startY);
+      nl = Math.max(-p.offsetWidth + 80, Math.min(nl, window.innerWidth - 80));
+      nt = Math.max(0, Math.min(nt, window.innerHeight - 60));
+      p.style.left = nl + 'px'; p.style.top = nt + 'px';
+    };
+    const onUp = () => { document.removeEventListener('mousemove', onMove); document.removeEventListener('mouseup', onUp); saveChatLayout(); };
+    document.addEventListener('mousemove', onMove);
+    document.addEventListener('mouseup', onUp);
+  });
+  // 调整大小（右下角 handle）
+  handle.addEventListener('mousedown', e => {
+    if (window.innerWidth <= 800) return;
+    e.preventDefault(); e.stopPropagation();
+    applyChatLeftTop(p);
+    const startX = e.clientX, startY = e.clientY;
+    const r = p.getBoundingClientRect();
+    const startW = r.width, startH = r.height;
+    const onMove = ev => {
+      let nw = startW + (ev.clientX - startX);
+      let nh = startH + (ev.clientY - startY);
+      nw = Math.max(CHAT_MIN_W, Math.min(nw, window.innerWidth - 16));
+      nh = Math.max(CHAT_MIN_H, Math.min(nh, window.innerHeight - 16));
+      p.style.width = nw + 'px'; p.style.height = nh + 'px';
+    };
+    const onUp = () => { document.removeEventListener('mousemove', onMove); document.removeEventListener('mouseup', onUp); saveChatLayout(); };
+    document.addEventListener('mousemove', onMove);
+    document.addEventListener('mouseup', onUp);
+  });
+}
+initChatDragResize();
+restoreChatLayout();
 </script>
 </body>
 </html>
