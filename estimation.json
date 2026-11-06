@@ -5,222 +5,57 @@
       "effort_days": 3,
       "estimate_basis": [
         {
-          "effort_days": 1.5,
-          "item": "任务类型与档位配置模型"
+          "effort_days": 1,
+          "item": "对局任务进度模型与赛事/玩家维度累计存储"
         },
         {
           "effort_days": 1,
-          "item": "进度接收与完成判定"
+          "item": "有效对局过滤逻辑（含投降/改判/判双败计入，超时未进与未打完排除）"
         },
         {
           "effort_days": 0.5,
-          "item": "单测与自测"
+          "item": "进度查询接口（GetUserGameStat 扩展）与档位达成状态计算"
+        },
+        {
+          "effort_days": 0.5,
+          "item": "自测与联调支持"
         }
       ],
       "task_id": "BE-01",
       "uncertainties": [
-        "星斗任务引擎的配置模型与判条件需按现有实现适配（Q3 承接方未确认）"
+        "既有对局结算记录字段（result_flag/destroy_reason 等）是否足以区分全部六种构造，需代码确认",
+        "赛事维度局数累计的存储选型（复用现有统计表/新增表）尚未确认"
       ]
     },
     {
       "confidence": "medium",
-      "effort_days": 3,
+      "effort_days": 3.5,
       "estimate_basis": [
         {
-          "effort_days": 1.5,
-          "item": "奖励配置模型扩展"
+          "effort_days": 1,
+          "item": "对局档位配置结构扩展（局数、奖励类型 pmd/积分、内容、数量）"
         },
         {
           "effort_days": 1,
-          "item": "奖池/库存与配置同步"
+          "item": "OpAward 保存链路改造与既有抽奖配置兼容"
         },
         {
           "effort_days": 0.5,
-          "item": "单测与自测"
+          "item": "档位配置查询与下发能力"
+        },
+        {
+          "effort_days": 0.5,
+          "item": "actmgr 派生运行配置适配"
+        },
+        {
+          "effort_days": 0.5,
+          "item": "自测与配置回归"
         }
       ],
       "task_id": "BE-02",
       "uncertainties": [
-        "抽奖活动奖励设置链路复用范围待确认（Q3）",
-        "积分奖励与现有兑换专区的对接方式未确认"
-      ]
-    },
-    {
-      "confidence": "medium",
-      "effort_days": 2,
-      "estimate_basis": [
-        {
-          "effort_days": 0.5,
-          "item": "「创建活动」接口改造"
-        },
-        {
-          "effort_days": 1,
-          "item": "按活动 ID 拉取对局任务并适配"
-        },
-        {
-          "effort_days": 0.5,
-          "item": "联调与自测"
-        }
-      ],
-      "task_id": "BE-03",
-      "uncertainties": [
-        "星斗活动接口返回结构依赖 BE-02 定稿"
-      ]
-    },
-    {
-      "confidence": "medium",
-      "effort_days": 1.5,
-      "estimate_basis": [
-        {
-          "effort_days": 1,
-          "item": "批量创建解析与写入对局任务"
-        },
-        {
-          "effort_days": 0.5,
-          "item": "校验与自测"
-        }
-      ],
-      "task_id": "BE-04",
-      "uncertainties": [
-        "批量模板是否新增「对局任务」列未确认（Q6）"
-      ]
-    },
-    {
-      "confidence": "medium",
-      "effort_days": 2,
-      "estimate_basis": [
-        {
-          "effort_days": 1.5,
-          "item": "活动变更监听与同步逻辑"
-        },
-        {
-          "effort_days": 0.5,
-          "item": "配置合法性校验与自测"
-        }
-      ],
-      "task_id": "BE-05",
-      "uncertainties": [
-        "对局任务配置的同步时机与消息字段待与星斗对齐"
-      ]
-    },
-    {
-      "confidence": "low",
-      "effort_days": 3,
-      "estimate_basis": [
-        {
-          "effort_days": 1,
-          "item": "计数口径梳理与取数路径验证"
-        },
-        {
-          "effort_days": 1.5,
-          "item": "有效局数统计/查询实现"
-        },
-        {
-          "effort_days": 0.5,
-          "item": "8 局构造用例回归"
-        }
-      ],
-      "task_id": "BE-06",
-      "uncertainties": [
-        "计数实现层未确认，可能落在任务引擎、数据中心或对局服务（Q1）"
-      ]
-    },
-    {
-      "confidence": "medium",
-      "effort_days": 3,
-      "estimate_basis": [
-        {
-          "effort_days": 1,
-          "item": "对局任务条目生成"
-        },
-        {
-          "effort_days": 1.5,
-          "item": "进度累计与抽奖任务并存逻辑"
-        },
-        {
-          "effort_days": 0.5,
-          "item": "单测"
-        }
-      ],
-      "task_id": "BE-07",
-      "uncertainties": [
-        "依赖有效局数查询能力（BE-06）的接口形态"
-      ]
-    },
-    {
-      "confidence": "medium",
-      "effort_days": 2.5,
-      "estimate_basis": [
-        {
-          "effort_days": 1.5,
-          "item": "档位可领校验与幂等"
-        },
-        {
-          "effort_days": 0.5,
-          "item": "pmd/积分奖励分流"
-        },
-        {
-          "effort_days": 0.5,
-          "item": "单测"
-        }
-      ],
-      "task_id": "BE-08",
-      "uncertainties": [
-        "积分奖励的发放链路与到账口径待确认"
-      ]
-    },
-    {
-      "confidence": "medium",
-      "effort_days": 2,
-      "estimate_basis": [
-        {
-          "effort_days": 1.5,
-          "item": "查询接口扩展与字段组装"
-        },
-        {
-          "effort_days": 0.5,
-          "item": "联调与自测"
-        }
-      ],
-      "task_id": "BE-09",
-      "uncertainties": [
-        "显示开关字段来源未确认（Q5）"
-      ]
-    },
-    {
-      "confidence": "medium",
-      "effort_days": 1.5,
-      "estimate_basis": [
-        {
-          "effort_days": 1,
-          "item": "领取接口包装与异常处理"
-        },
-        {
-          "effort_days": 0.5,
-          "item": "自测"
-        }
-      ],
-      "task_id": "BE-10",
-      "uncertainties": [
-        "重复领取/并发场景需与任务引擎幂等策略对齐"
-      ]
-    },
-    {
-      "confidence": "medium",
-      "effort_days": 2,
-      "estimate_basis": [
-        {
-          "effort_days": 1.5,
-          "item": "详情页激励信息展示与样式"
-        },
-        {
-          "effort_days": 0.5,
-          "item": "对局优先于抽奖的优先级与联调"
-        }
-      ],
-      "task_id": "FE-01",
-      "uncertainties": [
-        "前端覆盖范围未确认（Q4），若需覆盖 next/PixUi 需追加"
+        "actmgr 派生配置（ActInfo/奖池）是否需要同步改造未确认",
+        "档位数量上限、每档奖励数量与库存规则未定，可能影响数据结构与校验复杂度"
       ]
     },
     {
@@ -228,112 +63,106 @@
       "effort_days": 5,
       "estimate_basis": [
         {
-          "effort_days": 2,
-          "item": "任务列表与 5/15/25/30 进度条"
+          "effort_days": 1,
+          "item": "对局激励查询接口（档位、进度、最近两档、领取状态）"
         },
         {
           "effort_days": 1.5,
-          "item": "领取三态与结果弹窗"
+          "item": "领取接口（档位校验、幂等与重复领取控制）"
+        },
+        {
+          "effort_days": 1.5,
+          "item": "流程引擎 + 礼物中台发放对接与联调（pmd 奖励 / 积分）"
         },
         {
           "effort_days": 0.5,
-          "item": "积分引导/规则弹窗"
+          "item": "显示开关与既有抽奖查询结果互斥整合"
+        },
+        {
+          "effort_days": 0.5,
+          "item": "自测与异常场景验证"
+        }
+      ],
+      "task_id": "BE-03",
+      "uncertainties": [
+        "既有商户赛领取流能否纯配置扩展对局任务条件，需与流程引擎侧确认",
+        "积分奖励是否与 pmd 奖励走同一 gift 链路、还是需额外接积分中台，未确认",
+        "改判后计数与已领奖励的线上口径细节（Q7 答复为\"与线上保持一致\"）需在实现时对齐现有逻辑"
+      ]
+    },
+    {
+      "confidence": "medium",
+      "effort_days": 3,
+      "estimate_basis": [
+        {
+          "effort_days": 0.5,
+          "item": "奖励设置页「创建活动」文案与表单交互改造"
         },
         {
           "effort_days": 1,
-          "item": "联调与自测"
+          "item": "星斗活动 ID 填写后拉取并展示对局档位与奖励数量"
+        },
+        {
+          "effort_days": 0.5,
+          "item": "档位数据随赛事奖励配置保存的联调"
+        },
+        {
+          "effort_days": 0.5,
+          "item": "批量创建兼容（复用抽奖活动 ID 拉取，不新增模板列）"
+        },
+        {
+          "effort_days": 0.5,
+          "item": "自测与回归"
+        }
+      ],
+      "task_id": "FE-01",
+      "uncertainties": [
+        "星斗活动接口是否已返回对局档位数据、字段契约未确认",
+        "批量创建现有流程能否直接复用需代码确认"
+      ]
+    },
+    {
+      "confidence": "low",
+      "effort_days": 6,
+      "estimate_basis": [
+        {
+          "effort_days": 1,
+          "item": "赛事详情页最近两档展示与抽奖区位互斥逻辑"
+        },
+        {
+          "effort_days": 1.5,
+          "item": "任务奖励页对局领奖与抽奖整合布局、节点进度条"
+        },
+        {
+          "effort_days": 1.5,
+          "item": "领取三态与结果弹窗（pmd 奖励 / 积分去活动中心）"
+        },
+        {
+          "effort_days": 0.5,
+          "item": "模块显示开关两种页面形态适配"
+        },
+        {
+          "effort_days": 0.5,
+          "item": "规则弹窗、积分引导等模块四元素"
+        },
+        {
+          "effort_days": 1,
+          "item": "联调与多形态自测"
         }
       ],
       "task_id": "FE-02",
       "uncertainties": [
-        "交互稿细节（多礼包弹窗、次数池展示）需与设计确认",
-        "前端覆盖范围未确认（Q4）"
-      ]
-    },
-    {
-      "confidence": "medium",
-      "effort_days": 1.5,
-      "estimate_basis": [
-        {
-          "effort_days": 1,
-          "item": "两种形态渲染"
-        },
-        {
-          "effort_days": 0.5,
-          "item": "状态流转与自测"
-        }
-      ],
-      "task_id": "FE-03",
-      "uncertainties": [
-        "显示开关配置来源未确认（Q5）"
-      ]
-    },
-    {
-      "confidence": "low",
-      "effort_days": 3,
-      "estimate_basis": [
-        {
-          "effort_days": 1,
-          "item": "奖励设置表单改造"
-        },
-        {
-          "effort_days": 1,
-          "item": "对局任务与奖励展示"
-        },
-        {
-          "effort_days": 1,
-          "item": "校验与联调"
-        }
-      ],
-      "task_id": "FE-04",
-      "uncertainties": [
-        "TGS 管理端前端仓库与负责人未确认（Q2）"
-      ]
-    },
-    {
-      "confidence": "low",
-      "effort_days": 1.5,
-      "estimate_basis": [
-        {
-          "effort_days": 1,
-          "item": "批量创建页面对局任务展示"
-        },
-        {
-          "effort_days": 0.5,
-          "item": "模板校验与失败提示"
-        }
-      ],
-      "task_id": "FE-05",
-      "uncertainties": [
-        "模板是否含对局任务列未确认（Q6）；管理端仓库未确认（Q2）"
-      ]
-    },
-    {
-      "confidence": "medium",
-      "effort_days": 4,
-      "estimate_basis": [
-        {
-          "effort_days": 1.5,
-          "item": "计数口径 8 局构造回归"
-        },
-        {
-          "effort_days": 1.5,
-          "item": "详情页/任务奖励页展示与领取联调"
-        },
-        {
-          "effort_days": 1,
-          "item": "pmd 与积分到账验证"
-        }
-      ],
-      "task_id": "QA-01",
-      "uncertainties": [
-        "依赖计数实现层结论（Q1），用例构造方式可能调整"
+        "横版 pixui 的赛事详情页/任务奖励页仓库与子应用路径未确认（Q8）",
+        "现有页面与抽奖模块的整合结构需代码确认，可能影响改造成本",
+        "设计稿细节（多礼包网格弹窗等）尚待产品补充"
       ]
     }
   ],
-  "requirement_id": "8b4dd104-eec2-40b4-9160-85ae0a7d788b",
+  "requirement_id": "ffd4f7d9-8a31-4287-a489-8887ea257290",
   "revision": {
-    "changes": [],
+    "changes": [
+      "按 5 个 breakdown task 逐条估算，合计 20.5 人日（medium 4 / low 1）；未改变任务定义"
+    ],
     "last_modified_by": "ai",
     "version": 1
   },
@@ -341,9 +170,9 @@
   "summary": {
     "confidence_counts": {
       "high": 0,
-      "low": 3,
-      "medium": 13
+      "low": 1,
+      "medium": 4
     },
-    "total_effort_days": 40.5
+    "total_effort_days": 20.5
   }
 }

@@ -1,121 +1,57 @@
 {
-  "requirement_id": "8b4dd104-eec2-40b4-9160-85ae0a7d788b",
+  "requirement_id": "ffd4f7d9-8a31-4287-a489-8887ea257290",
   "revision": {
-    "changes": [],
-    "last_modified_by": "ai",
-    "version": 1
+    "changes": [
+      "人工修正负责人：BE-01/BE-02/BE-03/FE-01 → 何艺萍，FE-02 → 张良",
+      "按单一负责人真实容量重排：何艺萍名下 4 个任务串行执行（BE-01→BE-02→BE-03→FE-01），不再假设并行",
+      "FE-02（张良）保留与 BE-03 的依赖，BE-03 完成后并行启动；交付日期由 2026-11-26 调整为 2026-12-01",
+      "关键路径更新为 BE-01→BE-02→BE-03→FE-02"
+    ],
+    "last_modified_by": "human",
+    "version": 2
   },
   "schedule": [
     {
-      "assignee": "后端待分配-A",
-      "end_date": "2026-11-09",
-      "start_date": "2026-11-05",
+      "assignee": "何艺萍",
+      "end_date": "2026-11-10",
+      "start_date": "2026-11-06",
       "task_id": "BE-01"
     },
     {
-      "assignee": "后端待分配-B",
-      "end_date": "2026-11-12",
-      "start_date": "2026-11-10",
+      "assignee": "何艺萍",
+      "end_date": "2026-11-16",
+      "start_date": "2026-11-11",
       "task_id": "BE-02"
     },
     {
-      "assignee": "后端待分配-B",
-      "end_date": "2026-11-16",
-      "start_date": "2026-11-13",
+      "assignee": "何艺萍",
+      "end_date": "2026-11-23",
+      "start_date": "2026-11-17",
       "task_id": "BE-03"
     },
     {
-      "assignee": "后端待分配-B",
-      "end_date": "2026-11-18",
-      "start_date": "2026-11-17",
-      "task_id": "BE-04"
-    },
-    {
-      "assignee": "后端待分配-B",
-      "end_date": "2026-11-20",
-      "start_date": "2026-11-19",
-      "task_id": "BE-05"
-    },
-    {
-      "assignee": "后端待分配-B",
-      "end_date": "2026-11-09",
-      "start_date": "2026-11-05",
-      "task_id": "BE-06"
-    },
-    {
-      "assignee": "后端待分配-A",
-      "end_date": "2026-11-12",
-      "start_date": "2026-11-10",
-      "task_id": "BE-07"
-    },
-    {
-      "assignee": "后端待分配-A",
-      "end_date": "2026-11-17",
-      "start_date": "2026-11-13",
-      "task_id": "BE-08"
-    },
-    {
-      "assignee": "后端待分配-A",
-      "end_date": "2026-11-23",
-      "start_date": "2026-11-20",
-      "task_id": "BE-09"
-    },
-    {
-      "assignee": "后端待分配-A",
-      "end_date": "2026-11-19",
-      "start_date": "2026-11-18",
-      "task_id": "BE-10"
-    },
-    {
-      "assignee": "前端待分配-C端",
-      "end_date": "2026-11-25",
+      "assignee": "何艺萍",
+      "end_date": "2026-11-26",
       "start_date": "2026-11-24",
       "task_id": "FE-01"
     },
     {
-      "assignee": "前端待分配-C端",
-      "end_date": "2026-12-02",
-      "start_date": "2026-11-26",
+      "assignee": "张良",
+      "end_date": "2026-12-01",
+      "start_date": "2026-11-24",
       "task_id": "FE-02"
-    },
-    {
-      "assignee": "前端待分配-C端",
-      "end_date": "2026-12-04",
-      "start_date": "2026-12-03",
-      "task_id": "FE-03"
-    },
-    {
-      "assignee": "前端待分配-管理端",
-      "end_date": "2026-11-19",
-      "start_date": "2026-11-17",
-      "task_id": "FE-04"
-    },
-    {
-      "assignee": "前端待分配-管理端",
-      "end_date": "2026-11-23",
-      "start_date": "2026-11-20",
-      "task_id": "FE-05"
-    },
-    {
-      "assignee": "测试待分配",
-      "end_date": "2026-12-10",
-      "start_date": "2026-12-07",
-      "task_id": "QA-01"
     }
   ],
   "schema_version": "4.0",
   "summary": {
     "critical_path": [
       "BE-01",
-      "BE-07",
-      "BE-08",
-      "BE-10",
-      "FE-02",
-      "FE-03",
-      "QA-01"
+      "BE-02",
+      "BE-03",
+      "FE-02"
     ],
-    "delivery_date": "2026-12-10",
-    "estimated_working_days": 26,
-    "start_date": "2026-11-05"
+    "delivery_date": "2026-12-01",
+    "estimated_working_days": 18,
+    "start_date": "2026-11-06"
   }
 }
